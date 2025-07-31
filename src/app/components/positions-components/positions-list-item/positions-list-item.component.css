@@ -1,0 +1,40 @@
+.position-img{
+  width: 100px;
+  height: 100px;
+
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  margin: 0 auto;
+}
+
+.position-menu-button{
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  z-index: 1;
+}
+
+@media (max-width: 576px) {
+  .position-info{
+    order:2;
+  }
+
+  .position-image{
+    order: 1;
+  }
+
+  .position-controls{
+    order: 3;
+
+  }
+
+  .position-controls>*{
+    margin-top: 20px;
+    align-items: center;
+    justify-content: center;
+  }
+
+
+
+}

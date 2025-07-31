@@ -1,0 +1,45 @@
+
+<div class="d-flex justify-content-center align-items-center">
+  <h2 class="text-center">Позиції</h2>
+  <button mat-flat-button class="ml-3" (click)="openCreateDialog()">
+    <mat-icon class="m-0">
+      add icon
+    </mat-icon>
+  </button>
+</div>
+
+
+@if(categories().length!=0 && positions().length!=0){
+  <div class="categories-list d-flex justify-content-center my-4">
+    <mat-button-toggle-group style="margin: 0 auto;overflow: scroll" [value]="0" [formControl]="selectedCategory" (change)="filterCategories()">
+      <mat-button-toggle [value]="0">Усі</mat-button-toggle>
+      @for (category of categories(); track category.id) {
+        <mat-button-toggle [value]="category.id">{{category.name}}</mat-button-toggle>
+      }
+    </mat-button-toggle-group>
+  </div>
+
+  <div class="positions-list d-flex flex-column justify-content-center align-items-center">
+    @for (elem of filteredPositions();track $index){
+      <app-positions-list-item [position]="elem" class="w-100" ></app-positions-list-item>
+    }
+  </div>
+
+  <button mat-fab class="menu-button" [matMenuTriggerFor]="menu" >
+    <mat-icon>more_vert</mat-icon>
+  </button>
+
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item>Нова категорія</button>
+    <button mat-menu-item>Новий інгридієнт</button>
+  </mat-menu>
+
+}
+@else{
+  <mat-spinner color="accent"></mat-spinner>
+}
+
+
+
+
+

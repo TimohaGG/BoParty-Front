@@ -1,0 +1,31 @@
+
+
+
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav mode="over" class="sidenav" position="end" #sidenav [(opened)]="opened">
+    <mat-toolbar>Menu</mat-toolbar>
+    <mat-nav-list >
+      <a mat-list-item routerLink="/home" (click)="sidenav!.close()">Замовлення</a>
+      <a mat-list-item routerLink="/positions" (click)="sidenav!.close()">Позиції</a>
+      <a mat-list-item routerLink="/ingredients" (click)="sidenav!.close()">Інгридієнти</a>
+      <a mat-list-item routerLink="/about" (click)="sidenav!.close()">Закупівлі</a>
+      <a mat-list-item routerLink="/profile" (click)="sidenav!.close()">Профіль</a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <span>Bo Party</span>
+
+      @if (isLoggedIn) {
+        <button mat-button (click)="logout()">Logout</button>
+      }
+      <button matIconButton mat-button style="margin-left: auto;" (click)="sidenav.toggle()" >
+        <mat-icon>menu</mat-icon>
+      </button>
+    </mat-toolbar>
+    <div class="main-content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

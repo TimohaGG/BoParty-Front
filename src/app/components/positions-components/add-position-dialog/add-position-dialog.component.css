@@ -1,0 +1,9 @@
+@media (max-width: 576px) {
+  .full-screen{
+    width: 100% !important;
+  }
+
+  .add-image-btn{
+    flex-direction: column-reverse;
+  }
+}

@@ -1,0 +1,33 @@
+
+@use '@angular/material' as mat;
+@include mat.elevation-classes();
+@include mat.app-background();
+
+
+$bo-primary: mat.m2-define-palette(mat.$m2-grey-palette,900,700,800);
+$bo-accent: mat.m2-define-palette(mat.$m2-yellow-palette,800, 600,700);
+$bo-warn: mat.m2-define-palette(mat.$m2-red-palette);
+
+$bo-theme: mat.m2-define-dark-theme((
+      color:(
+        primary: $bo-primary,
+        accent: $bo-accent,
+        warn: $bo-warn,
+      )
+    ));
+
+
+:root {
+  --primary-color: #{mat.m2-get-color-from-palette($bo-primary, 900)};
+  --primary-lighter: #{mat.m2-get-color-from-palette($bo-primary, 800)};
+  --primary-darker: #{mat.m2-get-color-from-palette($bo-primary, 700)};
+
+  --button-edit:#{mat.m2-get-color-from-palette($bo-accent, 800)};
+  --button-remove:#{mat.m2-get-color-from-palette($bo-warn)};
+  --button-shopping:#{mat.m2-get-color-from-palette(mat.$blue-palette, 20)};
+  --button-copy:#{mat.m2-get-color-from-palette(mat.$green-palette, 20)};
+  --ingredient-color: #a6a6a6
+}
+
+
+@include mat.all-component-themes($bo-theme);

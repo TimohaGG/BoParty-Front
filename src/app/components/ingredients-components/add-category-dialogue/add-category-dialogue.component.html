@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>Додати категорію</h2>
+<mat-dialog-content>
+  <mat-form-field>
+    <mat-label>
+      Назва категорії
+    </mat-label>
+    <input matInput [(ngModel)]="name"/>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onClose()">Скасувати</button>
+  <button mat-button [mat-dialog-close]="name()">Додати</button>
+</mat-dialog-actions>

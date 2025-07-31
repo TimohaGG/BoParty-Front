@@ -1,0 +1,28 @@
+.orders-list{
+  background-color: var(--primary-lighter);
+  border-radius: 20px;
+  position: relative;
+  margin: 0 auto;
+  width: fit-content;
+}
+
+.orders-list>*:not(:last-child){
+  border-bottom: 1px solid var(--primary-darker);
+}
+
+.orders-list>*{
+  padding:20px;
+}
+
+.menu-button{
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+
+@media (max-width:576px) {
+  .menu-button{
+    bottom: 0;
+    right: 0;
+  }
+}

@@ -1,0 +1,50 @@
+.ingredients-list{
+  background-color: var(--primary-lighter);
+  border-radius: 20px;
+  position: relative;
+  margin: 0 auto;
+  max-width: 50vw;
+  width: 100%
+}
+
+.ingredients-list>*{
+  padding: 20px;
+}
+
+.ingredients-list>*:not(:last-child){
+  border-bottom: 1px solid var(--primary-darker);
+}
+
+input.disabled{
+  background-color: var(--primary-lighter);
+  color:white;
+  border:0;
+}
+
+input.has-children{
+  font-weight: bold;
+  color: var(--ingredient-color);
+}
+
+input.disabled:focus-visible{
+  outline:none;
+}
+
+@media (max-width: 576px){
+  .ingredients-list{
+    max-width: 100vw;
+  }
+
+  .menu-button{
+    bottom: 0;
+    right: 0;
+  }
+}
+
+
+.menu-button{
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+

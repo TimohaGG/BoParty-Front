@@ -1,0 +1,113 @@
+<div class="p-3">
+
+  <h2>Додати позицію</h2>
+
+  <mat-dialog-content>
+    <form [formGroup]="positionForm" enctype="multipart/form-data" >
+    <div class="row">
+      <div class="col-lg-7 col-md-7 col-sm-12">
+
+<!--          <div class="d-flex flex-column">-->
+<!--            <mat-form-field>-->
+<!--              <mat-label>-->
+<!--                Назва-->
+<!--              </mat-label>-->
+<!--              <input matInput formControlName="name" type="text"/>-->
+<!--            </mat-form-field>-->
+
+
+<!--            <input type="file" #updFile formControlName="image" class="d-none" accept="image/*" (change)="onFileUpload($event)"/>-->
+<!--            <div class="m-3 d-flex justify-content-between align-items-center add-image-btn" style="max-height: 200px;">-->
+<!--              <button mat-flat-button class="m-4 p-2" type="button" (click)="uploadImage($event)">Додати зображення</button>-->
+<!--              @if (imagePreview) {-->
+<!--                <img [src]="imagePreview" style="width: -webkit-fill-available;max-width: 50%">-->
+<!--              }@else{-->
+<!--                <img src="assets/img/logo.png" style="width: -webkit-fill-available;max-width: 50%">-->
+<!--              }-->
+<!--            </div>-->
+
+
+<!--            <mat-form-field>-->
+<!--              <mat-label>-->
+<!--                Вага-->
+<!--              </mat-label>-->
+<!--              <input matInput formControlName="weight" type="number"/>-->
+<!--            </mat-form-field>-->
+
+<!--            <mat-form-field>-->
+<!--              <mat-label>-->
+<!--                Ціна-->
+<!--              </mat-label>-->
+<!--              <input matInput formControlName="price" type="number"/>-->
+<!--            </mat-form-field>-->
+<!--            <mat-form-field>-->
+<!--              <mat-label>-->
+<!--                Категорія-->
+<!--              </mat-label>-->
+<!--              <mat-select formControlName="category">-->
+<!--                @for (category of categories(); track category.id) {-->
+<!--                  <mat-option [value]="category.id">{{category.name}}</mat-option>-->
+<!--                }-->
+<!--              </mat-select>-->
+<!--            </mat-form-field>-->
+<!--          </div>-->
+      </div>
+      <div class="col-lg-5 col-md-5 col-sm-12 d-flex flex-column">
+
+
+<!--        <mat-form-field>-->
+<!--          <mat-label>-->
+<!--            Інгридієнти-->
+<!--          </mat-label>-->
+<!--          <input type="text"-->
+<!--                  placeholder="Оберіть інгредієнт"-->
+<!--                  matInput-->
+<!--                 formControlName="ingCtrl"-->
+<!--                  [matAutocomplete]="auto"-->
+
+<!--          />-->
+<!--          <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onIngSelect($event)">-->
+<!--            @for (ing of filteredIngredients$ | async; track $index) {-->
+<!--              <mat-option [value]="ing">{{ing.name}}</mat-option>-->
+<!--            }-->
+<!--          </mat-autocomplete>-->
+<!--        </mat-form-field>-->
+
+<!--        <div class="d-flex flex-column">-->
+<!--          <table class="table">-->
+<!--            @for (sel of selectedIngredients; track $index) {-->
+<!--              <tr >-->
+<!--                <td style="color: white" class="align-middle">{{sel.ingredient.name}}</td>-->
+<!--                <td class="align-middle">-->
+<!--                  <button class="btn btn-outline-light" (click)="patchAmount(sel.ingredient.id,sel.amount-1,$event)">-</button>-->
+<!--                  <input matInput type="number" [value]="sel.amount" style="width: 50px" (change)="patchAmount(sel.ingredient.id, $event)"/>-->
+<!--                  <button class="btn btn-outline-light" (click)="patchAmount(sel.ingredient.id,sel.amount+1,$event)">+</button>-->
+<!--                </td>-->
+<!--                <td style="color: white" class="align-middle" >-->
+<!--                  <select [value]="sel.unit">-->
+<!--                    @for (unit of getAllUnits();track $index){-->
+<!--                      <option [value]="unit">{{unit}}</option>-->
+<!--                    }-->
+<!--                  </select>-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                  <button class="btn btn-outline-danger">-->
+<!--                    - -->
+<!--                  </button>-->
+<!--                </td>-->
+<!--              </tr>-->
+<!--            }-->
+<!--          </table>-->
+<!--        </div>-->
+      </div>
+    </div>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-flat-button (click)="onClose()">Скасувати</button>
+    <button mat-flat-button (click)="onSubmit($event)">Додати</button>
+  </mat-dialog-actions>
+
+</div>
+
+

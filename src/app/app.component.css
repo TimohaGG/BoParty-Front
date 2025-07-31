@@ -1,0 +1,29 @@
+.sidenav-container {
+  height: 100vh;
+}
+
+.sidenav {
+  width: 200px;
+}
+
+.mat-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.main-content {
+  padding: 20px;
+}
+
+.toggle-button {
+  margin-right: 10px;
+  display: none;
+}
+
+
+.example-container {
+  height: 100vh;
+}
+
+

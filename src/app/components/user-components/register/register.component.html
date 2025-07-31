@@ -1,0 +1,75 @@
+@if (isSuccessful) {
+  <div class="d-flex justify-content-center align-items-center vh-100">
+    <mat-card class="p-3 pb-4">
+      <mat-card-header style="color: lightgreen">Welcome to family!</mat-card-header>
+    </mat-card>
+  </div>
+
+}
+@else{
+  <div  class="vh-100 d-flex justify-content-center">
+    <div class="login-bg row align-items-center justify-content-center w-100 p-5" style="height: fit-content">
+      <div class="col-lg-4 col-sm-12 mb-4">
+        <div class="logo">
+        </div>
+      </div>
+      <div class="col-lg-4 col-sm-12">
+        <form class="d-flex flex-column" (ngSubmit)="form.valid && onSubmit()" [formGroup]="form" >
+          <mat-form-field appearance="fill">
+            <mat-label>E-mail</mat-label>
+            <input matInput placeholder="E-mail"
+                   formControlName="email"/>
+            @if (form.get("email")?.hasError("required")) {
+              <mat-error>Email is required</mat-error>
+            }
+
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Username</mat-label>
+            <input matInput placeholder="Username"
+                   formControlName="username"/>
+            @if (form.get("username")?.hasError("required")) {
+              <mat-error>Username is required</mat-error>
+            }
+
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Enter your password</mat-label>
+            <input matInput [type]="hide() ? 'password' : 'text'"
+                   formControlName="password"/>
+            <button
+              mat-icon-button
+              matSuffix
+              (click)="clickEvent($event)"
+              [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hide()"
+            >
+              <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+
+            @if (form.get("password")!.hasError("required")) {
+              <mat-error>Password is required</mat-error>
+            }
+            @if (form.get("password")!.hasError("minLength")) {
+              <mat-error>Password must be at least 8 characters</mat-error>
+            }
+
+          </mat-form-field>
+
+          <button matButton="filled" color="primary" >Login</button>
+        </form>
+
+
+
+        <mat-error>
+          @if(isSignUpFailed){
+            {{errorMessage}}
+          }
+        </mat-error>
+
+      </div>
+    </div>
+  </div>
+
+}

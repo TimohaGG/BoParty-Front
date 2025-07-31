@@ -1,0 +1,62 @@
+import {HttpClient, HttpErrorResponse} from "@angular/common/http";
+import {MinOrder} from "../models/Orders/MinOrder";
+import {catchError, Observable, throwError} from "rxjs";
+import {Injectable} from "@angular/core";
+import {ExceptionMessage} from "../models/Exceptions/ExceptionMessage";
+import {Position} from "../models/Positions/Position";
+import {Category} from "../models/Positions/Category";
+import {Ingredient} from "../models/Positions/Ingredient";
+import {RenameResp} from "../models/Positions/DTOs/RenameResp";
+
+@Injectable({providedIn:"root"})
+export class HttpService{
+
+  private baseUrl:string = "http://localhost:8080/"
+
+  constructor(private clinet:HttpClient) {
+  }
+
+  getAllOrders():Observable<MinOrder[] | ExceptionMessage>{
+    return this.clinet.get<MinOrder[] | ExceptionMessage>(this.baseUrl + "orders/get");
+  }
+
+  getAllPositions() {
+    return this.clinet.get<Position[] | ExceptionMessage>(this.baseUrl + "positions/get");
+  }
+
+  getAllCategories() {
+    return this.clinet.get<Category[] | ExceptionMessage>(this.baseUrl + "positions/categories/get");
+  }
+
+  getAllIngredients() {
+    return this.clinet.get<Ingredient[] | ExceptionMessage>(this.baseUrl + "ingredients/get");
+  }
+
+  getAllIngredientCategories(){
+    return this.clinet.get<Category[] | ExceptionMessage>(this.baseUrl + "ingredients/categories/get");
+  }
+
+  renameIngCategory(id: number, newName: string) {
+    return this.clinet.post<RenameResp | ExceptionMessage>(this.baseUrl + "ingredients/categories/rename",{id:id,name:newName});
+  }
+
+  renameIngredient(id: number, newName: string) {
+    return this.clinet.post<RenameResp | ExceptionMessage>(this.baseUrl + "ingredients/rename",{id:id,name:newName});
+  }
+
+  addIngCategory(name: string) {
+    return this.clinet.post<Category | ExceptionMessage>(this.baseUrl + "ingredients/categories/add", {name:name});
+  }
+
+  addIngredient(name: String, categoryId: number, userId:number) {
+    return this.clinet.post<Ingredient | ExceptionMessage>(this.baseUrl + "ingredients/add", {name:name,categoryId:categoryId, userId:userId});
+  }
+
+  removeCategory(id: number) {
+    return this.clinet.delete<boolean | ExceptionMessage>(this.baseUrl + "ingredients/categories/remove?categoryId="+id);
+  }
+
+  removeIngredient(id: number) {
+    return this.clinet.delete<boolean | ExceptionMessage>(this.baseUrl + "ingredients/remove?id="+id);
+  }
+}

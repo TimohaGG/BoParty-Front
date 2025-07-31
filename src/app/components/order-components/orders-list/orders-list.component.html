@@ -1,0 +1,32 @@
+
+
+<h3 class="text-center">Замовлення</h3>
+
+
+@if(orders().length ==0 && !loadingFailure){
+  <mat-spinner color="accent"></mat-spinner>
+}
+@if(loadingFailure){
+  <h5 class="text-center mt-3">Здається тут пусто :(</h5>
+}
+@else{
+  <div class="orders-list d-flex flex-column justify-content-center align-items-center mt-3">
+    @if(orders().length>0){
+      @for (item of orders();track $index){
+        <app-orders-list-item [order]="item"></app-orders-list-item>
+      }
+    }
+  </div>
+
+  <button [matMenuTriggerFor]="menu" mat-fab class="menu-button">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+
+
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item>Нове замовлення</button>
+    <button mat-menu-item>Об`єднати</button>
+  </mat-menu>
+
+
+}

@@ -1,0 +1,121 @@
+<h2 class="text-center">Інгредієнти</h2>
+@if(ingredients().length!=0){
+  <div class="ingredients-list d-flex flex-column justify-content-center align-items-center">
+
+
+
+    <mat-tree #tree [dataSource]="treeData" [childrenAccessor]="childrenAccessor">
+      <mat-tree-node *matTreeNodeDef="let node">
+        <button mat-icon-button disabled style="visibility: collapse"></button>
+        @if (node.isParent){
+          <input
+            class="disabled"
+            [value]="node.name" id="{{node.id}}"
+            (change)="renameCategory(node.id, $event)"
+            (focus)="savePrev($event)"
+            (click)="stopPropagination($event)"
+
+            readonly/>
+          <button mat-button (click)="toggleEdit($event, node.id)">
+            <mat-icon>
+              edit
+            </mat-icon>
+          </button>
+          <button mat-button (click)="removeCategory(node.id,node.name, $event)">
+            <mat-icon>
+              delete
+            </mat-icon>
+          </button>
+        }
+        @else{
+          <input
+            class="disabled has-children"
+            [value]="node.name" id="{{node.id}}"
+            (change)="renameIngredient(node.id, $event)"
+            (focus)="savePrev($event)"
+            (click)="stopPropagination($event)"
+
+            readonly/>
+          <button mat-flat-button color="accent"  (click)="toggleEdit($event, node.id)">
+            <mat-icon>
+              edit
+            </mat-icon>
+          </button>
+          <button mat-button (click)="removeIngredient(node.id,node.name, $event)">
+            <mat-icon>
+              remove
+            </mat-icon>
+          </button>
+        }
+      </mat-tree-node>
+      <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodeToggle matTreeNodePadding
+                     [cdkTreeNodeTypeaheadLabel]="node.name">
+        <button mat-icon-button matTreeNodeToggle
+                [attr.aria-label]="'Toggle ' + node.name" >
+          <mat-icon class="mat-icon-rtl-mirror">
+            {{tree.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+          </mat-icon>
+        </button>
+        @if (node.isParent){
+          <input
+            class="disabled"
+            [value]="node.name" id="{{node.id}}"
+                  (change)="renameCategory(node.id, $event)"
+                  (focus)="savePrev($event)"
+                  (click)="stopPropagination($event)"
+
+                 readonly/>
+          <button mat-button (click)="toggleEdit($event, node.id)">
+            <mat-icon>
+              edit
+            </mat-icon>
+          </button>
+          <button mat-button (click)="removeCategory(node.id,node.name,$event)">
+            <mat-icon>
+              delete
+            </mat-icon>
+          </button>
+        }
+        @else{
+          <input
+            class="disabled"
+            [value]="node.name" id="{{node.id}}"
+            (change)="renameIngredient(node.id, $event)"
+            (focus)="savePrev($event)"
+            (click)="stopPropagination($event)"
+
+            readonly />
+          <button mat-flat-button (click)="toggleEdit($event, node.id)">
+            <mat-icon>
+              edit
+            </mat-icon>
+          </button>
+          <button mat-button (click)="removeIngredient(node.id,node.name, $event)">
+            <mat-icon>
+              delete
+            </mat-icon>
+          </button>
+        }
+      </mat-tree-node>
+    </mat-tree>
+  </div>
+
+
+  <button mat-fab class="menu-button" [matMenuTriggerFor]="menu" >
+    <mat-icon>more_vert</mat-icon>
+  </button>
+
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="openDialogueCategory()">Нова категорія</button>
+    <button mat-menu-item (click)="openDialogueIngredient()">Новий інгридієнт</button>
+  </mat-menu>
+
+}
+@else{
+  <mat-spinner color="accent"></mat-spinner>
+}
+
+
+
+
+

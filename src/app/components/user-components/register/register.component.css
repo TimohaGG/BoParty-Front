@@ -1,0 +1,14 @@
+.logo{
+  background-image: url('/assets/img/logo.png');
+  height: 100px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.login-bg{
+  background-color: var(--primary-lighter );
+  border-radius: 20px;
+  margin-top: auto;
+  margin-bottom: auto;
+}
