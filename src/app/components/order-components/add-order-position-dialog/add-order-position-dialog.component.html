@@ -1,0 +1,10 @@
+<mat-dialog-content>
+  <app-positions-list
+    [selectable]="true"
+    [selectedPositions]="selectedPositions()"
+    (onSelectPosition)="displaySelected($event)"
+    (onDeselectPosition)="deselect($event)"
+  ></app-positions-list>
+
+
+</mat-dialog-content>

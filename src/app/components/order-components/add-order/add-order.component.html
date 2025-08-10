@@ -1,0 +1,107 @@
+<div class="row align-items-center flex-column" style="position: relative;">
+  <div class="col-sm-12 col-md-8 col-lg-8">
+    <h3 class="text-center mb-3">Замовлення</h3>
+    <form class="row" [formGroup]="ordersForm">
+      <div class="col-sm-12 col-lg-6 col-md-6 d-flex flex-column">
+        <mat-form-field>
+          <mat-label>Замовник</mat-label>
+          <input type="text" matInput formControlName="client"/>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>К-сть гостей</mat-label>
+          <input type="text" matInput formControlName="guestsAmount"/>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Формат</mat-label>
+          <input type="text" matInput formControlName="format"/>
+        </mat-form-field>
+      </div>
+
+      <div class="col-sm-12 col-lg-6 col-md-6 d-flex flex-column">
+        <mat-form-field>
+          <mat-label>Дата</mat-label>
+          <input type="date" matInput formControlName="date"/>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Тривалість</mat-label>
+          <input type="text" matInput formControlName="duration"/>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Телефон менеджера</mat-label>
+          <input type="text" matInput formControlName="phoneNumber"/>
+        </mat-form-field>
+      </div>
+    </form>
+
+    <button mat-flat-button (click)="openPositionsDialog()" class="w-100 mb-2">
+      Позиції
+    </button>
+    <mat-table #table [dataSource]="posAmounts" class="mat-elevation-z8" cdkDropList (cdkDropListDropped)="drop($event)"
+               cdkDropListData="dataSource">
+
+
+      <ng-container matColumnDef="action" style="display: none">
+        <mat-header-cell *matHeaderCellDef style="display: none"></mat-header-cell>
+        <mat-cell *matCellDef="let element" class="btn-out">
+          <mat-icon>add</mat-icon>
+        </mat-cell>
+      </ng-container>
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.position.name}} </mat-cell>
+      </ng-container>
+
+      <!-- Weight Column -->
+      <ng-container matColumnDef="image">
+        <mat-header-cell *matHeaderCellDef> Image </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <img src="data:image;base64,{{element.position.image}}" style="width: -webkit-fill-available"/>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="weight" >
+        <mat-header-cell *matHeaderCellDef class="sm-hide"> Weight </mat-header-cell>
+        <mat-cell *matCellDef="let element" class="sm-hide"> {{element.position.weight}} </mat-cell>
+      </ng-container>
+
+      <!-- Quantity Column -->
+      <ng-container matColumnDef="price">
+        <mat-header-cell *matHeaderCellDef> Price </mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.position.price}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="amount">
+        <mat-header-cell *matHeaderCellDef> Amount </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <mat-form-field>
+            <input matInput [value]="element.amount" class="text-center" (change)="changeAmount(element.position.id, $event)"/>
+          </mat-form-field>
+
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="action-delete" style="display: none">
+        <mat-header-cell *matHeaderCellDef style="display: none"></mat-header-cell>
+        <mat-cell *matCellDef="let element" class="btn-out right">
+          <button (click)="removeFromList(element.position.id)">
+            <mat-icon>cancel_presentation</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;" cdkDrag [cdkDragData]="row" class="example-box">
+        <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+      </mat-row>
+    </mat-table>
+
+
+  </div>
+
+  <button mat-fab class="menu-button" (click)="save()">
+    <mat-icon>save</mat-icon>
+  </button>
+
+</div>
