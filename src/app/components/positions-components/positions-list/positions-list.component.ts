@@ -1,4 +1,16 @@
-import {Component, computed, inject, OnInit, signal, Signal, WritableSignal} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  computed,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+  signal,
+  Signal,
+  WritableSignal
+} from '@angular/core';
 import {PositionsListItemComponent} from "../positions-list-item/positions-list-item.component";
 import {PositionsService} from "../../../_services/positions.service";
 import {Position} from "../../../models/Positions/Position";
@@ -34,12 +46,19 @@ import {AddPositionDialogComponent} from "../add-position-dialog/add-position-di
   templateUrl: './positions-list.component.html',
   styleUrl: './positions-list.component.css'
 })
-export class PositionsListComponent implements OnInit {
+export class PositionsListComponent implements OnInit, AfterViewInit {
+
+  @Input() selectable:boolean = false;
+  @Output() onSelectPosition = new EventEmitter<Position[]>();
+  @Output() onDeselectPosition = new EventEmitter<number>();
+  @Input() selectedPositions: Position[] = [];
 
   readonly dialogue = inject(MatDialog);
   private store = inject(entityStorage);
   public positions:Signal<Position[]> = computed(()=>this.store.positionsEntities());
   public filteredPositions:WritableSignal<Position[] | null> = signal(null);
+
+
 
   public categories:Signal<Category[]> = computed(this.store.positionCategoriesEntities);
   public selectedCategory:FormControl = new FormControl(0);
@@ -49,7 +68,12 @@ export class PositionsListComponent implements OnInit {
 
   }
 
+  ngAfterViewInit(): void {
+        console.log("afterInit" , this.selectedPositions);
+    }
+
   ngOnInit(): void {
+    console.log("Component ngOnInit");
     if(this.positions().length==0){
       this.positionsService.getAll().subscribe(
         res=>{
@@ -93,12 +117,44 @@ export class PositionsListComponent implements OnInit {
 
   openCreateDialog() {
     let dialogRef = this.dialogue.open(AddPositionDialogComponent, {
+      data:{
+        position:null
+      },
+      panelClass:"full-screen",
 
-      panelClass:"full-screen"
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
+    dialogRef.afterClosed().subscribe((result:Position) => {
+
+      this.filterCategories();
+      console.log("Filtering");
+      // if(this.filteredPositions()){
+      //   this.filteredPositions.set([...this.filteredPositions()!,result]);
+      // }else{
+      //   this.filteredPositions.set([result]);
+      // }
+
+
     })
   }
+
+  selectPosition(position:Position){
+    this.selectedPositions.push(position);
+  }
+
+  sendSelection(){
+    this.onSelectPosition.emit(this.selectedPositions);
+  }
+
+  sendDeselection(id:number){
+    this.onDeselectPosition.emit(id)
+  }
+
+  isSelected(id:number){
+    if(this.selectedPositions)
+      return this.selectedPositions.findIndex(pos=>pos.id==id)!=-1;
+    return false;
+  }
+
+
 }

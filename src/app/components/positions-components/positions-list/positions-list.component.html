@@ -21,18 +21,35 @@
 
   <div class="positions-list d-flex flex-column justify-content-center align-items-center">
     @for (elem of filteredPositions();track $index){
-      <app-positions-list-item [position]="elem" class="w-100" ></app-positions-list-item>
+      <app-positions-list-item
+        (updateEdited)="filterCategories()"
+        (removeDeleted)="filterCategories()"
+        (onSelect)="selectPosition($event)"
+        (onDeselect)="sendDeselection($event)"
+
+        [selectable]="selectable"
+        [position]="elem"
+        [isSelected]="isSelected(elem.id)"
+        class="w-100" ></app-positions-list-item>
     }
   </div>
 
-  <button mat-fab class="menu-button" [matMenuTriggerFor]="menu" >
-    <mat-icon>more_vert</mat-icon>
-  </button>
+  @if(!selectable){
+    <button mat-fab class="menu-button" [matMenuTriggerFor]="menu" >
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>Нова категорія</button>
+      <button mat-menu-item>Новий інгридієнт</button>
+    </mat-menu>
+  }@else{
+    <button mat-fab class="menu-button" (click)="sendSelection()" >
+      <mat-icon>add</mat-icon>
+    </button>
+  }
 
-  <mat-menu #menu="matMenu">
-    <button mat-menu-item>Нова категорія</button>
-    <button mat-menu-item>Новий інгридієнт</button>
-  </mat-menu>
+
+
 
 }
 @else{

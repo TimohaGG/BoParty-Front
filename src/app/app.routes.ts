@@ -12,6 +12,7 @@ import {PositionsListComponent} from "./components/positions-components/position
 import {
   IngredientsListComponent
 } from "./components/ingredients-components/ingredients-list/ingredients-list.component";
+import {AddOrderComponent} from "./components/order-components/add-order/add-order.component";
 
 export const routes: Routes = [
   { path: 'home', component: OrdersListComponent,canActivate:[authGuard] },
@@ -20,5 +21,6 @@ export const routes: Routes = [
   { path: 'profile', component: ProfileComponent,canActivate:[authGuard] },
   {path: 'positions', component: PositionsListComponent,canActivate:[authGuard]},
   {path: 'ingredients', component: IngredientsListComponent,canActivate:[authGuard]},
+  {path: 'order/create', component: AddOrderComponent,canActivate:[authGuard]},
   { path: '', redirectTo: 'home', pathMatch: 'full' },
 ];

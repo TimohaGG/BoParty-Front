@@ -11,18 +11,35 @@
       </div>
     </div>
     <div class="col-lg-5 col-md-5 col-sm-12 position-image">
-      <div class="position-img" style="background-image: url('/assets/img/logo.png');">
+      <div class="position-img" [style.background-image]="'url(data:image/*;base64,'+position.image + ')'">
 
       </div>
     </div>
     <div class="col-3 d-lg-block d-md-block d-none align-self-center">
       <div class="d-flex justify-content-end">
-        <button mat-fab aria-label="edit button" class="control-button mr-3">
-          <mat-icon color="button-edit">edit</mat-icon>
-        </button>
-        <button mat-fab aria-label="edit button" style="background-color: var(--button-remove)">
-          <mat-icon style="color: white;">delete</mat-icon>
-        </button>
+        @if(selectable){
+          @if(isSelected){
+            <button mat-button (click)="deselectPosition()">
+              <mat-icon>
+                done_outline
+              </mat-icon>
+            </button>
+          }
+          @else{
+            <button mat-button (click)="selectPosition()">
+              <mat-icon>add_circle_outline</mat-icon>
+            </button>
+          }
+
+        }@else{
+          <button mat-fab  aria-label="edit button" class="control-button mr-3" (click)="openModal()">
+            <mat-icon color="button-edit">edit</mat-icon>
+          </button>
+          <button mat-fab aria-label="edit button" style="background-color: var(--button-remove)" (click)="openDeleteModal()">
+            <mat-icon style="color: white;">delete</mat-icon>
+          </button>
+        }
+
       </div>
     </div>
 

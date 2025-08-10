@@ -38,8 +38,9 @@
 
 
 .menu-button{
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
+  position: fixed !important;
+  bottom: 20px !important;
+  right: 20px !important;
 }
+
 

@@ -1,4 +1,4 @@
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
 import {MinOrder} from "../models/Orders/MinOrder";
 import {catchError, Observable, throwError} from "rxjs";
 import {Injectable} from "@angular/core";
@@ -7,6 +7,9 @@ import {Position} from "../models/Positions/Position";
 import {Category} from "../models/Positions/Category";
 import {Ingredient} from "../models/Positions/Ingredient";
 import {RenameResp} from "../models/Positions/DTOs/RenameResp";
+import {IngredientAmount} from "../models/Positions/IngredientAmount";
+import {Order} from "../models/Orders/Order";
+import {MinPosAmount} from "../models/Positions/MinPosAmount";
 
 @Injectable({providedIn:"root"})
 export class HttpService{
@@ -58,5 +61,21 @@ export class HttpService{
 
   removeIngredient(id: number) {
     return this.clinet.delete<boolean | ExceptionMessage>(this.baseUrl + "ingredients/remove?id="+id);
+  }
+
+  addPosition(formData:FormData) {
+    return this.clinet.post<Position | ExceptionMessage>(this.baseUrl + "positions/add",formData);
+  }
+
+  removePosition(id: number) {
+    return this.clinet.delete<number | ExceptionMessage>(this.baseUrl + "positions/remove?id="+id);
+  }
+
+  addOrder(data: any, positions:MinPosAmount[]) {
+    return this.clinet.post<Order | ExceptionMessage>(this.baseUrl + "orders/create",{
+      ...data,
+      positions: positions,
+    });
+
   }
 }

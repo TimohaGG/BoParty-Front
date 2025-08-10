@@ -1,15 +1,23 @@
 import {
+  AfterViewInit,
   Component,
   computed,
   ElementRef,
-  inject,
+  inject, Input, model,
   OnInit,
   signal,
   Signal,
   ViewChild,
   WritableSignal
 } from '@angular/core';
-import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef} from "@angular/material/dialog";
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogActions,
+  MatDialogClose,
+  MatDialogContent,
+  MatDialogRef
+} from "@angular/material/dialog";
 import {IngredientsService} from "../../../_services/ingredients.service";
 import {entityStorage} from "../../../_helpers/storage/entityStorage";
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
@@ -27,6 +35,19 @@ import {IngredientAmountComponent} from "../ingredient-amount/ingredient-amount.
 import {IngredientAmount} from "../../../models/Positions/IngredientAmount";
 import {getAllUnits, UnitType} from "../../../models/Positions/Units";
 import {MatIcon} from "@angular/material/icon";
+import {MatStep, MatStepLabel, MatStepper, MatStepperNext, MatStepperPrevious} from "@angular/material/stepper";
+import {
+  AddIngredientDialogueComponent
+} from "../../ingredients-components/add-ingredient-dialogue/add-ingredient-dialogue.component";
+import {PositionsService} from "../../../_services/positions.service";
+import {resolve} from "@angular/compiler-cli";
+import {HotToastService} from "@ngxpert/hot-toast";
+import {Position} from "../../../models/Positions/Position";
+import {
+  AddCategoryDialogueData
+} from "../../ingredients-components/add-category-dialogue/add-category-dialogue.component";
+
+
 
 @Component({
   selector: 'app-add-position-dialog',
@@ -39,33 +60,52 @@ import {MatIcon} from "@angular/material/icon";
     ReactiveFormsModule,
     MatSelect,
     MatOption,
-    MatDialogActions,
     MatButton,
-    MatSelectSearchComponent,
     MatAutocomplete,
     MatAutocompleteTrigger,
     AsyncPipe,
-    IngredientAmountComponent,
-    MatIcon
+    MatIcon,
+    MatStepper,
+    MatStep,
+    MatStepLabel,
+    MatStepperNext,
+    MatDialogClose,
+    MatStepperPrevious
   ],
   templateUrl: './add-position-dialog.component.html',
   styleUrl: './add-position-dialog.component.css'
 })
-export class AddPositionDialogComponent implements OnInit {
+
+export class AddPositionDialogComponent implements OnInit,AfterViewInit {
+
+  // @Input() editPositionModel?:Position;
+  readonly data = inject<EditPositionDialogueData>(MAT_DIALOG_DATA);
+  readonly editPositionModel = model(this.data.position);
+
+
+  public dialog = inject(MatDialog);
+  private dialogRef = inject(MatDialogRef<AddPositionDialogComponent>);
 
   private store = inject(entityStorage);
-  private dialogRef = inject(MatDialogRef<AddPositionDialogComponent>);
+
   private selectedImage:File | null = null;
   public imagePreview: string | ArrayBuffer | null = null;
-  public positionForm = new FormGroup({
+  @ViewChild("updFile") private uplFile?:ElementRef<HTMLInputElement>;
+  @ViewChild("image",{static:false}) imageRef!: ElementRef;
+
+  public positionInfoGroup = new FormGroup({
+    positionInfoCtrl: new FormControl(null),
+    id: new FormControl(0),
     name: new FormControl('', [Validators.required]),
     weight: new FormControl('', [Validators.required]),
     price: new FormControl('', [Validators.required]),
-    image: new FormControl(null, [Validators.required]),
+    image: new FormControl(null),
     category: new FormControl(0, [Validators.required]),
+  });
+  public ingredientsInfoGroup = new FormGroup({
+    ingredientsInfoCtrl: new FormControl(null),
     ingCtrl:new FormControl<string | Ingredient>(""),
   })
-
 
   public ingredients = computed(()=>this.store.ingredientsEntities());
   public filteredIngredients$:Observable<Ingredient[]> = of(this.ingredients());
@@ -74,32 +114,62 @@ export class AddPositionDialogComponent implements OnInit {
 
   public categories = computed(()=>this.store.positionCategoriesEntities());
 
-  @ViewChild("updFile") private uplFile?:ElementRef<HTMLInputElement>;
+  constructor(
+    private ingService:IngredientsService,
+    private posService:PositionsService,
+    private toast:HotToastService)
+  {}
 
-  constructor(private ingService:IngredientsService) { }
-
-  ngOnInit(): void {
-    if(this.ingredients().length == 0){
-      this.ingService.getAll().subscribe(res=>{
-        this.filteredIngredients$ = of(this.ingredients());
-      });
+  ngAfterViewInit(): void {
+    this.initEditModel();
     }
 
-    this.filteredIngredients$ = this.positionForm.controls.ingCtrl.valueChanges.pipe(
-      startWith(''),
-      map(value => typeof value === 'string' ? value : value?.name),
-      map(name => name ? this._filter(name) : this.ingredients().slice())
-    );
+  ngOnInit(): void {
+    const loadIngredients$:Observable<Ingredient[]> = this.ingredients().length === 0
+      ? this.ingService.getAll()
+      : of(null);
+
+    this.initFilteredIngredients(loadIngredients$);
+
+
   }
 
-  public onSubmit(event:any){
-    console.log(this.positionForm.value);
-    console.log(event.targer.files[0]);
+  private initEditModel(){
+    if(this.editPositionModel()){
+      this.positionInfoGroup.controls.id.setValue(this.editPositionModel().id);
+      this.positionInfoGroup.controls.name.setValue(this.editPositionModel().name);
+      this.positionInfoGroup.controls.category.setValue(this.editPositionModel().category.id);
+      this.positionInfoGroup.controls.weight.setValue(String(this.editPositionModel().weight));
+      this.positionInfoGroup.controls.price.setValue(String(this.editPositionModel().price));
+      this.selectedIngredients = this.editPositionModel().ingredients;
+      if(this.imageRef && this.editPositionModel().image!="")
+        this.imageRef.nativeElement.src="data:image/*;base64,"+this.editPositionModel().image;
+    }
   }
 
-  public onClose(){
-    this.dialogRef.close();
+
+  // Mat-autocomplete block
+
+  private initFilteredIngredients(loadIngredients$:Observable<Ingredient[]>) {
+    loadIngredients$.subscribe(() => {
+      this.filteredIngredients$ = this.ingredientsInfoGroup.controls.ingCtrl.valueChanges.pipe(
+        startWith(''),
+        map(value => typeof value === 'string' ? value : value?.name ?? ''),
+        map(name => name ? this._filter(name) : this.ingredients().slice())
+      );
+    });
   }
+
+  private _filter(name: string): Ingredient[] {
+    const filterValue = name.toLowerCase();
+    return this.ingredients().filter(ing => ing.name.toLowerCase().includes(filterValue));
+  }
+
+  displayFn(ingredient: Ingredient): string {
+    return ingredient?.name ?? '';
+  }
+
+  //File upload bock
 
   onFileUpload(event:any) {
     this.selectedImage = event.target.files[0];
@@ -118,6 +188,8 @@ export class AddPositionDialogComponent implements OnInit {
     this.uplFile?.nativeElement.click();
   }
 
+  //Ingredients selection blok
+
   onIngSelect(event:any){
     const item = event.option.value;
     if(!item){
@@ -131,17 +203,8 @@ export class AddPositionDialogComponent implements OnInit {
       }
       this.selectedIngredients.push(ingAmount);
     }
-    this.positionForm.controls.ingCtrl.setValue(null);
+    this.ingredientsInfoGroup.controls.ingCtrl.setValue(null);
 
-  }
-
-  private _filter(name: string): Ingredient[] {
-    const filterValue = name.toLowerCase();
-    return this.ingredients().filter(ing => ing.name.toLowerCase().includes(filterValue));
-  }
-
-  displayFn(ingredient: Ingredient): string {
-    return ingredient?.name ?? '';
   }
 
   patchAmount(id:number, amount:number | Event, event:Event|null = null){
@@ -149,8 +212,6 @@ export class AddPositionDialogComponent implements OnInit {
       event.stopPropagation();
       event.preventDefault();
     }
-
-
     let elemId = this.selectedIngredients.findIndex(x=>x.ingredient.id == id);
     if(elemId==-1){
       return;
@@ -165,6 +226,71 @@ export class AddPositionDialogComponent implements OnInit {
     this.selectedIngredients.at(elemId)!.amount = ingAmount;
   }
 
-  protected readonly UnitType = UnitType;
   protected readonly getAllUnits = getAllUnits;
+
+
+  patchUnit(id:number, event: any) {
+    let ingIndex = this.selectedIngredients.findIndex(x=>x.ingredient.id == id);
+    if(ingIndex==-1) return;
+    const unit = event.value;
+
+    if(!unit) return;
+
+    this.selectedIngredients.at(ingIndex)!.unit = unit;
+  }
+
+  openIngModal() {
+    const addDialog = this.dialog.open(AddIngredientDialogueComponent,{
+      data:{
+        name:""
+      }
+    });
+
+    addDialog.afterClosed().subscribe({
+      next: (res:Ingredient)=> {
+        this.initFilteredIngredients(of(this.ingredients()));
+      }
+    })
+  }
+
+  //submit block
+
+  public onSubmit(event:any){
+    if(!this.positionInfoGroup.valid || !this.ingredientsInfoGroup.valid){
+      return;
+    }
+
+    console.log(this.selectedImage);
+
+    let formData:FormData = new FormData();
+    if(this.selectedImage)
+      formData.set("image", this.selectedImage,this.selectedImage.name);
+
+
+    formData.set("position", JSON.stringify({
+      id:this.positionInfoGroup.get("id")!.value!,
+      name:this.positionInfoGroup.get("name")!.value!,
+      weight:this.positionInfoGroup.get("weight")!.value!,
+      price:this.positionInfoGroup.get("price")!.value!,
+      categoryId:this.positionInfoGroup.get("category")!.value!,
+      ingredients:this.selectedIngredients,
+    }));
+
+    this.posService.addPosition(formData).subscribe({
+      next:data=>{
+        this.toast.show("Додано!",{duration:2000,position:"bottom-center",autoClose:true});
+        console.log("data",data);
+        this.dialogRef.close(data);
+      },
+      error:error=>{
+        this.toast.show("Помилка!",{duration:2000,position:"bottom-center",autoClose:true});
+      }
+    })
+    // console.log(this.positionForm.value);
+    // console.log(event.targer.files[0]);
+  }
+}
+
+export interface EditPositionDialogueData {
+  position:Position;
 }

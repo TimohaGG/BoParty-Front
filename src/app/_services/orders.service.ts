@@ -6,6 +6,8 @@ import {ExceptionMessage, isMessage} from "../models/Exceptions/ExceptionMessage
 import {catchError, map, Observable, of, pipe, Subscription, throwError} from "rxjs";
 import {HotToastService} from "@ngxpert/hot-toast";
 import {HttpErrorResponse} from "@angular/common/http";
+import {Order} from "../models/Orders/Order";
+import {MinPosAmount} from "../models/Positions/MinPosAmount";
 
 @Injectable({
   providedIn:"root"
@@ -34,4 +36,16 @@ export class OrdersService{
   }
 
 
+  saveOrder(data:any, positions:MinPosAmount[]):Observable<Order | ExceptionMessage> {
+    console.log(data);
+    return this.http.addOrder(data, positions).pipe(
+      map(res=>{
+        return res as Order;
+      }),
+      catchError((error:HttpErrorResponse)=>{
+        let msg = new ExceptionMessage(error.error.message, error.error.status);
+        return of(msg);
+      })
+    )
+  }
 }

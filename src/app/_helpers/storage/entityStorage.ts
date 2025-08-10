@@ -74,11 +74,17 @@ export const entityStorage = signalStore(
     addIngredient(ing:Ingredient){
       patchState(store, addEntity(ing,ingredientConfig));
     },
+    addPosition(pos:Position){
+      patchState(store, setEntity(pos,positionConfig));
+    },
     removeIngCategory(categoryId:number){
       patchState(store,removeEntity(categoryId,ingCategoryConfig));
     },
     removeIngredient(ingId:number){
       patchState(store,removeEntity(ingId,ingredientConfig));
+    },
+    removePosition(id:number){
+      patchState(store,removeEntity(id,positionConfig));
     }
   }))
 );

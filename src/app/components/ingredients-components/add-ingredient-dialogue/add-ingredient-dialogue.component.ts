@@ -1,4 +1,4 @@
-import {Component, inject, model} from '@angular/core';
+import {Component, computed, inject, model, OnInit} from '@angular/core';
 import {MatButton} from "@angular/material/button";
 import {
   MAT_DIALOG_DATA,
@@ -15,6 +15,7 @@ import {HotToastService} from "@ngxpert/hot-toast";
 import {Category} from "../../../models/Positions/Category";
 import {MatOption} from "@angular/material/core";
 import {MatSelect} from "@angular/material/select";
+import {entityStorage} from "../../../_helpers/storage/entityStorage";
 
 @Component({
   selector: 'app-add-ingredient-dialogue',
@@ -32,26 +33,33 @@ import {MatSelect} from "@angular/material/select";
     MatOption,
   ],
   templateUrl: './add-ingredient-dialogue.component.html',
-  styleUrl: './add-ingredient-dialogue.component.css'
+  styleUrl: './add-ingredient-dialogue.component.css',
+  standalone: true
 })
-export class AddIngredientDialogueComponent {
+export class AddIngredientDialogueComponent implements OnInit {
 
+  private store = inject(entityStorage);
   readonly dialogue = inject(MatDialogRef<AddIngredientDialogueComponent>);
   readonly data = inject<AddIngredientDialogueData>(MAT_DIALOG_DATA);
   readonly name = model(this.data.name);
-  readonly categories = model(this.data.categories);
+  readonly categories = computed(()=>this.store.ingCategoriesEntities());
   readonly selected = model(this.data.selectedCategory);
 
-  constructor(private ingService:IngredientsService, private toast:HotToastService,) {
+  constructor(private ingService:IngredientsService,
+              private toast:HotToastService,) {
   }
+
+  ngOnInit(): void {
+      if(this.categories().length == 0){
+        this.ingService.getAllCategories().subscribe();
+      }
+    }
 
   onClose(){
     this.dialogue.close();
   }
 
   onSubmit(){
-
-    console.log(this.selected());
 
     this.ingService.addIngredient(this.name(),this.selected()).subscribe({
       next: res=>{
@@ -71,6 +79,5 @@ export class AddIngredientDialogueComponent {
 
 export interface AddIngredientDialogueData {
   name: string;
-  categories:Category[];
   selectedCategory:number;
 }

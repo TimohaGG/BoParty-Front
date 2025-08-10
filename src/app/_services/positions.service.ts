@@ -5,6 +5,7 @@ import {HttpService} from "./httpService";
 import {catchError, map, Observable, of} from "rxjs";
 import {Position} from "../models/Positions/Position";
 import {ExceptionMessage, isMessage} from "../models/Exceptions/ExceptionMessage";
+import {IngredientAmount} from "../models/Positions/IngredientAmount";
 
 @Injectable({
   providedIn: 'root'
@@ -30,5 +31,31 @@ export class PositionsService {
         return of(msg);
       })
     );
+  }
+
+  public addPosition(formData:FormData):Observable<Position | ExceptionMessage>{
+    return this.http.addPosition(formData).pipe(
+      map((response:Position | ExceptionMessage)=>{
+        this.store.addPosition(response as Position);
+        return response as Position;
+      }),
+      catchError((error:HttpErrorResponse)=>{
+        let msg = new ExceptionMessage(error.error.message, error.error.status);
+        return of(msg);
+      })
+    )
+  }
+
+  removePosition(id: number) {
+    return this.http.removePosition(id).pipe(
+      map((response:number | ExceptionMessage) => {
+        this.store.removePosition(id);
+        return response as number;
+      }),
+      catchError((error:HttpErrorResponse)=>{
+        let msg = new ExceptionMessage(error.error.message, error.error.status);
+        return of(msg);
+      })
+    )
   }
 }
