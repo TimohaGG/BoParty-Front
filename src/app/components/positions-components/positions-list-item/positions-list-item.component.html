@@ -44,20 +44,36 @@
     </div>
 
 
-    <button mat-icon-button [matMenuTriggerFor]="posMenu" class="position-menu-button d-block d-lg-none d-md-none">
-      <mat-icon>more_vert</mat-icon>
-    </button>
-    <mat-menu #posMenu="matMenu">
-      <button mat-menu-item>
+    @if(selectable){
+      @if(isSelected){
+        <button mat-button (click)="deselectPosition()" class="position-menu-button d-block d-lg-none d-md-none">
+          <mat-icon>
+            done_outline
+          </mat-icon>
+        </button>
+      }
+      @else{
+        <button mat-button (click)="selectPosition()" class="position-menu-button d-block d-lg-none d-md-none">
+          <mat-icon>add_circle_outline</mat-icon>
+        </button>
+      }
+    }
+    @else{
+      <button mat-icon-button [matMenuTriggerFor]="posMenu" class="position-menu-button d-block d-lg-none d-md-none">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #posMenu="matMenu">
+        <button mat-menu-item>
+          <mat-icon color="button-edit">edit</mat-icon>
+          <span>Редагувати</span>
+        </button>
+        <button mat-menu-item>
+          <mat-icon color="button-edit">delete</mat-icon>
+          <span>Видалити</span>
+        </button>
+      </mat-menu>
+    }
 
-        <mat-icon color="button-edit">edit</mat-icon>
-        <span>Редагувати</span>
-      </button>
-      <button mat-menu-item>
-        <mat-icon color="button-edit">delete</mat-icon>
-        <span>Видалити</span>
-      </button>
-    </mat-menu>
   </div>
 
 }

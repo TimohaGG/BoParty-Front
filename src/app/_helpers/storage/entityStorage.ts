@@ -4,6 +4,7 @@ import {MinOrder} from "../../models/Orders/MinOrder";
 import {Position} from "../../models/Positions/Position";
 import {Category} from "../../models/Positions/Category";
 import {Ingredient} from "../../models/Positions/Ingredient";
+import {Order} from "../../models/Orders/Order";
 
 
 
@@ -16,6 +17,13 @@ const ordersMinConfig = entityConfig({
   collection:"minOrders",
   selectId:(order)=>order.id
 });
+
+const orderConfig = entityConfig({
+  entity:type<Order>(),
+  collection:"orders",
+  selectId:(order=>order.id)
+})
+
 
 const positionConfig = entityConfig({
   entity:type<Position>(),
@@ -45,6 +53,7 @@ export const entityStorage = signalStore(
   {providedIn:"root"},
   withState(initStatet),
   withEntities(ordersMinConfig),
+  withEntities(orderConfig),
   withEntities(positionConfig),
   withEntities(positionCategoryConfig),
   withEntities(ingredientConfig),
@@ -55,6 +64,9 @@ export const entityStorage = signalStore(
       patchState(store,{loading:true});
       patchState(store,setAllEntities(orders, ordersMinConfig))
       patchState(store,{loading:false});
+    },
+    setAllOrders(order:Order[]){
+      patchState(store, setAllEntities(order,orderConfig));
     },
     setAllPositions(positions:Position[]){
       patchState(store, setAllEntities(positions, positionConfig));
@@ -68,6 +80,9 @@ export const entityStorage = signalStore(
     setAllIngCategories(categories:Category[]){
       patchState(store,setAllEntities(categories,ingCategoryConfig));
     },
+    setOrder(order:Order){
+      patchState(store,setEntity(order,orderConfig));
+    },
     addIngCategory(category:Category){
       patchState(store, addEntity(category,ingCategoryConfig));
     },
@@ -76,6 +91,9 @@ export const entityStorage = signalStore(
     },
     addPosition(pos:Position){
       patchState(store, setEntity(pos,positionConfig));
+    },
+    addOrder(order:Order){
+      patchState(store,setEntity(order,orderConfig));
     },
     removeIngCategory(categoryId:number){
       patchState(store,removeEntity(categoryId,ingCategoryConfig));

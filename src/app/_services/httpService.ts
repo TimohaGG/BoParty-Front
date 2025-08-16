@@ -19,8 +19,8 @@ export class HttpService{
   constructor(private clinet:HttpClient) {
   }
 
-  getAllOrders():Observable<MinOrder[] | ExceptionMessage>{
-    return this.clinet.get<MinOrder[] | ExceptionMessage>(this.baseUrl + "orders/get");
+  getAllOrders():Observable<Order[] | ExceptionMessage>{
+    return this.clinet.get<Order[] | ExceptionMessage>(this.baseUrl + "orders/get");
   }
 
   getAllPositions() {
@@ -77,5 +77,17 @@ export class HttpService{
       positions: positions,
     });
 
+  }
+
+  getOrderById(id:number) {
+    return this.clinet.get<Order | ExceptionMessage>(this.baseUrl + `orders/get/${id}`);
+  }
+
+  editOrder(id: number, value: any, items: MinPosAmount[]) {
+    return this.clinet.post<Order | ExceptionMessage>(this.baseUrl + "orders/edit",{
+      id:id,
+      ...value,
+      positions:items
+    });
   }
 }

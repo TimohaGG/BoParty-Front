@@ -5,11 +5,11 @@
       <h3>{{order.date | date}}</h3>
     </div>
     <div class="col-6 text-center price">
-      {{order.sum}} грн
+      {{order.totalPrice}} грн
     </div>
     <div class="col-12">
       <div class="d-flex justify-content-center control-buttons">
-        <button mat-fab aria-label="edit button" class="control-button">
+        <button mat-fab aria-label="edit button" class="control-button" routerLinkActive [routerLink]="[`/order/create`]" [queryParams]="{orderId:`${order.id}`}">
           <mat-icon color="button-edit">edit</mat-icon>
         </button>
         <button mat-fab aria-label="edit button" style="background-color:var(--button-shopping)">

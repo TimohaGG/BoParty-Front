@@ -11,6 +11,7 @@ import {HotToastService} from "@ngxpert/hot-toast";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {Category} from "../../../models/Positions/Category";
 import {PositionsCategoryService} from "../../../_services/positions-category.service";
+import {Order} from "../../../models/Orders/Order";
 
 @Component({
   selector: 'app-orders-list',
@@ -29,7 +30,7 @@ import {PositionsCategoryService} from "../../../_services/positions-category.se
 export class OrdersListComponent implements OnInit{
 
   private store = inject(entityStorage);
-  public orders:Signal<MinOrder[]> = computed(this.store.minOrdersEntities);
+  public orders:Signal<Order[]> = computed(this.store.ordersEntities);
 
   public loading:Signal<boolean> = computed(this.store.loading);
 
@@ -44,7 +45,6 @@ export class OrdersListComponent implements OnInit{
 
 
   ngOnInit(): void {
-
     if(this.orders().length == 0){
       this.orderService.getAll().subscribe({
           error: error=>{

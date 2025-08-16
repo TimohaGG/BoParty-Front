@@ -19,14 +19,13 @@ export class OrdersService{
   constructor(private http:HttpService, private toast:HotToastService) {
   }
 
-  public getAll():Observable<MinOrder[] | ExceptionMessage> {
+  public getAll():Observable<Order[] | ExceptionMessage> {
     return this.http.getAllOrders().pipe(
       map(res=>{
         if(!isMessage(res)){
-          this.store.setAllMinOrders(res as MinOrder[]);
+          this.store.setAllOrders(res as Order[]);
         }
-        return res as MinOrder[];
-
+        return res as Order[];
       }),
       catchError((error:HttpErrorResponse)=>{
         let msg = new ExceptionMessage(error.error.message, error.error.status);
@@ -40,12 +39,48 @@ export class OrdersService{
     console.log(data);
     return this.http.addOrder(data, positions).pipe(
       map(res=>{
+        this.store.setOrder(res as Order);
         return res as Order;
       }),
       catchError((error:HttpErrorResponse)=>{
-        let msg = new ExceptionMessage(error.error.message, error.error.status);
-        return of(msg);
+        throw new Error(error.error.message);
       })
     )
+  }
+
+  getById(editOrderid: number) {
+    let order = this.store.ordersEntities().findIndex(order=>order.id==editOrderid);
+    if(order!=-1) {
+      return of(this.store.ordersEntities().at(order)!);
+    }
+    else{
+      console.log("sending request ")
+      return this.http.getOrderById(editOrderid).pipe(
+        map(res=>{
+          this.store.addOrder(res as Order);
+          console.log("Got data",res);
+          return res as Order;
+        }),
+        catchError((error:HttpErrorResponse)=>{
+          console.log(error);
+          let msg = new ExceptionMessage(error.error.message, error.error.status);
+          return of(msg);
+        })
+      );
+
+    }
+  }
+
+  editOrder(id:number, value:any, items: MinPosAmount[]) {
+    return this.http.editOrder(id, value,items).pipe(
+      map(res=>{
+        let order = res as Order;
+        this.store.setOrder(order);
+        return order;
+      }),
+      catchError((error:HttpErrorResponse)=>{
+        throw new Error(error.error.message);
+      })
+    );
   }
 }
