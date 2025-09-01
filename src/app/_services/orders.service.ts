@@ -8,6 +8,8 @@ import {HotToastService} from "@ngxpert/hot-toast";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Order} from "../models/Orders/Order";
 import {MinPosAmount} from "../models/Positions/MinPosAmount";
+import {CommonOrderInfo} from "../models/Orders/CommonOrderInfo";
+import {AdditionalOrderData} from "../models/Orders/AdditionalOrderData";
 
 @Injectable({
   providedIn:"root"
@@ -34,10 +36,23 @@ export class OrdersService{
     );
   }
 
+  public getAllMin(){
+    return this.http.getAllMinOrders().pipe(
+      map(res=>{
+        if(!isMessage(res)){
+          this.store.setAllMinOrders(res as MinOrder[]);
+        }
+      }),
+      catchError((error:HttpErrorResponse)=>{
+        throw new Error(error.error.message);
+      })
+    )
+  }
 
-  saveOrder(data:any, positions:MinPosAmount[]):Observable<Order | ExceptionMessage> {
+
+  saveOrder(data:any, positions:MinPosAmount[], additionalData:AdditionalOrderData[]):Observable<Order | ExceptionMessage> {
     console.log(data);
-    return this.http.addOrder(data, positions).pipe(
+    return this.http.addOrder(data, positions,additionalData).pipe(
       map(res=>{
         this.store.setOrder(res as Order);
         return res as Order;
@@ -82,5 +97,46 @@ export class OrdersService{
         throw new Error(error.error.message);
       })
     );
+  }
+
+  saveCommonInfo(res: any) {
+    return this.http.addCommonOrderInfo(res).pipe(
+      map(res=>{
+        let info = res as CommonOrderInfo;
+        this.store.setCommonData(res as CommonOrderInfo);
+        return info;
+      }),
+      catchError((error:HttpErrorResponse)=>{
+        throw new Error(error.error.message());
+      })
+
+    )
+  }
+
+  getAllCommonData() {
+    return this.http.addAllCommonInfo().pipe(
+      map(res=>{
+        if(!isMessage(res)){
+          this.store.setAllCommonData(res as CommonOrderInfo[]);
+        }
+      }),
+      catchError((error:HttpErrorResponse)=>{
+        throw new Error(error.error.message);
+      })
+    );
+  }
+
+  deleteOrder(id: number) {
+    return this.http.deleteOrder(id).pipe(
+      map(res=>{
+        if(!isMessage(res)){
+          this.store.removeOrder(res as number);
+        }
+      }),
+      catchError((err:HttpErrorResponse)=>{
+        throw new Error(err.error.message);
+      })
+    );
+
   }
 }

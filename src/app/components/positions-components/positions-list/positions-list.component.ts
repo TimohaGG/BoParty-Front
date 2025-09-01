@@ -27,6 +27,7 @@ import {MatIcon} from "@angular/material/icon";
 import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
 import {MatDialog} from "@angular/material/dialog";
 import {AddPositionDialogComponent} from "../add-position-dialog/add-position-dialog.component";
+import {StorageService} from "../../../_services/storage.service";
 
 @Component({
   selector: 'app-positions-list',
@@ -61,10 +62,15 @@ export class PositionsListComponent implements OnInit, AfterViewInit {
 
 
   public categories:Signal<Category[]> = computed(this.store.positionCategoriesEntities);
+  get userCategories():Category[]{
+    return this.categories().filter(x=>x.userId==this.userStorate.getUser().id);
+  }
   public selectedCategory:FormControl = new FormControl(0);
   constructor(private positionsService:PositionsService,
               private toast:HotToastService,
-              private categoriesService:PositionsCategoryService) {
+              private categoriesService:PositionsCategoryService,
+              private userStorate:StorageService) {
+
 
   }
 
@@ -83,9 +89,13 @@ export class PositionsListComponent implements OnInit, AfterViewInit {
           }
           else{
             this.filterCategories();
+
           }
         }
       )
+      for (let i = 0; i < 10; i++) {
+        console.log(this.categories()[i]);
+      }
     }
     else{
       console.log("Positions are in the vault", this.positions().length);
@@ -121,7 +131,6 @@ export class PositionsListComponent implements OnInit, AfterViewInit {
         position:null
       },
       panelClass:"full-screen",
-
     });
 
     dialogRef.afterClosed().subscribe((result:Position) => {

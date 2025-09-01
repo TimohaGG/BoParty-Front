@@ -6,6 +6,8 @@
     <mat-stepper #stepper [linear]="false">
       <mat-step [stepControl]="positionInfoGroup">
         <form [formGroup]="positionInfoGroup" enctype="multipart/form-data">
+
+
           <ng-template matStepLabel>Позиція</ng-template>
           <div class="row justify-content-center mt-4">
             <div class="col-lg-7 col-md-7 col-sm-12">
@@ -18,9 +20,13 @@
                 </mat-form-field>
 
 
-                <input type="file" #updFile formControlName="image" class="d-none" accept="image/*" (change)="onFileUpload($event)"/>
+                <input id="uplFile" type="file" #uplFile formControlName="image" accept="image/*" (change)="onFileUpload($event)"/>
                 <div class="m-3 d-flex justify-content-between align-items-center add-image-btn" style="max-height: 200px;">
-                  <button mat-flat-button class="m-4 p-2" type="button" (click)="uploadImage($event)">Додати зображення</button>
+
+                  <label for="uplFile">
+                    <button mat-flat-button class="m-4 p-2" type="button" (click)="uploadImage($event)">Додати зображення</button>
+                  </label>
+
                   @if (imagePreview) {
                     <img [src]="imagePreview" #image style="width: -webkit-fill-available;max-width: 50%">
                   }@else{

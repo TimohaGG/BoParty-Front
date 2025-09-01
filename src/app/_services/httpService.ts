@@ -10,6 +10,8 @@ import {RenameResp} from "../models/Positions/DTOs/RenameResp";
 import {IngredientAmount} from "../models/Positions/IngredientAmount";
 import {Order} from "../models/Orders/Order";
 import {MinPosAmount} from "../models/Positions/MinPosAmount";
+import {CommonOrderInfo} from "../models/Orders/CommonOrderInfo";
+import {AdditionalOrderData} from "../models/Orders/AdditionalOrderData";
 
 @Injectable({providedIn:"root"})
 export class HttpService{
@@ -23,12 +25,16 @@ export class HttpService{
     return this.clinet.get<Order[] | ExceptionMessage>(this.baseUrl + "orders/get");
   }
 
+  getAllMinOrders():Observable<MinOrder[] | ExceptionMessage>{
+    return this.clinet.get<MinOrder[] | ExceptionMessage>(this.baseUrl + "orders/get/min");
+  }
+
   getAllPositions() {
     return this.clinet.get<Position[] | ExceptionMessage>(this.baseUrl + "positions/get");
   }
 
-  getAllCategories() {
-    return this.clinet.get<Category[] | ExceptionMessage>(this.baseUrl + "positions/categories/get");
+  getAllCategories(userId:number) {
+    return this.clinet.get<Category[] | ExceptionMessage>(this.baseUrl + `positions/categories/get/${userId}`);
   }
 
   getAllIngredients() {
@@ -71,10 +77,11 @@ export class HttpService{
     return this.clinet.delete<number | ExceptionMessage>(this.baseUrl + "positions/remove?id="+id);
   }
 
-  addOrder(data: any, positions:MinPosAmount[]) {
+  addOrder(data: any, positions:MinPosAmount[], additionalData:AdditionalOrderData[]) {
     return this.clinet.post<Order | ExceptionMessage>(this.baseUrl + "orders/create",{
       ...data,
       positions: positions,
+      additionalInfo:additionalData
     });
 
   }
@@ -89,5 +96,17 @@ export class HttpService{
       ...value,
       positions:items
     });
+  }
+
+  addCommonOrderInfo(res: any) {
+    return this.clinet.post<CommonOrderInfo | ExceptionMessage>(this.baseUrl + "orders/info/common/add",res);
+  }
+
+  addAllCommonInfo() {
+    return this.clinet.get<CommonOrderInfo[] | ExceptionMessage>(this.baseUrl + "orders/info/common");
+  }
+
+  deleteOrder(id: number) {
+    return this.clinet.delete<number | ExceptionMessage>(this.baseUrl + "orders/delete/"+id);
   }
 }

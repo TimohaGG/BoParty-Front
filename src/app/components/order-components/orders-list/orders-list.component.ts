@@ -12,6 +12,7 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {Category} from "../../../models/Positions/Category";
 import {PositionsCategoryService} from "../../../_services/positions-category.service";
 import {Order} from "../../../models/Orders/Order";
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-orders-list',
@@ -23,6 +24,7 @@ import {Order} from "../../../models/Orders/Order";
     MatIcon,
     MatProgressSpinner,
     MatFabButton,
+    RouterLink,
   ],
   templateUrl: './orders-list.component.html',
   styleUrl: './orders-list.component.css'
@@ -30,7 +32,7 @@ import {Order} from "../../../models/Orders/Order";
 export class OrdersListComponent implements OnInit{
 
   private store = inject(entityStorage);
-  public orders:Signal<Order[]> = computed(this.store.ordersEntities);
+  public orders:Signal<MinOrder[]> = computed(this.store.minOrdersEntities);
 
   public loading:Signal<boolean> = computed(this.store.loading);
 
@@ -46,7 +48,7 @@ export class OrdersListComponent implements OnInit{
 
   ngOnInit(): void {
     if(this.orders().length == 0){
-      this.orderService.getAll().subscribe({
+      this.orderService.getAllMin().subscribe({
           error: error=>{
             this.loadingFailure = true;
             this.toast.show(error.message,{duration:3000,position:"bottom-center",autoClose:true});

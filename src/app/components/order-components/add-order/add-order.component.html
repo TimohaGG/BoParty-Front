@@ -45,7 +45,7 @@
       <ng-container matColumnDef="action" style="display: none">
         <mat-header-cell *matHeaderCellDef style="display: none"></mat-header-cell>
         <mat-cell *matCellDef="let element" class="btn-out">
-          <button (click)="openHeaderDialog(element.id)">
+          <button mat-fab (click)="openHeaderDialog(element.id)">
             <mat-icon>add</mat-icon>
           </button>
 
@@ -85,7 +85,7 @@
         <mat-cell *matCellDef="let element">
           @if(!element.unitedRow){
           <mat-form-field>
-              <input matInput [value]="element.amount" class="text-center" (change)="changeAmount(element.position.id, $event)"/>
+              <input matInput [disabled]="!editable" [value]="element.amount" class="text-center" (change)="changeAmount(element.position.id, $event)"/>
           </mat-form-field>
           }
         </mat-cell>
@@ -94,7 +94,7 @@
       <ng-container matColumnDef="action-delete" style="display: none">
         <mat-header-cell *matHeaderCellDef style="display: none"></mat-header-cell>
         <mat-cell *matCellDef="let element" class="btn-out right p-0">
-          <button mat-button (click)="removeFromList(element.id)">
+          <button mat-fab (click)="removeFromList(element.id)">
             <mat-icon>cancel_presentation</mat-icon>
           </button>
         </mat-cell>
@@ -108,6 +108,43 @@
         <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
       </mat-row>
     </mat-table>
+
+    <button mat-flat-button [disabled]="!editable" (click)="openInfoDialog()" class="w-100 mb-2 mt-2">
+      Підсумок
+    </button>
+    <mat-table #datatable [dataSource]="additionalInfo()" class="mat-elevation-z8" cdkDropList
+               (cdkDropListDropped)="dropInfo($event)"
+               cdkDropListData="dataSource">
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef> Назва </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.title}} </mat-cell>
+      </ng-container>
+
+      <!-- Weight Column -->
+      <ng-container matColumnDef="description">
+        <mat-header-cell *matHeaderCellDef> Опис </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{element.description}}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Quantity Column -->
+      <ng-container matColumnDef="price">
+        <mat-header-cell *matHeaderCellDef> Ціна </mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.price}}</mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumnsInfo"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumnsInfo;" cdkDrag
+               [cdkDragData]="row" class="example-box">
+<!--               [cdkContextMenuTriggerFor]="context"-->
+<!--               [cdkContextMenuTriggerData]="{$implicit:row}">-->
+        <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+      </mat-row>
+    </mat-table>
+
+
 
 
   </div>

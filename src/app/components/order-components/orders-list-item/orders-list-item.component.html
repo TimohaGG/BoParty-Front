@@ -5,7 +5,7 @@
       <h3>{{order.date | date}}</h3>
     </div>
     <div class="col-6 text-center price">
-      {{order.totalPrice}} грн
+      {{order.sum}} грн
     </div>
     <div class="col-12">
       <div class="d-flex justify-content-center control-buttons">
@@ -20,7 +20,8 @@
         <button mat-fab aria-label="edit button" style="background-color: var(--button-copy)">
           <mat-icon style="color: white">content_copy</mat-icon>
         </button>
-        <button mat-fab aria-label="edit button" style="background-color: var(--button-remove)">
+        <button mat-fab aria-label="edit button" style="background-color: var(--button-remove)" (click)="openDeleteDialog()">
+
           <mat-icon style="color: white;">delete</mat-icon>
         </button>
       </div>

@@ -31,6 +31,8 @@ import {HotToastService} from "@ngxpert/hot-toast";
 import {Order} from "../../../models/Orders/Order";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {HttpErrorResponse} from "@angular/common/http";
+import {AdditionalOrderData} from "../../../models/Orders/AdditionalOrderData";
+import {AddOrderInfoComponent} from "../add-order-info/add-order-info.component";
 
 export interface PosAmount {
   amount: number;
@@ -70,22 +72,23 @@ export interface PosAmount {
 })
 export class AddOrderComponent implements OnInit {
   @ViewChild('table', {static: true}) table!: MatTable<PositionAmount>;
+  @ViewChild('datatable', {static: true}) datatable!: MatTable<PositionAmount>;
+  private dialog = inject(MatDialog);
 
   public editOrderid:number = -1;
-
   editable:boolean = false;
   loading:boolean = false;
 
-  private dialog = inject(MatDialog);
+
   public selectedPositions: Position[] = []
-
-  displayedColumns: string[] = [ 'action','name','image', 'weight', 'price', 'amount','action-delete'];
-
   public posAmounts = signal<TableRow[]>([]);
+  displayedColumns: string[] = [ 'action','name','image', 'weight', 'price', 'amount','action-delete'];
+  public additionalInfo = signal<AdditionalOrderData[]>([]);
+  displayedColumnsInfo: string[] = [ 'name','description', 'price'];
 
   public ordersForm: FormGroup = new FormGroup({
     client: new FormControl('', [Validators.required]),
-    guestsAmount: new FormControl('', [Validators.required]),
+    guestsAmount: new FormControl(0, [Validators.required]),
     format: new FormControl('', [Validators.required]),
     date: new FormControl('', [Validators.required]),
     duration: new FormControl('', [Validators.required]),
@@ -132,6 +135,27 @@ export class AddOrderComponent implements OnInit {
     })
   }
 
+  openInfoDialog(){
+    let dialog = this.dialog.open(AddOrderInfoComponent);
+    dialog.afterClosed().subscribe(res=>{
+      if(res.isCommon){
+        console.log("Saving common!");
+        console.log(res);
+        this.ordersService.saveCommonInfo(res).subscribe({
+          next: (data)=> {
+            this.additionalInfo.update((old)=>[...old,{...data,id:0}])
+          },
+          error: (err)=> {
+            this.toast.error(err)
+          }
+        })
+      }
+      else{
+        this.additionalInfo.update((old)=>[...old,{...res,id:0}])
+      }
+    });
+  }
+
   initOrderEditData(){
     if(this.editOrderid<=0){
       console.log("No order id");
@@ -166,6 +190,7 @@ export class AddOrderComponent implements OnInit {
             this.selectedPositions.push(el.position);
           });
           this.posAmounts.set(list);
+          this.additionalInfo.set((res as Order).additionalInfo);
         }
         this.loading = false;
       }
@@ -178,8 +203,10 @@ export class AddOrderComponent implements OnInit {
     this.table.renderRows();
   }
 
-  print(){
-    console.log(this.posAmounts);
+  dropInfo(event: CdkDragDrop<string>) {
+    const previousIndex = this.additionalInfo().findIndex(d => d === event.item.data);
+    moveItemInArray(this.additionalInfo(), previousIndex, event.currentIndex);
+    this.datatable.renderRows();
   }
 
   toggleEdit(){
@@ -192,7 +219,7 @@ export class AddOrderComponent implements OnInit {
     this.loading = true;
 
     if(this.editOrderid<=0){
-      this.ordersService.saveOrder(this.ordersForm.value,items).subscribe(
+      this.ordersService.saveOrder(this.ordersForm.value,items,this.additionalInfo()).subscribe(
         {
           next: (data)=> {
             this.toast.show("Збережено!",{autoClose:true,position:"bottom-center",duration:2000})

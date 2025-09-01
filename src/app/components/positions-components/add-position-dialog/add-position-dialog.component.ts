@@ -90,8 +90,8 @@ export class AddPositionDialogComponent implements OnInit,AfterViewInit {
 
   private selectedImage:File | null = null;
   public imagePreview: string | ArrayBuffer | null = null;
-  @ViewChild("updFile") private uplFile?:ElementRef<HTMLInputElement>;
-  @ViewChild("image",{static:false}) imageRef!: ElementRef;
+  @ViewChild("uplFile") private uplFile!:ElementRef<HTMLInputElement>;
+  @ViewChild("image") imageRef?: ElementRef<HTMLInputElement>;
 
   public positionInfoGroup = new FormGroup({
     positionInfoCtrl: new FormControl(null),
@@ -99,7 +99,7 @@ export class AddPositionDialogComponent implements OnInit,AfterViewInit {
     name: new FormControl('', [Validators.required]),
     weight: new FormControl('', [Validators.required]),
     price: new FormControl('', [Validators.required]),
-    image: new FormControl(null),
+    image: new FormControl(''),
     category: new FormControl(0, [Validators.required]),
   });
   public ingredientsInfoGroup = new FormGroup({
@@ -172,6 +172,7 @@ export class AddPositionDialogComponent implements OnInit,AfterViewInit {
   //File upload bock
 
   onFileUpload(event:any) {
+    console.log("1");
     this.selectedImage = event.target.files[0];
     const reader = new FileReader();
     reader.onload = ()=>{
@@ -183,8 +184,10 @@ export class AddPositionDialogComponent implements OnInit,AfterViewInit {
   }
 
   uploadImage(event:any) {
-    event.stopPropagation();
-    event.preventDefault();
+    // event.stopPropagation();
+    // event.preventDefault();
+    console.log("asd");
+    console.log(this.uplFile?.nativeElement);
     this.uplFile?.nativeElement.click();
   }
 

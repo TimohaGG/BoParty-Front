@@ -1,6 +1,7 @@
 import {Position} from "../Positions/Position";
 import {PositionAmount} from "../Positions/PositionAmount";
 import {PositionAmountFull} from "../Positions/PositionAmountFull";
+import {AdditionalOrderData} from "./AdditionalOrderData";
 
 export interface Order{
   id:number,
@@ -12,4 +13,5 @@ export interface Order{
   duration:number;
   totalPrice:number;
   positions:PositionAmountFull[];
+  additionalInfo:AdditionalOrderData[];
 }

@@ -1,11 +1,11 @@
 export class Category {
   id:number;
   name:string;
-  order:number;
-  constructor(id:number, name:string, order:number) {
+  userId:number;
+  constructor(id:number, name:string, userId:number) {
     this.name = name;
     this.id=id;
-    this.order=order;
+    this.userId=userId;
   }
 
 }
