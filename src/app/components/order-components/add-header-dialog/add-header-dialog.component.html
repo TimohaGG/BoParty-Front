@@ -1,0 +1,12 @@
+<h2>Додати заголовок</h2>
+<mat-dialog-content>
+
+  <mat-form-field>
+    <mat-label>Заголовок</mat-label>
+    <input matInput type="text" [(ngModel)]="title"/>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close>Скасувати</button>
+  <button mat-button (click)="addHeader()">Додати</button>
+</mat-dialog-actions>

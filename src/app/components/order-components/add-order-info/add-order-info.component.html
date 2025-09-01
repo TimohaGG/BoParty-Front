@@ -1,0 +1,39 @@
+<mat-dialog-content class="d-flex flex-column" style="gap: 1em">
+
+  <mat-form-field >
+    <mat-label>Шаблон</mat-label>
+    <mat-select (selectionChange)="insertData($event)">
+      <mat-option value="-1">
+        -
+      </mat-option>
+      @for (item of this.commonOptions(); track item.id) {
+        <mat-option [value]="item">{{item.title}}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+
+  <form [formGroup]="formData" class="d-flex flex-column" style="gap: 1em">
+    <mat-form-field>
+      <mat-label>Назва</mat-label>
+      <input matInput formControlName="title" type="text"/>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Опис</mat-label>
+      <textarea rows="4" matInput formControlName="description" type="text">
+
+      </textarea>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Ціна</mat-label>
+      <input matInput formControlName="price" type="number"/>
+    </mat-form-field>
+
+    <mat-checkbox formControlName="isCommon">Зберегти</mat-checkbox>
+  </form>
+
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close>Скасувати</button>
+  <button mat-stroked-button (click)="onClose()">Додати</button>
+</mat-dialog-actions>

@@ -1,0 +1,30 @@
+<mat-dialog-content>
+  <h2 class="text-center">
+    Видалити замовлення?
+  </h2>
+
+  <table class="table" style="color: white">
+    <tr>
+      <td>Дата</td>
+      <td>{{data.date}}</td>
+    </tr>
+    <tr>
+      <td>Замовник</td>
+      <td>{{data.client}}</td>
+    </tr>
+    <tr>
+      <td>Сумма</td>
+      <td>{{data.price}}</td>
+    </tr>
+  </table>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-stroked-button mat-dialog-close>Скасувати</button>
+  @if (loading) {
+    <mat-spinner style="width: 20px;height:20px;color: var(--primary-darker)"></mat-spinner>
+  }@else{
+    <button mat-button (click)="onDeleteConfirm()">Видалити</button>
+  }
+
+</mat-dialog-actions>
