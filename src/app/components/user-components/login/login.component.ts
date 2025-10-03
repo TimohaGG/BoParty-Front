@@ -51,6 +51,8 @@ export class LoginComponent implements OnInit {
       this.isLoggedIn = true;
       this.roles = this.storageService.getUser().roles;
     }
+
+    console.log("UPDATE 1");
   }
 
   onSubmit(): void {
