@@ -40,10 +40,13 @@ export class OrdersService{
     return this.http.getAllMinOrders().pipe(
       map(res=>{
         if(!isMessage(res)){
+          console.log("asd");
           this.store.setAllMinOrders(res as MinOrder[]);
         }
       }),
       catchError((error:HttpErrorResponse)=>{
+        console.log("Error!")
+        console.log(error);
         throw new Error(error.error.message);
       })
     )
@@ -86,8 +89,8 @@ export class OrdersService{
     }
   }
 
-  editOrder(id:number, value:any, items: MinPosAmount[]) {
-    return this.http.editOrder(id, value,items).pipe(
+  editOrder(id:number, value:any, items: MinPosAmount[], additionalInfo:AdditionalOrderData[]) {
+    return this.http.editOrder(id, value,items,additionalInfo).pipe(
       map(res=>{
         let order = res as Order;
         this.store.setOrder(order);

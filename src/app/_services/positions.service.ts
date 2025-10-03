@@ -6,6 +6,7 @@ import {catchError, map, Observable, of} from "rxjs";
 import {Position} from "../models/Positions/Position";
 import {ExceptionMessage, isMessage} from "../models/Exceptions/ExceptionMessage";
 import {IngredientAmount} from "../models/Positions/IngredientAmount";
+import {getXHRResponse} from "rxjs/internal/ajax/getXHRResponse";
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,21 @@ export class PositionsService {
 
   constructor(private http: HttpService) {
 
+  }
+
+  public getByCategory(categoryId:number=0):Observable<Position[] | ExceptionMessage>{
+    return this.http.getAllPositionsByCategoryId(categoryId).pipe(
+      map((res:Position[] | ExceptionMessage)=>{
+        if(!isMessage(res)){
+          this.store.addPositions(res as Position[]);
+        }
+        return res as Position[];
+      }),
+      catchError((error:HttpErrorResponse)=>{
+        let msg = new ExceptionMessage(error.error.message, error.error.status);
+        return of(msg);
+      })
+    )
   }
 
   public getAll():Observable<Position[] | ExceptionMessage> {

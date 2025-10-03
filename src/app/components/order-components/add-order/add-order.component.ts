@@ -183,7 +183,6 @@ export class AddOrderComponent implements OnInit {
           let list:TableRow[] = [];
           recieved.forEach(el=>{
             if(el.title!=="" && el.title!==null){
-              console.log(el.title);
               list.push(new TableRow(null,0,el.title,true));
             }
             list.push(new TableRow(el.position,el.amount));
@@ -219,20 +218,31 @@ export class AddOrderComponent implements OnInit {
     this.loading = true;
 
     if(this.editOrderid<=0){
-      this.ordersService.saveOrder(this.ordersForm.value,items,this.additionalInfo()).subscribe(
-        {
-          next: (data)=> {
-            this.toast.show("Збережено!",{autoClose:true,position:"bottom-center",duration:2000})
-            this.loading = false;
-          },
-          error:(error:HttpErrorResponse)=>{
-            this.toast.show(`Помилка збереження!\n${error}`,{autoClose:true,position:"bottom-center",duration:2000});
-            this.loading = false;
-          }
-        }
-      );
+      this.saveOrder(items);
     }else{
-      this.ordersService.editOrder(this.editOrderid, this.ordersForm.value,items).subscribe({
+      this.editOrder(items);
+    }
+
+
+  }
+
+  private saveOrder(items:MinPosAmount[]){
+    this.ordersService.saveOrder(this.ordersForm.value,items,this.additionalInfo()).subscribe(
+      {
+        next: (data)=> {
+          this.toast.show("Збережено!",{autoClose:true,position:"bottom-center",duration:2000})
+          this.loading = false;
+        },
+        error:(error:HttpErrorResponse)=>{
+          this.toast.show(`Помилка збереження!\n${error}`,{autoClose:true,position:"bottom-center",duration:2000});
+          this.loading = false;
+        }
+      }
+    );
+  }
+
+  private editOrder(items:MinPosAmount[]){
+    this.ordersService.editOrder(this.editOrderid, this.ordersForm.value,items, this.additionalInfo()).subscribe({
         next: (data)=> {
           this.toast.show("Збережено!",{autoClose:true,position:"bottom-center",duration:2000});
           this.loading = false;
@@ -242,10 +252,7 @@ export class AddOrderComponent implements OnInit {
           this.loading = false;
         }
       }
-      );
-    }
-
-
+    );
   }
 
   parsePositions(){

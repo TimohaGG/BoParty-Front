@@ -48,6 +48,7 @@ export class OrdersListComponent implements OnInit{
 
   ngOnInit(): void {
     if(this.orders().length == 0){
+      console.log("Getting orders list");
       this.orderService.getAllMin().subscribe({
           error: error=>{
             this.loadingFailure = true;

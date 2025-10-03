@@ -1,5 +1,6 @@
 import {patchState, signalStore, type, withMethods, withState} from "@ngrx/signals";
 import {
+  addEntities,
   addEntity,
   entityConfig,
   removeAllEntities, removeEntities,
@@ -128,6 +129,9 @@ export const entityStorage = signalStore(
     },
     addPosition(pos:Position){
       patchState(store, setEntity(pos,positionConfig));
+    },
+    addPositions(pos:Position[]){
+      patchState(store,addEntities(pos,positionConfig));
     },
     addOrder(order:Order){
       patchState(store,setEntity(order,orderConfig));

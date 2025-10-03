@@ -16,7 +16,8 @@ import {AdditionalOrderData} from "../models/Orders/AdditionalOrderData";
 @Injectable({providedIn:"root"})
 export class HttpService{
 
-  private baseUrl:string = "http://147.93.127.39:8084"
+  private baseUrl:string = "http://localhost:8080/"
+  // private baseUrl:string = "http://147.93.127.39:8084"
 
   constructor(private clinet:HttpClient) {
   }
@@ -26,11 +27,16 @@ export class HttpService{
   }
 
   getAllMinOrders():Observable<MinOrder[] | ExceptionMessage>{
+    console.log(this.baseUrl + "orders/get");
     return this.clinet.get<MinOrder[] | ExceptionMessage>(this.baseUrl + "orders/get/min");
   }
 
   getAllPositions() {
     return this.clinet.get<Position[] | ExceptionMessage>(this.baseUrl + "positions/get");
+  }
+
+  getAllPositionsByCategoryId(categoryId: number) {
+    return this.clinet.get<Position[] | ExceptionMessage>(this.baseUrl + "positions/get/category/" + categoryId);
   }
 
   getAllCategories(userId:number) {
@@ -78,6 +84,8 @@ export class HttpService{
   }
 
   addOrder(data: any, positions:MinPosAmount[], additionalData:AdditionalOrderData[]) {
+    console.log(additionalData);
+
     return this.clinet.post<Order | ExceptionMessage>(this.baseUrl + "orders/create",{
       ...data,
       positions: positions,
@@ -90,11 +98,12 @@ export class HttpService{
     return this.clinet.get<Order | ExceptionMessage>(this.baseUrl + `orders/get/${id}`);
   }
 
-  editOrder(id: number, value: any, items: MinPosAmount[]) {
+  editOrder(id: number, value: any, items: MinPosAmount[],additionalInfo:AdditionalOrderData[]) {
     return this.clinet.post<Order | ExceptionMessage>(this.baseUrl + "orders/edit",{
       id:id,
       ...value,
-      positions:items
+      positions:items,
+      additionalInfo:additionalInfo
     });
   }
 
@@ -109,4 +118,6 @@ export class HttpService{
   deleteOrder(id: number) {
     return this.clinet.delete<number | ExceptionMessage>(this.baseUrl + "orders/delete/"+id);
   }
+
+
 }

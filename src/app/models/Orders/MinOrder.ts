@@ -3,5 +3,4 @@ export interface MinOrder{
   date:string;
   sum:number;
   client:string;
-
 }

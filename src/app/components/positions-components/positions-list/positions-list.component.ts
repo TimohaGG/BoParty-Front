@@ -47,7 +47,7 @@ import {StorageService} from "../../../_services/storage.service";
   templateUrl: './positions-list.component.html',
   styleUrl: './positions-list.component.css'
 })
-export class PositionsListComponent implements OnInit, AfterViewInit {
+export class PositionsListComponent implements OnInit {
 
   @Input() selectable:boolean = false;
   @Output() onSelectPosition = new EventEmitter<Position[]>();
@@ -65,6 +65,10 @@ export class PositionsListComponent implements OnInit, AfterViewInit {
   get userCategories():Category[]{
     return this.categories().filter(x=>x.userId==this.userStorate.getUser().id);
   }
+
+  public isLoading:boolean = true;
+
+
   public selectedCategory:FormControl = new FormControl(0);
   constructor(private positionsService:PositionsService,
               private toast:HotToastService,
@@ -74,34 +78,19 @@ export class PositionsListComponent implements OnInit, AfterViewInit {
 
   }
 
-  ngAfterViewInit(): void {
-        console.log("afterInit" , this.selectedPositions);
-    }
+
 
   ngOnInit(): void {
-    console.log("Component ngOnInit");
     if(this.positions().length==0){
-      this.positionsService.getAll().subscribe(
-        res=>{
-          if(isMessage(res)){
-            let msg = res as ExceptionMessage;
-            this.toast.error(msg.message, {duration: 3000, position: "bottom-center", autoClose: true});
-          }
-          else{
-            this.filterCategories();
 
-          }
-        }
-      )
-      for (let i = 0; i < 10; i++) {
-        console.log(this.categories()[i]);
-      }
-    }
-    else{
-      console.log("Positions are in the vault", this.positions().length);
+      this.loadPositions(0);
+
     }
     if(this.categories().length == 0){
       this.categoriesService.getAll().subscribe({
+        next: data => {
+          this.selectedCategory.setValue((data as Category[]).at(0)?.id);
+        },
         error: error=>{
           this.toast.show(error.message,{duration:3000,position:"bottom-center",autoClose:true});
         }
@@ -109,20 +98,34 @@ export class PositionsListComponent implements OnInit, AfterViewInit {
     }
     else{
       this.filterCategories();
-      console.log("Categories are in the vault", this.categories().length);
     }
+
+  }
+
+
+  private loadPositions(categoryId:number){
+    this.isLoading = true;
+    this.positionsService.getByCategory(categoryId).subscribe(
+      res=>{
+        this.isLoading = false;
+        if(isMessage(res)){
+          let msg = res as ExceptionMessage;
+          this.toast.error(msg.message, {duration: 3000, position: "bottom-center", autoClose: true});
+        }
+        else{
+          this.filterCategories();
+        }
+      }
+    )
 
   }
 
   filterCategories() {
     let categoryId = this.selectedCategory.value;
-    console.log("categoryId", categoryId);
-    if(categoryId==0){
-      this.filteredPositions.set(this.positions());
+    if(this.positions().filter(x=>x.category.id==categoryId).length==0){
+      this.loadPositions(categoryId);
     }
-    else{
-      this.filteredPositions.set(this.positions().filter((pos)=>pos.category.id==categoryId));
-    }
+    this.filteredPositions.set(this.positions().filter((pos)=>pos.category.id==categoryId));
   }
 
   openCreateDialog() {
