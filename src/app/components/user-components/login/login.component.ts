@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit {
       this.roles = this.storageService.getUser().roles;
     }
 
-    console.log("UPDATE 1");
+    console.log("UPDATE 2");
   }
 
   onSubmit(): void {
