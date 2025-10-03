@@ -17,7 +17,7 @@ import {AdditionalOrderData} from "../models/Orders/AdditionalOrderData";
 export class HttpService{
 
   // private baseUrl:string = "http://localhost:8080/"
-  private baseUrl:string = "http://147.93.127.39:8084"
+  private baseUrl:string = "http://147.93.127.39:8084/"
 
   constructor(private clinet:HttpClient) {
   }
