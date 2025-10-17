@@ -33,7 +33,7 @@
       </div>
     </form>
 
-    <button mat-flat-button [disabled]="!editable" (click)="openPositionsDialog()" class="w-100 mb-2">
+    <button mat-flat-button [disabled]="!editable" (click)="openPositionsDialog()" class="w-100 mb-2 mt-2">
       Позиції
     </button>
     <mat-table #table [dataSource]="posAmounts()" class="mat-elevation-z8" cdkDropList
@@ -84,7 +84,7 @@
         <mat-header-cell *matHeaderCellDef> К-сть </mat-header-cell>
         <mat-cell *matCellDef="let element">
           @if(!element.unitedRow){
-          <mat-form-field>
+          <mat-form-field class="amount-input">
               <input matInput [disabled]="!editable" [value]="element.amount" class="text-center" (change)="changeAmount(element.position.id, $event)"/>
           </mat-form-field>
           }
@@ -100,11 +100,22 @@
         </mat-cell>
       </ng-container>
 
+      <ng-container matColumnDef="mob-actions">
+        <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+        <mat-cell *matCellDef="let element" >
+          <button class="btn" cdkMenuItem [cdkMenuTriggerFor]="menu" [cdkMenuTriggerData]="element">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+
+
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumns;" cdkDrag
-               [cdkDragData]="row" class="example-box"
-               [cdkContextMenuTriggerFor]="context"
-                [cdkContextMenuTriggerData]="{$implicit:row}">
+               [cdkDragStartDelay]="500"
+               [cdkDragData]="row" class="example-box">
+        <div style="position: absolute;top:10px;left: 10px">+</div>
         <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
       </mat-row>
     </mat-table>
@@ -112,7 +123,7 @@
     <button mat-flat-button [disabled]="!editable" (click)="openInfoDialog()" class="w-100 mb-2 mt-2">
       Підсумок
     </button>
-    <mat-table #datatable [dataSource]="additionalInfo()" class="mat-elevation-z8" cdkDropList
+    <mat-table #datatable [dataSource]="additionalInfo()" class="mat-elevation-z8" cdkDropList style="margin-bottom: 200px;"
                (cdkDropListDropped)="dropInfo($event)"
                cdkDropListData="dataSource">
       <!-- Name Column -->
@@ -181,9 +192,9 @@
 </div>
 
 
-<ng-template #context let-data>
-  <div class="context-menu" cdkMenu>
-    <button class="context-menu-item" cdkMenuItem (click)="openHeaderDialog(data.id)">+ заголовок</button>
-    <button class="context-menu-item" cdkMenuItem (click)="removeFromList(data.id)">Видалити</button>
+<ng-template #menu let-data="cdkMenuTriggerData">
+  <div cdkMenu  class="menu">
+    <button cdkMenuItem (click)="openHeaderDialog(data.id)">+ заголовок</button>
+    <button cdkMenuItem>Видалити</button>
   </div>
 </ng-template>
