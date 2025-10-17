@@ -12,7 +12,7 @@
 
 @if(categories().length!=0){
   <div class="categories-list d-flex justify-content-center my-4">
-    <mat-button-toggle-group style="margin: 0 auto;overflow: scroll" [value]="2" [formControl]="selectedCategory" (change)="filterCategories()">
+    <mat-button-toggle-group style="margin: 0 auto;overflow-x: scroll" [value]="2" [formControl]="selectedCategory" (change)="filterCategories()">
       @for (category of userCategories; track category.id) {
         <mat-button-toggle [value]="category.id">{{category.name}}</mat-button-toggle>
       }
@@ -43,20 +43,18 @@
       <button mat-menu-item>Нова категорія</button>
       <button mat-menu-item>Новий інгридієнт</button>
     </mat-menu>
-  }@else{
-    <button mat-fab class="menu-button" (click)="sendSelection()" >
-      <mat-icon>add</mat-icon>
-    </button>
   }
-
-
-
-
 }
 @else{
   <mat-spinner color="accent"></mat-spinner>
 }
 
+
+@if(selectable){
+  <button mat-fab class="menu-button" (click)="sendSelection()" >
+    <mat-icon>add</mat-icon>
+  </button>
+}
 
 
 

@@ -75,30 +75,29 @@ export class PositionsListComponent implements OnInit {
               private categoriesService:PositionsCategoryService,
               private userStorate:StorageService) {
 
-
   }
 
 
 
   ngOnInit(): void {
-    if(this.positions().length==0){
-
-      this.loadPositions(0);
-
-    }
-    if(this.categories().length == 0){
-      this.categoriesService.getAll().subscribe({
+    console.log("Init");
+    this.categoriesService.getAll().subscribe({
         next: data => {
           this.selectedCategory.setValue((data as Category[]).at(0)?.id);
+          console.log(this.positions().filter(x=>x.category.id==this.selectedCategory.value));
+          if(this.positions().filter(x=>x.category.id==this.selectedCategory.value).length==0){
+            this.loadPositions((data as Category[]).at(0)!.id);
+          }
+          else{
+            this.filterCategories();
+          }
+
         },
         error: error=>{
           this.toast.show(error.message,{duration:3000,position:"bottom-center",autoClose:true});
         }
-      });
-    }
-    else{
-      this.filterCategories();
-    }
+    });
+
 
   }
 
@@ -114,6 +113,7 @@ export class PositionsListComponent implements OnInit {
         }
         else{
           this.filterCategories();
+
         }
       }
     )
@@ -121,11 +121,17 @@ export class PositionsListComponent implements OnInit {
   }
 
   filterCategories() {
+
+    this.isLoading = true;
+    console.log(this.isLoading);
     let categoryId = this.selectedCategory.value;
+    console.log("Filtering " + categoryId);
     if(this.positions().filter(x=>x.category.id==categoryId).length==0){
+      console.log("Havent found")
       this.loadPositions(categoryId);
     }
     this.filteredPositions.set(this.positions().filter((pos)=>pos.category.id==categoryId));
+    this.isLoading = false;
   }
 
   openCreateDialog() {
@@ -137,16 +143,7 @@ export class PositionsListComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result:Position) => {
-
       this.filterCategories();
-      console.log("Filtering");
-      // if(this.filteredPositions()){
-      //   this.filteredPositions.set([...this.filteredPositions()!,result]);
-      // }else{
-      //   this.filteredPositions.set([result]);
-      // }
-
-
     })
   }
 
