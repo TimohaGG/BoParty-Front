@@ -22,7 +22,7 @@ import {MatIcon} from "@angular/material/icon";
 import {OrdersService} from "../../../_services/orders.service";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MinPosAmount} from "../../../models/Positions/MinPosAmount";
-import {CdkContextMenuTrigger, CdkMenu, CdkMenuItem} from "@angular/cdk/menu";
+import {CdkContextMenuTrigger, CdkMenu, CdkMenuItem, CdkMenuTrigger} from "@angular/cdk/menu";
 import {TableRow} from "../../../models/Pdf/TableCell";
 import {AddHeaderDialogComponent} from "../add-header-dialog/add-header-dialog.component";
 import {ActivatedRoute, Route, Router} from "@angular/router";
@@ -66,6 +66,7 @@ export interface PosAmount {
     CdkMenuItem,
     CdkContextMenuTrigger,
     MatProgressSpinner,
+    CdkMenuTrigger,
   ],
   templateUrl: './add-order.component.html',
   styleUrl: './add-order.component.css'
@@ -82,7 +83,7 @@ export class AddOrderComponent implements OnInit {
 
   public selectedPositions: Position[] = []
   public posAmounts = signal<TableRow[]>([]);
-  displayedColumns: string[] = [ 'action','name','image', 'weight', 'price', 'amount','action-delete'];
+  displayedColumns: string[] = [ 'action','name','image', 'weight', 'price', 'amount','action-delete','mob-actions'];
   public additionalInfo = signal<AdditionalOrderData[]>([]);
   displayedColumnsInfo: string[] = [ 'name','description', 'price'];
 
@@ -329,6 +330,7 @@ export class AddOrderComponent implements OnInit {
   }
 
   openHeaderDialog(positionId:number){
+    console.log(positionId);
     const dialogRef = this.dialog.open(AddHeaderDialogComponent);
     dialogRef.afterClosed().subscribe({
       next: (data)=> {
@@ -349,6 +351,8 @@ export class AddOrderComponent implements OnInit {
       }
     })
   }
+
+
 }
 
 

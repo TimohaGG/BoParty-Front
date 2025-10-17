@@ -1,3 +1,5 @@
+@import '@angular/cdk/overlay-prebuilt.css';
+
 
 body{
   margin: 0;
@@ -66,5 +68,13 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mat-mdc-form-field-subscript-wrapper{
   display: none !important;
   visibility: collapse !important;
+}
+
+
+.mat-drawer-content{
+  overflow-x: hidden !important;
+}
+.amount-input .mdc-text-field{
+  padding: 0 !important;
 }
 
