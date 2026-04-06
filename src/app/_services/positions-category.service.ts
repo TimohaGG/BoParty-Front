@@ -18,8 +18,10 @@ export class PositionsCategoryService {
 
   public getAll():Observable<Category[] | ExceptionMessage> {
 
+    console.log("GetAll");
     return this.http.getAllCategories(this.userStorage.getUserId()).pipe(
       map((response:Category[] | ExceptionMessage) => {
+        console.log(response);
         if (!isMessage(response)) {
           this.store.setAllPositionCategories(response as Category[]);
         }
@@ -27,9 +29,26 @@ export class PositionsCategoryService {
       }),
       catchError((error:HttpErrorResponse)=>{
         let msg = new ExceptionMessage(error.error.message, error.error.status);
-        return of(msg);
+        throw new Error(error.error.message)
+
       })
     );
   }
 
+  addCategory(result: string):Observable<Category | ExceptionMessage> {
+    console.log("Adding category");
+    return this.http.addPositionCategory(this.userStorage.getUserId(), result).pipe(
+      map((response:Category | ExceptionMessage) => {
+        if(!isMessage(response)) {
+          this.store.addPositionCategory(response as Category);
+        }
+        return response as Category;
+      }),
+      catchError((error:HttpErrorResponse)=>{
+        console.log(error);
+        let msg = new ExceptionMessage(error.error.message, error.error.status);
+        return of(msg);
+      })
+    );
+  }
 }

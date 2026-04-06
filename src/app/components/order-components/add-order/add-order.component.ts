@@ -76,6 +76,7 @@ export class AddOrderComponent implements OnInit {
   @ViewChild('datatable', {static: true}) datatable!: MatTable<PositionAmount>;
   private dialog = inject(MatDialog);
 
+
   public editOrderid:number = -1;
   editable:boolean = false;
   loading:boolean = false;
@@ -97,9 +98,15 @@ export class AddOrderComponent implements OnInit {
   })
 
   constructor(private ordersService:OrdersService,private route:ActivatedRoute,private router:Router,private toast:HotToastService) {
-    this.ordersForm.disable();
-    this.editOrderid = Number(this.route.snapshot.queryParamMap.get("orderId")) ?? -1;
-    console.log(this.editOrderid);
+
+
+    if(this.route.snapshot.queryParamMap.has("editable")){
+      this.editable = this.route.snapshot.queryParamMap.get("editable") == "true";
+    }
+    else{
+      this.ordersForm.disable();
+      this.editOrderid = Number(this.route.snapshot.queryParamMap.get("orderId")) ?? -1;
+    }
   }
 
   ngOnInit(): void {
@@ -223,8 +230,6 @@ export class AddOrderComponent implements OnInit {
     }else{
       this.editOrder(items);
     }
-
-
   }
 
   private saveOrder(items:MinPosAmount[]){
@@ -235,7 +240,7 @@ export class AddOrderComponent implements OnInit {
           this.loading = false;
         },
         error:(error:HttpErrorResponse)=>{
-          this.toast.show(`Помилка збереження!\n${error}`,{autoClose:true,position:"bottom-center",duration:2000});
+          this.toast.error(`${error}`,{autoClose:true,position:"bottom-center",duration:2000});
           this.loading = false;
         }
       }

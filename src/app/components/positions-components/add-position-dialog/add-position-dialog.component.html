@@ -20,17 +20,18 @@
                 </mat-form-field>
 
 
-                <input id="uplFile" type="file" #uplFile formControlName="image" accept="image/*" (change)="onFileUpload($event)"/>
-                <div class="m-3 d-flex justify-content-between align-items-center add-image-btn" style="max-height: 200px;">
-
+                <input id="uplFile" type="file" #uplFile formControlName="image" accept="image/*" (change)="onFileUpload($event)" style="display: none"/>
+                <div class="m-3 d-flex justify-content-between align-items-center add-image-btn image-preview-wrapper">
                   <label for="uplFile">
-                    <button mat-flat-button class="m-4 p-2" type="button" (click)="uploadImage($event)">Додати зображення</button>
+                    <button mat-flat-button class="m-4 p-2" type="button" (click)="uploadImage($event)">
+                      Додати зображення
+                    </button>
                   </label>
 
                   @if (imagePreview) {
-                    <img [src]="imagePreview" #image style="width: -webkit-fill-available;max-width: 50%">
-                  }@else{
-                    <img src="assets/img/logo.png" #image style="width: -webkit-fill-available;max-width: 50%">
+                    <img [src]="imagePreview" #image class="image-preview">
+                  } @else {
+                    <img src="assets/img/logo.png" #image class="image-preview">
                   }
                 </div>
 

@@ -125,7 +125,7 @@ export class AddPositionDialogComponent implements OnInit,AfterViewInit {
     }
 
   ngOnInit(): void {
-    const loadIngredients$:Observable<Ingredient[]> = this.ingredients().length === 0
+    const loadIngredients$:Observable<Ingredient[] | null> = this.ingredients().length === 0
       ? this.ingService.getAll()
       : of(null);
 
@@ -150,7 +150,7 @@ export class AddPositionDialogComponent implements OnInit,AfterViewInit {
 
   // Mat-autocomplete block
 
-  private initFilteredIngredients(loadIngredients$:Observable<Ingredient[]>) {
+  private initFilteredIngredients(loadIngredients$:Observable<Ingredient[] | null>) {
     loadIngredients$.subscribe(() => {
       this.filteredIngredients$ = this.ingredientsInfoGroup.controls.ingCtrl.valueChanges.pipe(
         startWith(''),
@@ -186,8 +186,6 @@ export class AddPositionDialogComponent implements OnInit,AfterViewInit {
   uploadImage(event:any) {
     // event.stopPropagation();
     // event.preventDefault();
-    console.log("asd");
-    console.log(this.uplFile?.nativeElement);
     this.uplFile?.nativeElement.click();
   }
 

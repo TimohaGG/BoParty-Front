@@ -55,6 +55,7 @@ export class RegisterComponent {
         this.isSignUpFailed = false;
       },
       error: err => {
+        console.log(err);
         this.errorMessage = err.error.message;
         this.isSignUpFailed = true;
       }

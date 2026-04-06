@@ -63,11 +63,11 @@
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #posMenu="matMenu">
-        <button mat-menu-item>
+        <button mat-menu-item  (click)="openModal()">
           <mat-icon color="button-edit">edit</mat-icon>
           <span>Редагувати</span>
         </button>
-        <button mat-menu-item>
+        <button mat-menu-item  (click)="openDeleteModal()">
           <mat-icon color="button-edit">delete</mat-icon>
           <span>Видалити</span>
         </button>

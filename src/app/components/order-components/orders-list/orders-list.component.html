@@ -1,6 +1,13 @@
 
+<div class="d-flex justify-content-center align-items-center">
+  <h3 class="text-center">Замовлення</h3>
+  <button [routerLink]="'/order/create'" [queryParams]="{editable:true}" class="btn btn-outline-light mx-4">
+    <mat-icon style="color:white">
+      add
+    </mat-icon>
+  </button>
+</div>
 
-<h3 class="text-center">Замовлення</h3>
 
 
 @if(orders().length ==0 && !loadingFailure){
@@ -18,15 +25,16 @@
     }
   </div>
 
-  <button [matMenuTriggerFor]="menu" mat-fab class="menu-button">
-    <mat-icon>more_vert</mat-icon>
-  </button>
 
-
-  <mat-menu #menu="matMenu">
-    <button mat-menu-item [routerLink]="'/order/create'">Нове замовлення</button>
-    <button mat-menu-item>Об`єднати</button>
-  </mat-menu>
 
 
 }
+<button [matMenuTriggerFor]="menu" mat-fab class="menu-button">
+  <mat-icon>more_vert</mat-icon>
+</button>
+
+
+<mat-menu #menu="matMenu">
+  <button mat-menu-item [routerLink]="'/order/create'">Нове замовлення</button>
+  <button mat-menu-item>Об`єднати</button>
+</mat-menu>

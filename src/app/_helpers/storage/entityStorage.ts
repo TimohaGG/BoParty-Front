@@ -136,6 +136,9 @@ export const entityStorage = signalStore(
     addOrder(order:Order){
       patchState(store,setEntity(order,orderConfig));
     },
+    addPositionCategory(category:Category){
+      patchState(store,addEntity(category,positionCategoryConfig));
+    },
     removeIngCategory(categoryId:number){
       patchState(store,removeEntity(categoryId,ingCategoryConfig));
     },

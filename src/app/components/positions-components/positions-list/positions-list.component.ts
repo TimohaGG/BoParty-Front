@@ -28,6 +28,12 @@ import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
 import {MatDialog} from "@angular/material/dialog";
 import {AddPositionDialogComponent} from "../add-position-dialog/add-position-dialog.component";
 import {StorageService} from "../../../_services/storage.service";
+import {
+  AddCategoryDialogueComponent
+} from "../../ingredients-components/add-category-dialogue/add-category-dialogue.component";
+import {
+  AddPositionCategoryDialogComponent
+} from "../add-position-category-dialog/add-position-category-dialog.component";
 
 @Component({
   selector: 'app-positions-list',
@@ -83,19 +89,20 @@ export class PositionsListComponent implements OnInit {
     console.log("Init");
     this.categoriesService.getAll().subscribe({
         next: data => {
-          this.selectedCategory.setValue((data as Category[]).at(0)?.id);
-          console.log(this.positions().filter(x=>x.category.id==this.selectedCategory.value));
-          if(this.positions().filter(x=>x.category.id==this.selectedCategory.value).length==0){
-            this.loadPositions((data as Category[]).at(0)!.id);
+          if(!isMessage(data)) {
+            this.selectedCategory.setValue((data as Category[]).at(0)?.id);
+            if(this.positions().filter(x=>x.category.id==this.selectedCategory.value).length==0){
+              this.loadPositions((data as Category[]).at(0)!.id);
+            }
+            else{
+              this.filterCategories();
+            }
           }
-          else{
-            this.filterCategories();
-          }
-
         },
-        error: error=>{
+        error: (error)=>{
           this.toast.show(error.message,{duration:3000,position:"bottom-center",autoClose:true});
-        }
+          this.isLoading = false;
+        },
     });
 
 
@@ -115,6 +122,9 @@ export class PositionsListComponent implements OnInit {
           this.filterCategories();
 
         }
+      },
+      error => {
+        // console.log(error);
       }
     )
 
@@ -144,6 +154,18 @@ export class PositionsListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result:Position) => {
       this.filterCategories();
+    })
+  }
+
+  openCreateCategoryDialog() {
+    let dialogRef = this.dialogue.open(AddPositionCategoryDialogComponent, {
+      data:{
+        name:""
+      }
+    });
+    dialogRef.afterClosed().subscribe((result:string) => {
+      console.log(result)
+      this.categoriesService.addCategory(result).subscribe();
     })
   }
 

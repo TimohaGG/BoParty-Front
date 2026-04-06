@@ -12,6 +12,7 @@ import {Order} from "../models/Orders/Order";
 import {MinPosAmount} from "../models/Positions/MinPosAmount";
 import {CommonOrderInfo} from "../models/Orders/CommonOrderInfo";
 import {AdditionalOrderData} from "../models/Orders/AdditionalOrderData";
+import {CategoryCreateResp} from "../models/Positions/DTOs/CategoryCreateResp";
 
 @Injectable({providedIn:"root"})
 export class HttpService{
@@ -57,6 +58,11 @@ export class HttpService{
 
   renameIngredient(id: number, newName: string) {
     return this.clinet.post<RenameResp | ExceptionMessage>(this.baseUrl + "ingredients/rename",{id:id,name:newName});
+  }
+
+  addPositionCategory(userId:number, name:string) {
+
+    return this.clinet.post<CategoryCreateResp | ExceptionMessage>(this.baseUrl + "positions/categories/add", {name:name, userId: userId});
   }
 
   addIngCategory(name: string) {

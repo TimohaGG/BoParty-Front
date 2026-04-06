@@ -28,7 +28,8 @@ export class IngredientsService {
         return response as Ingredient[];
       }),
       catchError(error=>{
-        return of(error.error);
+        console.log("ERROR!");
+        throw new Error(error.error.message);
       })
     );
 
@@ -43,7 +44,7 @@ export class IngredientsService {
         return response as Category[];
       }),
       catchError(error=>{
-        return of(error.error);
+        throw new Error(error.error.message);
       })
     )
   }

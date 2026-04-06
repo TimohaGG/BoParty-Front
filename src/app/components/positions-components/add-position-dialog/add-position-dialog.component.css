@@ -9,3 +9,15 @@
 }
 
 
+.image-preview-wrapper {
+  max-height: 200px;
+  min-height: 200px;
+  overflow: hidden;
+}
+
+.image-preview {
+  width: 50%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
