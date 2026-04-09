@@ -146,6 +146,10 @@ export class AddOrderComponent implements OnInit {
   openInfoDialog(){
     let dialog = this.dialog.open(AddOrderInfoComponent);
     dialog.afterClosed().subscribe(res=>{
+
+      if(res == null || res == ""){
+        return;
+      }
       if(res.isCommon){
         console.log("Saving common!");
         console.log(res);
@@ -335,7 +339,7 @@ export class AddOrderComponent implements OnInit {
   }
 
   openHeaderDialog(positionId:number){
-    console.log(positionId);
+    console.log("GOT data", positionId);
     const dialogRef = this.dialog.open(AddHeaderDialogComponent);
     dialogRef.afterClosed().subscribe({
       next: (data)=> {

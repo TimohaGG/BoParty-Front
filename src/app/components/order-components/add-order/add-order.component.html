@@ -103,7 +103,7 @@
       <ng-container matColumnDef="mob-actions">
         <mat-header-cell *matHeaderCellDef> </mat-header-cell>
         <mat-cell *matCellDef="let element" >
-          <button class="btn" cdkMenuItem [cdkMenuTriggerFor]="menu" [cdkMenuTriggerData]="element">
+          <button class="btn" cdkMenuItem [cdkMenuTriggerFor]="menu" [cdkMenuTriggerData]="{item:element}">
             <mat-icon>more_vert</mat-icon>
           </button>
         </mat-cell>
@@ -192,9 +192,9 @@
 </div>
 
 
-<ng-template #menu let-data="cdkMenuTriggerData">
+<ng-template #menu let-item="item">
   <div cdkMenu  class="menu">
-    <button cdkMenuItem (click)="openHeaderDialog(data.id)">+ заголовок</button>
+    <button cdkMenuItem (click)="openHeaderDialog(item.position.id)">+ заголовок</button>
     <button cdkMenuItem>Видалити</button>
   </div>
 </ng-template>

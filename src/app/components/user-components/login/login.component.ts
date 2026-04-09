@@ -24,7 +24,8 @@ import {Router} from "@angular/router";
     MatIconButton,
     FormsModule,
     ReactiveFormsModule,
-    MatError
+    MatError,
+    MatButton
   ],
    standalone:true
 })

@@ -1,6 +1,6 @@
 <mat-dialog-content class="d-flex flex-column" style="gap: 1em">
 
-  <mat-form-field >
+  <mat-form-field class="p-3">
     <mat-label>Шаблон</mat-label>
     <mat-select (selectionChange)="insertData($event)">
       <mat-option value="-1">
@@ -13,7 +13,7 @@
   </mat-form-field>
 
 
-  <form [formGroup]="formData" class="d-flex flex-column" style="gap: 1em">
+  <form [formGroup]="formData" class="d-flex flex-column p-3" style="gap: 1em">
     <mat-form-field>
       <mat-label>Назва</mat-label>
       <input matInput formControlName="title" type="text"/>

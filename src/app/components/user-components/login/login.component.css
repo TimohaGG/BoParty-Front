@@ -11,4 +11,19 @@
   border-radius: 20px;
   margin-top: auto;
   margin-bottom: auto;
+  max-width:40vw !important;
 }
+
+
+@media (max-width:1024px){
+  .login-bg{
+    max-width: 100% !important;
+  }
+}
+
+@media screen and (min-width:1025px){
+  .login-bg{
+    max-width: 40vw !important;
+  }
+}
+
