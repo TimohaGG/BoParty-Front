@@ -5,3 +5,12 @@
 .control-buttons button:not(:last-child){
   margin-right: 10px;
 }
+
+
+.favourite-button.empty{
+  background-color: transparent;
+}
+
+.favourite-button.full{
+  background-color: green;
+}

@@ -40,13 +40,10 @@ export class OrdersService{
     return this.http.getAllMinOrders().pipe(
       map(res=>{
         if(!isMessage(res)){
-          console.log("asd");
           this.store.setAllMinOrders(res as MinMenu[]);
         }
       }),
       catchError((error:HttpErrorResponse)=>{
-        console.log("Error!")
-        console.log(error);
         throw new Error(error.error.message);
       })
     )
@@ -140,6 +137,20 @@ export class OrdersService{
         throw new Error(err.error.message);
       })
     );
+
+  }
+
+  togglePayed(id: number, isPayed: boolean) {
+    this.getById(id).subscribe(res=>{
+      if(!isMessage(res)){
+        let data:Menu = (res as Menu);
+        console.log("from ", data.payed, "to ", isPayed);
+        data.payed = isPayed;
+        this.store.addOrder(data);
+        this.http.toggleStatus(data.id, data.payed).subscribe(res=>{
+        });
+      }
+    });
 
   }
 }

@@ -19,11 +19,21 @@
 @else{
   <div class="orders-list d-flex flex-column justify-content-center align-items-center mt-3">
     @if(menus().length>0){
-      @for (item of menus();track $index){
+      @for (item of visibleMenus();track $index){
         <app-orders-list-item [menu]="item"></app-orders-list-item>
       }
     }
   </div>
+
+  <mat-paginator
+    [length]="totalPages()"
+    [pageIndex]="currentPage()"
+    [pageSize]="perPage()"
+    [pageSizeOptions]="[5,10,25]"
+    (page)="onPageChange($event)"
+    aria-label="Select Page">
+
+  </mat-paginator>
 
 
 

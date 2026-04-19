@@ -14,4 +14,5 @@ export interface Menu {
   totalPrice:number;
   positions:PositionAmountFull[];
   additionalInfo:AdditionalMenuData[];
+  payed:boolean;
 }

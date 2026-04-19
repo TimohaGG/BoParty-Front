@@ -125,5 +125,7 @@ export class HttpService{
     return this.clinet.delete<number | ExceptionMessage>(this.baseUrl + "orders/delete/"+id);
   }
 
-
+  toggleStatus(id:number,status:boolean):Observable<boolean> {
+    return this.clinet.post<boolean>(this.baseUrl + "orders/edit/status", {status:status, id:id});
+  }
 }
