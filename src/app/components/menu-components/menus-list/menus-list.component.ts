@@ -37,9 +37,9 @@ export class MenusListComponent implements OnInit{
   public menus:Signal<MinMenu[]> = computed(this.store.minMenusEntities);
 
 
-  public currentPage = signal(0);
-  public perPage = signal(10);
-  public totalPages(){ return this.menus().length;}
+  public currentPage = computed(this.store.currentPage);
+  public perPage = computed(this.store.pageSize);
+  public totalPages = computed(this.store.ordersTotal);
 
   public visibleMenus = computed(()=>{
     const items = this.menus();
@@ -63,22 +63,30 @@ export class MenusListComponent implements OnInit{
 
   ngOnInit(): void {
     if(this.menus().length == 0){
-      this.orderService.getAllMin().subscribe({
-          error: error=>{
-            this.loadingFailure = true;
-            this.toast.show(error.message,{duration:3000,position:"bottom-center",autoClose:true});
-          }
-        }
-      );
+      this.getTotalAmount().subscribe(res=>{
+        this.loadOrders();
+      });
+
     }
-
-
-
   }
 
+  loadOrders(){
+    this.orderService.getOfPageMin(this.perPage(), this.currentPage()).subscribe({
+        error: error=>{
+          this.loadingFailure = true;
+          this.toast.show(error.message,{duration:3000,position:"bottom-center",autoClose:true});
+        }
+      }
+    );
+  }
+
+  getTotalAmount(){
+    return this.orderService.getOrdersAmount();
+  }
 
   onPageChange($event: PageEvent) {
-    this.currentPage.set($event.pageIndex);
-    this.perPage.set($event.pageSize);
+    this.store.setCurrentPage($event.pageIndex);
+    this.store.setPerPage($event.pageSize);
+    this.loadOrders();
   }
 }

@@ -27,9 +27,8 @@ export class HttpService{
     return this.clinet.get<Menu[] | ExceptionMessage>(this.baseUrl + "orders/get");
   }
 
-  getAllMinOrders():Observable<MinMenu[] | ExceptionMessage>{
-    console.log(this.baseUrl + "orders/get");
-    return this.clinet.get<MinMenu[] | ExceptionMessage>(this.baseUrl + "orders/get/min");
+  getMinOrders(pageSize:number, currentPage:number):Observable<MinMenu[] | ExceptionMessage>{
+    return this.clinet.get<MinMenu[] | ExceptionMessage>(this.baseUrl + "orders/get/min", {params:{pageSize:pageSize, currentPage:currentPage}});
   }
 
   getAllPositions() {
@@ -127,5 +126,9 @@ export class HttpService{
 
   toggleStatus(id:number,status:boolean):Observable<boolean> {
     return this.clinet.post<boolean>(this.baseUrl + "orders/edit/status", {status:status, id:id});
+  }
+
+  getOrdersAmount() {
+    return this.clinet.get<number>(this.baseUrl + "orders/amount");
   }
 }

@@ -19,7 +19,7 @@
 @else{
   <div class="orders-list d-flex flex-column justify-content-center align-items-center mt-3">
     @if(menus().length>0){
-      @for (item of visibleMenus();track $index){
+      @for (item of menus();track $index){
         <app-orders-list-item [menu]="item"></app-orders-list-item>
       }
     }

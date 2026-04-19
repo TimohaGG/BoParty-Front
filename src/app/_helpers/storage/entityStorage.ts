@@ -20,7 +20,16 @@ import {Order} from "../../models/Orders/Order";
 
 
 
-const initStatet = {
+type OrdersListState = {
+  pageSize: number,
+  ordersTotal: number,
+  currentPage: number,
+  loading: boolean,
+}
+const initState:OrdersListState = {
+  pageSize: 10,
+  ordersTotal: 0,
+  currentPage: 0,
   loading: true,
 }
 
@@ -82,7 +91,7 @@ const orderConfig = entityConfig({
 })
 export const entityStorage = signalStore(
   {providedIn:"root"},
-  withState(initStatet),
+  withState(initState),
   withEntities(menusMinConfig),
   withEntities(menuConfig),
   withEntities(positionConfig),
@@ -132,6 +141,15 @@ export const entityStorage = signalStore(
     },
     setCommonData(data:CommonMenuInfo){
       patchState(store, setEntity(data,commonOrderInfoConfig))
+    },
+    setCurrentPage(page:number){
+      patchState(store, {currentPage:page})
+    },
+    setTotalPages(size:number){
+      patchState(store,{ordersTotal:size})
+    },
+    setPerPage(size:number){
+      patchState(store,{pageSize:size})
     },
     addIngCategory(category:Category){
       patchState(store, addEntity(category,ingCategoryConfig));

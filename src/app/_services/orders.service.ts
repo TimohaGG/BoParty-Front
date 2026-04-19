@@ -36,11 +36,12 @@ export class OrdersService{
     );
   }
 
-  public getAllMin(){
-    return this.http.getAllMinOrders().pipe(
+  public getOfPageMin(pageSize:number, currentPage:number) {
+    return this.http.getMinOrders(pageSize,currentPage).pipe(
       map(res=>{
         if(!isMessage(res)){
           this.store.setAllMinOrders(res as MinMenu[]);
+
         }
       }),
       catchError((error:HttpErrorResponse)=>{
@@ -152,5 +153,19 @@ export class OrdersService{
       }
     });
 
+  }
+
+  getOrdersAmount() {
+    return this.http.getOrdersAmount().pipe(
+      map(res=>{
+        if(!isMessage(res)){
+          this.store.setTotalPages(res as number);
+        }
+      }),
+      catchError((err:HttpErrorResponse)=>{
+        console.log("ERROR!!")
+        throw new Error(err.error.message);
+      })
+    );
   }
 }
