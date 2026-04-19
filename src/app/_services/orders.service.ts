@@ -39,6 +39,7 @@ export class OrdersService{
   public getOfPageMin(pageSize:number, currentPage:number) {
     return this.http.getMinOrders(pageSize,currentPage).pipe(
       map(res=>{
+        console.log(res);
         if(!isMessage(res)){
           this.store.setAllMinOrders(res as MinMenu[]);
 

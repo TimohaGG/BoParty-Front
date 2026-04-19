@@ -16,7 +16,7 @@
     </div>
     <div class="col-12">
       <div class="d-flex justify-content-center control-buttons">
-        <button mat-fab aria-label="edit button" class="control-button" routerLinkActive [routerLink]="['/order/create']" [queryParams]="{orderId:'${menu.id}'}">
+        <button mat-fab aria-label="edit button" class="control-button" routerLinkActive [routerLink]="['/order/create']" [queryParams]="{orderId:menu.id}">
           <mat-icon color="button-edit">edit</mat-icon>
         </button>
         <button mat-fab aria-label="edit button" style="background-color:var(--button-shopping)">
