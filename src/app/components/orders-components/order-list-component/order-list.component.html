@@ -1,0 +1,31 @@
+<div class="container">
+  <form method="get" class="d-flex justify-content-center">
+    <mat-form-field class="form-field">
+      <mat-label>Місяць</mat-label>
+      <mat-select>
+        @for (monthOp of monthList; track $index) {
+          <mat-option [value]="$index">{{monthOp}}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="form-field">
+      <mat-label>Рік</mat-label>
+      <input matInput type="text" [(ngModel)]="year" name="year">
+      @if (year) {
+        <button matSuffix mat-icon-button aria-label="Clear" (click)="year=0">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+
+
+    <button mat-flat-button class="h-auto ml-2"  (click)="openDialog()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </form>
+
+  <div class="container">
+
+  </div>
+</div>
