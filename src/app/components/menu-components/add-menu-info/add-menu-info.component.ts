@@ -26,10 +26,10 @@ import {MatOption, MatSelect, MatSelectChange} from "@angular/material/select";
     MatSelect,
     MatOption
   ],
-  templateUrl: './add-order-info.component.html',
-  styleUrl: './add-order-info.component.css'
+  templateUrl: './add-menu-info.component.html',
+  styleUrl: './add-menu-info.component.css'
 })
-export class AddOrderInfoComponent implements OnInit {
+export class AddMenuInfoComponent implements OnInit {
 
   readonly store = inject(entityStorage);
 
@@ -37,7 +37,7 @@ export class AddOrderInfoComponent implements OnInit {
 
 
 
-  dialogRef = inject(MatDialogRef<AddOrderInfoComponent>);
+  dialogRef = inject(MatDialogRef<AddMenuInfoComponent>);
   formData = new FormGroup({
     title:new FormControl('', [Validators.required]),
     description:new FormControl('', [Validators.required]),

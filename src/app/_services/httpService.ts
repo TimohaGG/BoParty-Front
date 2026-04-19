@@ -1,5 +1,5 @@
 import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
-import {MinOrder} from "../models/Orders/MinOrder";
+import {MinMenu} from "../models/Menu/MinMenu";
 import {catchError, Observable, throwError} from "rxjs";
 import {Injectable} from "@angular/core";
 import {ExceptionMessage} from "../models/Exceptions/ExceptionMessage";
@@ -8,10 +8,10 @@ import {Category} from "../models/Positions/Category";
 import {Ingredient} from "../models/Positions/Ingredient";
 import {RenameResp} from "../models/Positions/DTOs/RenameResp";
 import {IngredientAmount} from "../models/Positions/IngredientAmount";
-import {Order} from "../models/Orders/Order";
+import {Menu} from "../models/Menu/Menu";
 import {MinPosAmount} from "../models/Positions/MinPosAmount";
-import {CommonOrderInfo} from "../models/Orders/CommonOrderInfo";
-import {AdditionalOrderData} from "../models/Orders/AdditionalOrderData";
+import {CommonMenuInfo} from "../models/Menu/CommonMenuInfo";
+import {AdditionalMenuData} from "../models/Menu/AdditionalMenuData";
 import {CategoryCreateResp} from "../models/Positions/DTOs/CategoryCreateResp";
 
 @Injectable({providedIn:"root"})
@@ -23,13 +23,13 @@ export class HttpService{
   constructor(private clinet:HttpClient) {
   }
 
-  getAllOrders():Observable<Order[] | ExceptionMessage>{
-    return this.clinet.get<Order[] | ExceptionMessage>(this.baseUrl + "orders/get");
+  getAllOrders():Observable<Menu[] | ExceptionMessage>{
+    return this.clinet.get<Menu[] | ExceptionMessage>(this.baseUrl + "orders/get");
   }
 
-  getAllMinOrders():Observable<MinOrder[] | ExceptionMessage>{
+  getAllMinOrders():Observable<MinMenu[] | ExceptionMessage>{
     console.log(this.baseUrl + "orders/get");
-    return this.clinet.get<MinOrder[] | ExceptionMessage>(this.baseUrl + "orders/get/min");
+    return this.clinet.get<MinMenu[] | ExceptionMessage>(this.baseUrl + "orders/get/min");
   }
 
   getAllPositions() {
@@ -89,10 +89,10 @@ export class HttpService{
     return this.clinet.delete<number | ExceptionMessage>(this.baseUrl + "positions/remove?id="+id);
   }
 
-  addOrder(data: any, positions:MinPosAmount[], additionalData:AdditionalOrderData[]) {
+  addOrder(data: any, positions:MinPosAmount[], additionalData:AdditionalMenuData[]) {
     console.log(additionalData);
 
-    return this.clinet.post<Order | ExceptionMessage>(this.baseUrl + "orders/create",{
+    return this.clinet.post<Menu | ExceptionMessage>(this.baseUrl + "orders/create",{
       ...data,
       positions: positions,
       additionalInfo:additionalData
@@ -101,11 +101,11 @@ export class HttpService{
   }
 
   getOrderById(id:number) {
-    return this.clinet.get<Order | ExceptionMessage>(this.baseUrl + `orders/get/${id}`);
+    return this.clinet.get<Menu | ExceptionMessage>(this.baseUrl + `orders/get/${id}`);
   }
 
-  editOrder(id: number, value: any, items: MinPosAmount[],additionalInfo:AdditionalOrderData[]) {
-    return this.clinet.post<Order | ExceptionMessage>(this.baseUrl + "orders/edit",{
+  editOrder(id: number, value: any, items: MinPosAmount[],additionalInfo:AdditionalMenuData[]) {
+    return this.clinet.post<Menu | ExceptionMessage>(this.baseUrl + "orders/edit",{
       id:id,
       ...value,
       positions:items,
@@ -114,11 +114,11 @@ export class HttpService{
   }
 
   addCommonOrderInfo(res: any) {
-    return this.clinet.post<CommonOrderInfo | ExceptionMessage>(this.baseUrl + "orders/info/common/add",res);
+    return this.clinet.post<CommonMenuInfo | ExceptionMessage>(this.baseUrl + "orders/info/common/add",res);
   }
 
   addAllCommonInfo() {
-    return this.clinet.get<CommonOrderInfo[] | ExceptionMessage>(this.baseUrl + "orders/info/common");
+    return this.clinet.get<CommonMenuInfo[] | ExceptionMessage>(this.baseUrl + "orders/info/common");
   }
 
   deleteOrder(id: number) {

@@ -1,6 +1,6 @@
-import {Order} from "./Order";
+import {Menu} from "./Menu";
 
-export interface AdditionalOrderData {
+export interface AdditionalMenuData {
   id:number;
   title:string;
   description:string;

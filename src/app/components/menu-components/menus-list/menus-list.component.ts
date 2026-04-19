@@ -1,9 +1,9 @@
 import {Component, computed, inject, OnInit, Signal} from '@angular/core';
-import {OrdersListItemComponent} from "../orders-list-item/orders-list-item.component";
+import {MenusListItemComponent} from "../menus-list-item/menus-list-item.component";
 import {MatButton, MatFabButton} from "@angular/material/button";
 import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
 import {MatIcon} from "@angular/material/icon";
-import {MinOrder} from "../../../models/Orders/MinOrder";
+import {MinMenu} from "../../../models/Menu/MinMenu";
 import {entityStorage} from "../../../_helpers/storage/entityStorage";
 import {OrdersService} from "../../../_services/orders.service";
 import {of} from "rxjs";
@@ -11,13 +11,13 @@ import {HotToastService} from "@ngxpert/hot-toast";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {Category} from "../../../models/Positions/Category";
 import {PositionsCategoryService} from "../../../_services/positions-category.service";
-import {Order} from "../../../models/Orders/Order";
+import {Menu} from "../../../models/Menu/Menu";
 import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-orders-list',
   imports: [
-    OrdersListItemComponent,
+    MenusListItemComponent,
     MatMenuTrigger,
     MatMenu,
     MatMenuItem,
@@ -26,13 +26,13 @@ import {RouterLink} from "@angular/router";
     MatFabButton,
     RouterLink,
   ],
-  templateUrl: './orders-list.component.html',
-  styleUrl: './orders-list.component.css'
+  templateUrl: './menus-list.component.html',
+  styleUrl: './menus-list.component.css'
 })
-export class OrdersListComponent implements OnInit{
+export class MenusListComponent implements OnInit{
 
   private store = inject(entityStorage);
-  public orders:Signal<MinOrder[]> = computed(this.store.minOrdersEntities);
+  public menus:Signal<MinMenu[]> = computed(this.store.minMenusEntities);
 
   public loading:Signal<boolean> = computed(this.store.loading);
 
@@ -47,7 +47,7 @@ export class OrdersListComponent implements OnInit{
 
 
   ngOnInit(): void {
-    if(this.orders().length == 0){
+    if(this.menus().length == 0){
       console.log("Getting orders list");
       this.orderService.getAllMin().subscribe({
           error: error=>{

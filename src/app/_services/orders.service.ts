@@ -1,15 +1,15 @@
 import {computed, inject, Injectable, Signal} from "@angular/core";
 import {HttpService} from "./httpService";
 import {entityStorage} from "../_helpers/storage/entityStorage";
-import {MinOrder} from "../models/Orders/MinOrder";
+import {MinMenu} from "../models/Menu/MinMenu";
 import {ExceptionMessage, isMessage} from "../models/Exceptions/ExceptionMessage";
 import {catchError, map, Observable, of, pipe, Subscription, throwError} from "rxjs";
 import {HotToastService} from "@ngxpert/hot-toast";
 import {HttpErrorResponse} from "@angular/common/http";
-import {Order} from "../models/Orders/Order";
+import {Menu} from "../models/Menu/Menu";
 import {MinPosAmount} from "../models/Positions/MinPosAmount";
-import {CommonOrderInfo} from "../models/Orders/CommonOrderInfo";
-import {AdditionalOrderData} from "../models/Orders/AdditionalOrderData";
+import {CommonMenuInfo} from "../models/Menu/CommonMenuInfo";
+import {AdditionalMenuData} from "../models/Menu/AdditionalMenuData";
 
 @Injectable({
   providedIn:"root"
@@ -21,13 +21,13 @@ export class OrdersService{
   constructor(private http:HttpService, private toast:HotToastService) {
   }
 
-  public getAll():Observable<Order[] | ExceptionMessage> {
+  public getAll():Observable<Menu[] | ExceptionMessage> {
     return this.http.getAllOrders().pipe(
       map(res=>{
         if(!isMessage(res)){
-          this.store.setAllOrders(res as Order[]);
+          this.store.setAllOrders(res as Menu[]);
         }
-        return res as Order[];
+        return res as Menu[];
       }),
       catchError((error:HttpErrorResponse)=>{
         let msg = new ExceptionMessage(error.error.message, error.error.status);
@@ -41,7 +41,7 @@ export class OrdersService{
       map(res=>{
         if(!isMessage(res)){
           console.log("asd");
-          this.store.setAllMinOrders(res as MinOrder[]);
+          this.store.setAllMinOrders(res as MinMenu[]);
         }
       }),
       catchError((error:HttpErrorResponse)=>{
@@ -53,12 +53,12 @@ export class OrdersService{
   }
 
 
-  saveOrder(data:any, positions:MinPosAmount[], additionalData:AdditionalOrderData[]):Observable<Order | ExceptionMessage> {
+  saveOrder(data:any, positions:MinPosAmount[], additionalData:AdditionalMenuData[]):Observable<Menu | ExceptionMessage> {
     console.log(data);
     return this.http.addOrder(data, positions,additionalData).pipe(
       map(res=>{
-        this.store.setOrder(res as Order);
-        return res as Order;
+        this.store.setOrder(res as Menu);
+        return res as Menu;
       }),
       catchError((error:HttpErrorResponse)=>{
         throw new Error(error.error.message);
@@ -67,17 +67,17 @@ export class OrdersService{
   }
 
   getById(editOrderid: number) {
-    let order = this.store.ordersEntities().findIndex(order=>order.id==editOrderid);
+    let order = this.store.menusEntities().findIndex(order=>order.id==editOrderid);
     if(order!=-1) {
-      return of(this.store.ordersEntities().at(order)!);
+      return of(this.store.menusEntities().at(order)!);
     }
     else{
       console.log("sending request ")
       return this.http.getOrderById(editOrderid).pipe(
         map(res=>{
-          this.store.addOrder(res as Order);
+          this.store.addOrder(res as Menu);
           console.log("Got data",res);
-          return res as Order;
+          return res as Menu;
         }),
         catchError((error:HttpErrorResponse)=>{
           console.log(error);
@@ -89,10 +89,10 @@ export class OrdersService{
     }
   }
 
-  editOrder(id:number, value:any, items: MinPosAmount[], additionalInfo:AdditionalOrderData[]) {
+  editOrder(id:number, value:any, items: MinPosAmount[], additionalInfo:AdditionalMenuData[]) {
     return this.http.editOrder(id, value,items,additionalInfo).pipe(
       map(res=>{
-        let order = res as Order;
+        let order = res as Menu;
         this.store.setOrder(order);
         return order;
       }),
@@ -105,8 +105,8 @@ export class OrdersService{
   saveCommonInfo(res: any) {
     return this.http.addCommonOrderInfo(res).pipe(
       map(res=>{
-        let info = res as CommonOrderInfo;
-        this.store.setCommonData(res as CommonOrderInfo);
+        let info = res as CommonMenuInfo;
+        this.store.setCommonData(res as CommonMenuInfo);
         return info;
       }),
       catchError((error:HttpErrorResponse)=>{
@@ -120,7 +120,7 @@ export class OrdersService{
     return this.http.addAllCommonInfo().pipe(
       map(res=>{
         if(!isMessage(res)){
-          this.store.setAllCommonData(res as CommonOrderInfo[]);
+          this.store.setAllCommonData(res as CommonMenuInfo[]);
         }
       }),
       catchError((error:HttpErrorResponse)=>{

@@ -21,13 +21,13 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
     MatButton,
     MatProgressSpinner
   ],
-  templateUrl: './delete-order-dialog.component.html',
-  styleUrl: './delete-order-dialog.component.css'
+  templateUrl: './delete-menu-dialog.component.html',
+  styleUrl: './delete-menu-dialog.component.css'
 })
-export class DeleteOrderDialogComponent {
+export class DeleteMenuDialogComponent {
 
-  readonly data = inject<DeleteOrderDialogData>(MAT_DIALOG_DATA);
-  readonly dialogRef = inject(MatDialogRef<DeleteOrderDialogComponent>);
+  readonly data = inject<DeleteMenuDialogData>(MAT_DIALOG_DATA);
+  readonly dialogRef = inject(MatDialogRef<DeleteMenuDialogComponent>);
 
   public loading = false;
    constructor(private service:OrdersService, private toast:HotToastService) {
@@ -47,7 +47,7 @@ export class DeleteOrderDialogComponent {
   }
 }
 
-export interface DeleteOrderDialogData{
+export interface DeleteMenuDialogData {
   id:number;
   date:string;
   client:string;

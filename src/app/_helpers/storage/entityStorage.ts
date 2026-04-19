@@ -9,13 +9,14 @@ import {
   setEntity,
   withEntities
 } from "@ngrx/signals/entities";
-import {MinOrder} from "../../models/Orders/MinOrder";
+import {MinMenu} from "../../models/Menu/MinMenu";
 import {Position} from "../../models/Positions/Position";
 import {Category} from "../../models/Positions/Category";
 import {Ingredient} from "../../models/Positions/Ingredient";
+import {Menu} from "../../models/Menu/Menu";
+import {AdditionalMenuData} from "../../models/Menu/AdditionalMenuData";
+import {CommonMenuInfo} from "../../models/Menu/CommonMenuInfo";
 import {Order} from "../../models/Orders/Order";
-import {AdditionalOrderData} from "../../models/Orders/AdditionalOrderData";
-import {CommonOrderInfo} from "../../models/Orders/CommonOrderInfo";
 
 
 
@@ -23,15 +24,15 @@ const initStatet = {
   loading: true,
 }
 
-const ordersMinConfig = entityConfig({
-  entity:type<MinOrder>(),
-  collection:"minOrders",
+const menusMinConfig = entityConfig({
+  entity:type<MinMenu>(),
+  collection:"minMenus",
   selectId:(order)=>order.id
 });
 
-const orderConfig = entityConfig({
-  entity:type<Order>(),
-  collection:"orders",
+const menuConfig = entityConfig({
+  entity:type<Menu>(),
+  collection:"menus",
   selectId:(order=>order.id)
 })
 
@@ -61,38 +62,45 @@ const ingCategoryConfig = entityConfig({
 });
 
 const orderInfoConfig = entityConfig({
-  entity:type<AdditionalOrderData>(),
+  entity:type<AdditionalMenuData>(),
   collection:"orderData",
   selectId:(data)=>data.id
   }
 )
 
 const commonOrderInfoConfig = entityConfig({
-  entity:type<CommonOrderInfo>(),
+  entity:type<CommonMenuInfo>(),
   collection:"commonData",
   selectId:(data)=>data.id
 })
 
+
+const orderConfig = entityConfig({
+  entity:type<Order>(),
+  collection:"orders",
+  selectId:(data)=>data.id
+})
 export const entityStorage = signalStore(
   {providedIn:"root"},
   withState(initStatet),
-  withEntities(ordersMinConfig),
-  withEntities(orderConfig),
+  withEntities(menusMinConfig),
+  withEntities(menuConfig),
   withEntities(positionConfig),
   withEntities(positionCategoryConfig),
   withEntities(ingredientConfig),
   withEntities(ingCategoryConfig),
   withEntities(orderInfoConfig),
   withEntities(commonOrderInfoConfig),
+  withEntities(orderConfig),
 
   withMethods((store)=>({
-    setAllMinOrders(orders:MinOrder[]){
+    setAllMinOrders(orders:MinMenu[]){
       patchState(store,{loading:true});
-      patchState(store,setAllEntities(orders, ordersMinConfig))
+      patchState(store,setAllEntities(orders, menusMinConfig))
       patchState(store,{loading:false});
     },
-    setAllOrders(order:Order[]){
-      patchState(store, setAllEntities(order,orderConfig));
+    setAllOrders(order:Menu[]){
+      patchState(store, setAllEntities(order,menuConfig));
     },
     setAllPositions(positions:Position[]){
       patchState(store, setAllEntities(positions, positionConfig));
@@ -106,19 +114,23 @@ export const entityStorage = signalStore(
     setAllIngCategories(categories:Category[]){
       patchState(store,setAllEntities(categories,ingCategoryConfig));
     },
-    setAllOrderDetails(data:AdditionalOrderData[]){
+    setAllOrderDetails(data:AdditionalMenuData[]){
       patchState(store,setAllEntities(data,orderInfoConfig));
     },
-    setAllCommonData(data:CommonOrderInfo[]){
+    setAllCommonData(data:CommonMenuInfo[]){
       patchState(store,setAllEntities(data,commonOrderInfoConfig));
     },
-    setOrder(order:Order){
-      patchState(store,setEntity(order,orderConfig));
+    selectAllOrdersData(data:Order[]){
+      patchState(store,setAllEntities(data,orderConfig));
     },
-    setOrderData(data:AdditionalOrderData){
+
+    setOrder(order:Menu){
+      patchState(store,setEntity(order,menuConfig));
+    },
+    setOrderData(data:AdditionalMenuData){
       patchState(store,setEntity(data,orderInfoConfig));
     },
-    setCommonData(data:CommonOrderInfo){
+    setCommonData(data:CommonMenuInfo){
       patchState(store, setEntity(data,commonOrderInfoConfig))
     },
     addIngCategory(category:Category){
@@ -133,8 +145,8 @@ export const entityStorage = signalStore(
     addPositions(pos:Position[]){
       patchState(store,addEntities(pos,positionConfig));
     },
-    addOrder(order:Order){
-      patchState(store,setEntity(order,orderConfig));
+    addOrder(order:Menu){
+      patchState(store,setEntity(order,menuConfig));
     },
     addPositionCategory(category:Category){
       patchState(store,addEntity(category,positionCategoryConfig));
@@ -152,7 +164,7 @@ export const entityStorage = signalStore(
       patchState(store,removeEntity(id,orderInfoConfig));
     },
     removeOrder(id:number){
-      patchState(store, removeEntity(id,orderConfig));
+      patchState(store, removeEntity(id,menuConfig));
     }
   }))
 );
