@@ -59,7 +59,10 @@ export class MenusListItemComponent implements OnInit {
       this.menu.payed = !this.menu.payed;
       this.orderService.togglePayed(this.menu.id, this.menu.payed);
     }
+  }
 
 
+  downloadMenu(id:number){
+    this.orderService.download(id).subscribe();
   }
 }

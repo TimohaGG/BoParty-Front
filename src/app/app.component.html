@@ -6,6 +6,7 @@
     <mat-toolbar>Menu</mat-toolbar>
     <mat-nav-list >
       <a mat-list-item routerLink="/home" (click)="sidenav!.close()">Замовлення</a>
+      <a mat-list-item routerLink="/home" (click)="sidenav!.close()" [queryParams]="{showArchive:true}">Архів</a>
       <a mat-list-item routerLink="/positions" (click)="sidenav!.close()">Позиції</a>
       <a mat-list-item routerLink="/ingredients" (click)="sidenav!.close()">Інгридієнти</a>
       <a mat-list-item routerLink="/about" (click)="sidenav!.close()">Закупівлі</a>

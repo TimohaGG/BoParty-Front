@@ -27,8 +27,8 @@ export class HttpService{
     return this.clinet.get<Menu[] | ExceptionMessage>(this.baseUrl + "orders/get");
   }
 
-  getMinOrders(pageSize:number, currentPage:number):Observable<MinMenu[] | ExceptionMessage>{
-    return this.clinet.get<MinMenu[] | ExceptionMessage>(this.baseUrl + "orders/get/min", {params:{pageSize:pageSize, currentPage:currentPage}});
+  getMinOrders(pageSize:number, currentPage:number, archive:boolean):Observable<MinMenu[] | ExceptionMessage>{
+    return this.clinet.get<MinMenu[] | ExceptionMessage>(this.baseUrl + "orders/get/min", {params:{pageSize:pageSize, currentPage:currentPage, archive:archive}});
   }
 
   getAllPositions() {
@@ -128,7 +128,18 @@ export class HttpService{
     return this.clinet.post<boolean>(this.baseUrl + "orders/edit/status", {status:status, id:id});
   }
 
-  getOrdersAmount() {
-    return this.clinet.get<number>(this.baseUrl + "orders/amount");
+  getOrdersAmount(archive:boolean) {
+    return this.clinet.get<number>(this.baseUrl + "orders/amount",{params:{archive:archive}});
+  }
+
+  // getArchiveOrdersAmount() {
+  //   return this.clinet.get<number>(this.baseUrl + "orders/amount/archive");
+  // }
+
+  // getMinOrdersArchive(perPage: number, currentPage: number) {
+  //   return this.clinet.get<MinMenu[] | ExceptionMessage>(this.baseUrl + "orders/get/min/archive", {params:{pageSize:perPage, currentPage:currentPage}});
+  // }
+  download(id: number) {
+    return this.clinet.get(this.baseUrl + "orders/generate/"+id,{responseType: "blob"});
   }
 }

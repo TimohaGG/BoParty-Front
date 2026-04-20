@@ -83,7 +83,7 @@ export class AddMenuComponent implements OnInit {
 
   public selectedPositions: Position[] = []
   public posAmounts = signal<TableRow[]>([]);
-  displayedColumns: string[] = [ 'action','name','image', 'weight', 'price', 'amount','action-delete','mob-actions'];
+  displayedColumns: string[] = [ 'name','image', 'weight', 'price', 'amount','mob-actions'];
   public additionalInfo = signal<AdditionalMenuData[]>([]);
   displayedColumnsInfo: string[] = [ 'name','description', 'price'];
 
@@ -331,6 +331,7 @@ export class AddMenuComponent implements OnInit {
     if(index!=-1){
       this.selectedPositions.splice(index, 1);
     }
+
   }
 
   prints(e:any){

@@ -14,3 +14,7 @@
 .favourite-button.full{
   background-color: green;
 }
+
+.btn.control-button{
+  border-radius: 20%;
+}

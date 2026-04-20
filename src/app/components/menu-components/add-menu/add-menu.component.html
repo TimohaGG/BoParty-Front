@@ -42,15 +42,6 @@
                cdkDropListData="dataSource">
 
 
-      <ng-container matColumnDef="action" style="display: none">
-        <mat-header-cell *matHeaderCellDef style="display: none"></mat-header-cell>
-        <mat-cell *matCellDef="let element" class="btn-out">
-          <button mat-fab (click)="openHeaderDialog(element.id)">
-            <mat-icon>add</mat-icon>
-          </button>
-
-        </mat-cell>
-      </ng-container>
       <!-- Name Column -->
       <ng-container matColumnDef="name">
         <mat-header-cell *matHeaderCellDef> Назва </mat-header-cell>
@@ -91,14 +82,7 @@
         </mat-cell>
       </ng-container>
 
-      <ng-container matColumnDef="action-delete" style="display: none">
-        <mat-header-cell *matHeaderCellDef style="display: none"></mat-header-cell>
-        <mat-cell *matCellDef="let element" class="btn-out right p-0">
-          <button mat-fab (click)="removeFromList(element.id)">
-            <mat-icon>cancel_presentation</mat-icon>
-          </button>
-        </mat-cell>
-      </ng-container>
+
 
       <ng-container matColumnDef="mob-actions">
         <mat-header-cell *matHeaderCellDef> </mat-header-cell>
@@ -195,6 +179,6 @@
 <ng-template #menu let-item="item">
   <div cdkMenu  class="menu">
     <button cdkMenuItem (click)="openHeaderDialog(item.position.id)">+ заголовок</button>
-    <button cdkMenuItem>Видалити</button>
+    <button cdkMenuItem (click)="removeFromList(item.id)">Видалити</button>
   </div>
 </ng-template>

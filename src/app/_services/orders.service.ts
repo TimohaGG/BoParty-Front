@@ -36,8 +36,8 @@ export class OrdersService{
     );
   }
 
-  public getOfPageMin(pageSize:number, currentPage:number) {
-    return this.http.getMinOrders(pageSize,currentPage).pipe(
+  public getOfPageMin(pageSize:number, currentPage:number, archive:boolean) {
+    return this.http.getMinOrders(pageSize,currentPage,archive).pipe(
       map(res=>{
         console.log(res);
         if(!isMessage(res)){
@@ -156,8 +156,8 @@ export class OrdersService{
 
   }
 
-  getOrdersAmount() {
-    return this.http.getOrdersAmount().pipe(
+  getOrdersAmount(archive:boolean) {
+    return this.http.getOrdersAmount(archive).pipe(
       map(res=>{
         if(!isMessage(res)){
           this.store.setTotalPages(res as number);
@@ -168,5 +168,21 @@ export class OrdersService{
         throw new Error(err.error.message);
       })
     );
+  }
+
+
+  download(id: number) {
+    return this.http.download(id).pipe(
+      map(res=>{
+        if(!isMessage(res)){
+          const url = window.URL.createObjectURL(res);
+          window.open(url, '_blank');
+        }
+      }),
+      catchError((err:HttpErrorResponse)=>{
+        throw new Error(err.error.message);
+      })
+    );
+
   }
 }
