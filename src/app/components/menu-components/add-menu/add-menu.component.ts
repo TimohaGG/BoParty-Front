@@ -272,21 +272,26 @@ export class AddMenuComponent implements OnInit {
         if (row.unitedRow) {
           return; // skip unitedRow entries
         }
-
         const prev = amounts[i - 1];
+        // if (i > 0 && prev?.unitedRow) {
+        //   items.push(new MinPosAmount(
+        //     row.id as number,
+        //     row.amount as number,
+        //     prev.title as string
+        //   ));
+        // } else {
+        //   items.push(new MinPosAmount(
+        //     row.id as number,
+        //     row.amount as number
+        //   ));
+        // }
 
+        let tmp = new MinPosAmount(row.id as number,row.amount as number);
+        tmp.inMenuOrder = i;
         if (i > 0 && prev?.unitedRow) {
-          items.push(new MinPosAmount(
-            row.id as number,
-            row.amount as number,
-            prev.title as string
-          ));
-        } else {
-          items.push(new MinPosAmount(
-            row.id as number,
-            row.amount as number
-          ));
+          tmp.title = prev.title as string;
         }
+        items.push(tmp);
       });
     }
     return items;
