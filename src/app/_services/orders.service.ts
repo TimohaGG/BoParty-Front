@@ -56,6 +56,7 @@ export class OrdersService{
     console.log(data);
     return this.http.addOrder(data, positions,additionalData).pipe(
       map(res=>{
+
         this.store.setOrder(res as Menu);
         return res as Menu;
       }),
@@ -184,5 +185,25 @@ export class OrdersService{
       })
     );
 
+  }
+
+  deleteOrderInfo(id: number) {
+    return this.http.deleteMenuInfo(id).pipe(
+      map(res=>{
+        console.log(res);
+        if(!isMessage(res)){
+          console.log("Removeing");
+          this.store.removeOrderData(res as number);
+        }
+      }),
+      catchError((err:HttpErrorResponse)=>{
+        throw new Error(err.error.message);
+      })
+    );
+
+  }
+
+  deleteOrderInfoFromStorage(id: number) {
+    this.store.removeOrderData(id);
   }
 }

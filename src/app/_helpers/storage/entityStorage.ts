@@ -112,6 +112,7 @@ export const entityStorage = signalStore(
       patchState(store,{loading:true});
       patchState(store,removeAllEntities(menusMinConfig));
     },
+
     setAllOrders(order:Menu[]){
       patchState(store, setAllEntities(order,menuConfig));
     },
@@ -130,6 +131,9 @@ export const entityStorage = signalStore(
     setAllOrderDetails(data:AdditionalMenuData[]){
       patchState(store,setAllEntities(data,orderInfoConfig));
     },
+    clearOrderDetails(){
+      patchState(store,removeAllEntities(orderInfoConfig));
+    },
     setAllCommonData(data:CommonMenuInfo[]){
       patchState(store,setAllEntities(data,commonOrderInfoConfig));
     },
@@ -138,6 +142,10 @@ export const entityStorage = signalStore(
     },
 
     setOrder(order:Menu){
+      patchState(store,removeAllEntities(orderInfoConfig));
+      if(order.additionalInfo){
+        patchState(store,setAllEntities(order.additionalInfo,orderInfoConfig));
+      }
       patchState(store,setEntity(order,menuConfig));
     },
     setOrderData(data:AdditionalMenuData){

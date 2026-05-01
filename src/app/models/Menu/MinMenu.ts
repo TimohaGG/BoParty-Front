@@ -3,7 +3,7 @@
 export interface MinMenu{
   id:number;
   date:string;
-  sum:number;
+  totalPrice:number;
   client:string;
   payed:boolean;
 }

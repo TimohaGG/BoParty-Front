@@ -41,7 +41,7 @@ export class MenusListItemComponent implements OnInit {
         id:this.menu?.id,
         date:this.menu?.date,
         client:this.menu?.client,
-        price:this.menu?.sum
+        price:this.menu?.totalPrice
       }
     });
 
@@ -49,7 +49,7 @@ export class MenusListItemComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+    console.log(this.menu);
   }
 
   toggleFavourite() {

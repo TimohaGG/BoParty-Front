@@ -142,4 +142,8 @@ export class HttpService{
   download(id: number) {
     return this.clinet.get(this.baseUrl + "orders/generate/"+id,{responseType: "blob"});
   }
+
+  deleteMenuInfo(id: number) {
+    return this.clinet.post<number>(this.baseUrl + "orders/info/delete",{id:id});
+  }
 }

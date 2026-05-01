@@ -19,3 +19,9 @@
 .menu button:hover{background:#d0d0d0}
 @media (max-width:900px){.order-form{grid-template-columns:repeat(2,minmax(180px,1fr))}}
 @media (max-width:640px){.order-form{grid-template-columns:1fr;padding:12px}.section-heading{align-items:stretch;flex-direction:column}.section-heading button{width:100%}.sm-hide{display:none!important}}
+
+.mat-column-btn-remove{
+  width: 32px !important;
+  text-align: center;
+  justify-content: center;
+}
