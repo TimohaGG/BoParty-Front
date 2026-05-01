@@ -1,157 +1,156 @@
-<div class="row align-items-center flex-column" style="position: relative;">
-  <div class="col-sm-12 col-md-8 col-lg-8">
-    <h3 class="text-center mb-3">Замовлення</h3>
-    <form class="row" [formGroup]="ordersForm">
-      <div class="col-sm-12 col-lg-6 col-md-6 d-flex flex-column">
-        <mat-form-field>
-          <mat-label>Замовник</mat-label>
-          <input type="text" matInput formControlName="client"/>
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>К-сть гостей</mat-label>
-          <input type="text" matInput formControlName="guestsAmount"/>
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Формат</mat-label>
-          <input type="text" matInput formControlName="format"/>
-        </mat-form-field>
-      </div>
+<section class="page-shell order-editor">
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">Замовлення</h1>
+      <p class="page-subtitle">Контакти клієнта, позиції меню та фінальний підсумок.</p>
+    </div>
+  </header>
 
-      <div class="col-sm-12 col-lg-6 col-md-6 d-flex flex-column">
-        <mat-form-field>
-          <mat-label>Дата</mat-label>
-          <input type="date" matInput formControlName="date"/>
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Тривалість</mat-label>
-          <input type="text" matInput formControlName="duration"/>
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Телефон менеджера</mat-label>
-          <input type="text" matInput formControlName="phoneNumber"/>
-        </mat-form-field>
-      </div>
-    </form>
+  <form class="order-form content-panel" [formGroup]="ordersForm">
+    <mat-form-field>
+      <mat-label>Замовник</mat-label>
+      <input type="text" matInput formControlName="client"/>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Кількість гостей</mat-label>
+      <input type="text" matInput formControlName="guestsAmount"/>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Формат</mat-label>
+      <input type="text" matInput formControlName="format"/>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Дата</mat-label>
+      <input type="date" matInput formControlName="date"/>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Тривалість</mat-label>
+      <input type="text" matInput formControlName="duration"/>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Телефон менеджера</mat-label>
+      <input type="text" matInput formControlName="phoneNumber"/>
+    </mat-form-field>
+  </form>
 
-    <button mat-flat-button [disabled]="!editable" (click)="openPositionsDialog()" class="w-100 mb-2 mt-2">
-      Позиції
-    </button>
-    <mat-table #table [dataSource]="posAmounts()" class="mat-elevation-z8" cdkDropList
+  <div class="editor-section">
+    <div class="section-heading">
+      <div>
+        <h2>Позиції</h2>
+        <p>Перетягуйте рядки, щоб змінити порядок у меню.</p>
+      </div>
+      <button mat-flat-button color="accent" [disabled]="!editable" (click)="openPositionsDialog()">
+        <mat-icon>add</mat-icon>
+        Додати позиції
+      </button>
+    </div>
+
+    <mat-table #table [dataSource]="posAmounts()" class="content-panel menu-table" cdkDropList
                (cdkDropListDropped)="drop($event)"
                [cdkDropListSortPredicate]="sortPredicate"
                cdkDropListData="dataSource">
-
-
-      <!-- Name Column -->
       <ng-container matColumnDef="name">
-        <mat-header-cell *matHeaderCellDef> Назва </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.title}} </mat-cell>
+        <mat-header-cell *matHeaderCellDef>Назва</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.title}}</mat-cell>
       </ng-container>
 
-      <!-- Weight Column -->
       <ng-container matColumnDef="image">
-        <mat-header-cell *matHeaderCellDef> Зображення </mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>Фото</mat-header-cell>
         <mat-cell *matCellDef="let element">
           @if(element.image!=""){
-            <img src="data:image;base64,{{element.image}}" style="width: -webkit-fill-available"/>
+            <img src="data:image;base64,{{element.image}}" alt="" class="table-image"/>
           }
-
         </mat-cell>
       </ng-container>
 
-      <!-- Symbol Column -->
       <ng-container matColumnDef="weight" >
-        <mat-header-cell *matHeaderCellDef class="sm-hide"> Вага </mat-header-cell>
-        <mat-cell *matCellDef="let element" class="sm-hide"> {{element.weight}} </mat-cell>
+        <mat-header-cell *matHeaderCellDef class="sm-hide">Вага</mat-header-cell>
+        <mat-cell *matCellDef="let element" class="sm-hide">{{element.weight}}</mat-cell>
       </ng-container>
 
-      <!-- Quantity Column -->
       <ng-container matColumnDef="price">
-        <mat-header-cell *matHeaderCellDef> Ціна </mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>Ціна</mat-header-cell>
         <mat-cell *matCellDef="let element">{{element.price}}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="amount">
-        <mat-header-cell *matHeaderCellDef> К-сть </mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>К-сть</mat-header-cell>
         <mat-cell *matCellDef="let element">
           @if(!element.unitedRow){
-          <mat-form-field class="amount-input">
+            <mat-form-field class="amount-input">
               <input matInput [disabled]="!editable" [value]="element.amount" class="text-center" (change)="changeAmount(element.position.id, $event)"/>
-          </mat-form-field>
+            </mat-form-field>
           }
         </mat-cell>
       </ng-container>
 
-
-
       <ng-container matColumnDef="mob-actions">
-        <mat-header-cell *matHeaderCellDef> </mat-header-cell>
-        <mat-cell *matCellDef="let element" >
-          <button class="btn" cdkMenuItem [cdkMenuTriggerFor]="menu" [cdkMenuTriggerData]="{item:element}">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <button class="btn" cdkMenuItem [cdkMenuTriggerFor]="menu" [cdkMenuTriggerData]="{item:element}" aria-label="Дії з позицією">
             <mat-icon>more_vert</mat-icon>
           </button>
         </mat-cell>
       </ng-container>
 
-
-
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumns;" cdkDrag
                [cdkDragStartDelay]="500"
                [cdkDragData]="row" class="example-box">
-        <div style="position: absolute;top:10px;left: 10px">+</div>
+        <div class="drag-hint">
+          <mat-icon>drag_indicator</mat-icon>
+        </div>
         <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
       </mat-row>
     </mat-table>
+  </div>
 
-    <button mat-flat-button [disabled]="!editable" (click)="openInfoDialog()" class="w-100 mb-2 mt-2">
-      Підсумок
-    </button>
-    <mat-table #datatable [dataSource]="additionalInfo()" class="mat-elevation-z8" cdkDropList style="margin-bottom: 200px;"
+  <div class="editor-section summary-section">
+    <div class="section-heading">
+      <div>
+        <h2>Підсумок</h2>
+        <p>Додаткові рядки для рахунку та опису замовлення.</p>
+      </div>
+      <button mat-flat-button color="accent" [disabled]="!editable" (click)="openInfoDialog()">
+        <mat-icon>add</mat-icon>
+        Додати рядок
+      </button>
+    </div>
+
+    <mat-table #datatable [dataSource]="additionalInfo()" class="content-panel menu-table" cdkDropList
                (cdkDropListDropped)="dropInfo($event)"
                cdkDropListData="dataSource">
-      <!-- Name Column -->
       <ng-container matColumnDef="name">
-        <mat-header-cell *matHeaderCellDef> Назва </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.title}} </mat-cell>
+        <mat-header-cell *matHeaderCellDef>Назва</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.title}}</mat-cell>
       </ng-container>
 
-      <!-- Weight Column -->
       <ng-container matColumnDef="description">
-        <mat-header-cell *matHeaderCellDef> Опис </mat-header-cell>
-        <mat-cell *matCellDef="let element">
-          {{element.description}}
-        </mat-cell>
+        <mat-header-cell *matHeaderCellDef>Опис</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.description}}</mat-cell>
       </ng-container>
 
-      <!-- Quantity Column -->
       <ng-container matColumnDef="price">
-        <mat-header-cell *matHeaderCellDef> Ціна </mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>Ціна</mat-header-cell>
         <mat-cell *matCellDef="let element">{{element.price}}</mat-cell>
       </ng-container>
 
       <mat-header-row *matHeaderRowDef="displayedColumnsInfo"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumnsInfo;" cdkDrag
                [cdkDragData]="row" class="example-box">
-<!--               [cdkContextMenuTriggerFor]="context"-->
-<!--               [cdkContextMenuTriggerData]="{$implicit:row}">-->
         <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
       </mat-row>
     </mat-table>
-
-
-
-
   </div>
 
-  <div class="menu-button">
+  <div class="fab-stack editor-actions">
     @if(loading){
-      <button mat-fab>
+      <button mat-fab aria-label="Збереження">
         <mat-spinner></mat-spinner>
       </button>
     }
     @else{
-      <button mat-fab (click)="toggleEdit()">
+      <button mat-fab (click)="toggleEdit()" [attr.aria-label]="editable ? 'Завершити редагування' : 'Редагувати'">
         @if(editable){
           <mat-icon>close</mat-icon>
         }@else{
@@ -160,25 +159,20 @@
       </button>
     }
 
-
     @if(!loading){
-      <button mat-fab (click)="save()" style="background-color: white" class="mb-3 mt-3">
+      <button mat-fab (click)="save()" class="sort-button" aria-label="Зберегти порядок">
         <mat-icon>sort</mat-icon>
       </button>
-      <button mat-fab (click)="save()" style="background-color: green">
+      <button mat-fab (click)="save()" class="save-button" aria-label="Зберегти замовлення">
         <mat-icon>save</mat-icon>
       </button>
     }
-
   </div>
-
-
-</div>
-
+</section>
 
 <ng-template #menu let-item="item">
-  <div cdkMenu  class="menu">
-    <button cdkMenuItem (click)="openHeaderDialog(item.position.id)">+ заголовок</button>
+  <div cdkMenu class="menu">
+    <button cdkMenuItem (click)="openHeaderDialog(item.position.id)">Додати заголовок</button>
     <button cdkMenuItem (click)="removeFromList(item.id)">Видалити</button>
   </div>
 </ng-template>

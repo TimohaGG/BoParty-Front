@@ -1,65 +1,48 @@
 @if(!isLoggedIn){
-
-
-  <div  class="vh-100 d-flex justify-content-center">
-    <div class="login-bg row justify-content-between w-100 p-5" style="height: fit-content; ">
-      <div class="col-lg-4 col-sm-12 mb-4 align-self-center" style="margin: 0 auto">
-        <div class="logo">
-        </div>
+  <div class="auth-page">
+    <div class="login-bg">
+      <div class="auth-brand">
+        <div class="logo"></div>
+        <h1>Bo Party</h1>
+        <p>Увійдіть, щоб керувати замовленнями та меню.</p>
       </div>
-      <div class="col-lg-4 col-sm-12" style="max-width: 100%">
-        <form class="d-flex flex-column" (ngSubmit)="form.valid && onSubmit()" [formGroup]="form" >
-          <mat-form-field appearance="fill">
-            <mat-label> Login or e-mail</mat-label>
-            <input matInput placeholder="Login or e-mail"
-                   formControlName="username"/>
-            @if (form.get("username")?.hasError("required")) {
-              <mat-error>Username is required</mat-error>
-            }
 
-          </mat-form-field>
-          <mat-form-field class="mt-2">
-            <mat-label>Enter your password</mat-label>
-            <input matInput [type]="hide() ? 'password' : 'text'"
-                   formControlName="password"/>
-            <button
-              mat-icon-button
-              matSuffix
-              (click)="clickEvent($event)"
-              [attr.aria-label]="'Hide password'"
-              [attr.aria-pressed]="hide()"
-            >
-              <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
-            </button>
+      <form class="auth-form" (ngSubmit)="form.valid && onSubmit()" [formGroup]="form">
+        <mat-form-field appearance="fill">
+          <mat-label>Логін або e-mail</mat-label>
+          <input matInput placeholder="Логін або e-mail" formControlName="username"/>
+          @if (form.get("username")?.hasError("required")) {
+            <mat-error>Вкажіть логін або e-mail</mat-error>
+          }
+        </mat-form-field>
 
-            @if (form.get("password")!.hasError("required")) {
-              <mat-error>Password is required</mat-error>
-            }
-            @if (form.get("password")!.hasError("minLength")) {
-              <mat-error>Password must be at least 8 characters</mat-error>
-            }
+        <mat-form-field>
+          <mat-label>Пароль</mat-label>
+          <input matInput [type]="hide() ? 'password' : 'text'" formControlName="password"/>
+          <button
+            mat-icon-button
+            matSuffix
+            (click)="clickEvent($event)"
+            [attr.aria-label]="hide() ? 'Показати пароль' : 'Сховати пароль'"
+            [attr.aria-pressed]="hide()">
+            <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
 
-          </mat-form-field>
+          @if (form.get("password")!.hasError("required")) {
+            <mat-error>Вкажіть пароль</mat-error>
+          }
+          @if (form.get("password")!.hasError("minLength")) {
+            <mat-error>Пароль має містити щонайменше 8 символів</mat-error>
+          }
+        </mat-form-field>
 
-          <button mat-flat-button color="accent" class="mt-4">Login</button>
-        </form>
-
-
-
-          <mat-error>
-            @if(isLoginFailed){
-              {{errorMessage}}
-            }
-          </mat-error>
-
-      </div>
+        <button mat-flat-button color="accent">Увійти</button>
+        <mat-error>
+          @if(isLoginFailed){
+            {{errorMessage}}
+          }
+        </mat-error>
+      </form>
     </div>
   </div>
-
-
-
-
-
-
 }
-

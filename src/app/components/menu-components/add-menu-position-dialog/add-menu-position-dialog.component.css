@@ -1,0 +1,9 @@
+.positions-picker-content {
+  padding: 20px 24px 84px !important;
+}
+
+@media (max-width: 576px) {
+  .positions-picker-content {
+    padding: 12px 12px 84px !important;
+  }
+}

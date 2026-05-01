@@ -1,63 +1,75 @@
-
-<div class="d-flex justify-content-center align-items-center">
-  <h2 class="text-center">Позиції</h2>
-  <button mat-flat-button class="ml-3" (click)="openCreateDialog()">
-    <mat-icon class="m-0">
-      add icon
-    </mat-icon>
-  </button>
-</div>
-
-
-
-@if(categories().length!=0){
-  <div class="categories-list d-flex justify-content-center my-4">
-    <mat-button-toggle-group style="margin: 0 auto;overflow-x: scroll" [value]="2" [formControl]="selectedCategory" (change)="filterCategories()">
-      @for (category of userCategories; track category.id) {
-        <mat-button-toggle [value]="category.id">{{category.name}}</mat-button-toggle>
-      }
-    </mat-button-toggle-group>
-  </div>
-}
-
-@if(!isLoading){
-  <div class="positions-list d-flex flex-column justify-content-center align-items-center">
-    @for (elem of filteredPositions();track $index){
-      <app-positions-list-item
-        (updateEdited)="filterCategories()"
-        (removeDeleted)="filterCategories()"
-        (onSelect)="selectPosition($event)"
-        (onDeselect)="sendDeselection($event)"
-
-        [selectable]="selectable"
-        [position]="elem"
-        [isSelected]="isSelected(elem.id)"
-        class="w-100" ></app-positions-list-item>
+<section class="page-shell">
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">Позиції</h1>
+      <p class="page-subtitle">Страви та послуги, які можна додавати до замовлень.</p>
+    </div>
+    @if(!selectable){
+      <button mat-flat-button color="accent" (click)="openCreateDialog()">
+        <mat-icon>add</mat-icon>
+        Нова позиція
+      </button>
     }
-  </div>
-  @if(!selectable){
+  </header>
 
+  @if(categories().length != 0){
+    <div class="categories-list">
+      <mat-button-toggle-group [formControl]="selectedCategory" (change)="filterCategories()" aria-label="Категорії позицій">
+        @for (category of userCategories; track category.id) {
+          <mat-button-toggle [value]="category.id">{{category.name}}</mat-button-toggle>
+        }
+      </mat-button-toggle-group>
+    </div>
   }
-}
-@else{
-  <mat-spinner color="accent"></mat-spinner>
-}
 
+  @if(!isLoading){
+    @if(filteredPositions()?.length){
+      <div class="positions-list content-panel">
+        @for (elem of filteredPositions(); track $index){
+          <app-positions-list-item
+            (updateEdited)="filterCategories()"
+            (removeDeleted)="filterCategories()"
+            (onSelect)="selectPosition($event)"
+            (onDeselect)="sendDeselection($event)"
+            [selectable]="selectable"
+            [position]="elem"
+            [isSelected]="isSelected(elem.id)"></app-positions-list-item>
+        }
+      </div>
+    }
+    @else{
+      <div class="empty-state content-panel">
+        <div>
+          <mat-icon>restaurant</mat-icon>
+          <p>У цій категорії ще немає позицій</p>
+        </div>
+      </div>
+    }
+  }
+  @else{
+    <div class="loading-state content-panel">
+      <mat-spinner color="accent"></mat-spinner>
+    </div>
+  }
+</section>
 
 @if(selectable){
-  <button mat-fab class="menu-button" (click)="sendSelection()" >
-    <mat-icon>add</mat-icon>
+  <button mat-fab class="menu-button" (click)="sendSelection()" aria-label="Додати вибрані позиції">
+    <mat-icon>done</mat-icon>
   </button>
 }
 @else{
-  <button mat-fab class="menu-button" [matMenuTriggerFor]="menu" >
+  <button mat-fab class="menu-button" [matMenuTriggerFor]="menu" aria-label="Дії з позиціями">
     <mat-icon>more_vert</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
-    <button mat-menu-item (click)="openCreateCategoryDialog()">Нова категорія</button>
-    <button mat-menu-item>Новий інгридієнт</button>
+    <button mat-menu-item (click)="openCreateDialog()">
+      <mat-icon>add</mat-icon>
+      <span>Нова позиція</span>
+    </button>
+    <button mat-menu-item (click)="openCreateCategoryDialog()">
+      <mat-icon>create_new_folder</mat-icon>
+      <span>Нова категорія</span>
+    </button>
   </mat-menu>
 }
-
-
-

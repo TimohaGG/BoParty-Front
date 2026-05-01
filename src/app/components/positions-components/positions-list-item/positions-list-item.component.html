@@ -1,82 +1,40 @@
 @if (position){
+  <article class="position-row" [class.is-selected]="isSelected">
+    <div class="position-image">
+      <div class="position-img" [style.background-image]="'url(data:image/*;base64,'+position.image + ')'"></div>
+    </div>
 
-  <div class="row w-100" style="position: relative; margin: 0 auto">
-    <div class="col-md-4 col-lg-4 col-sm-6 position-info">
-      <div class="d-flex flex-column justify-content-between h-100">
-        <span>{{position.name}}</span>
-        <div class="d-flex justify-content-between">
-          <span>{{position.price}} грн</span>
-          <span>{{position.weight}} г</span>
-        </div>
+    <div class="position-info">
+      <h2>{{position.name}}</h2>
+      <div class="position-meta">
+        <span>{{position.price}} грн</span>
+        <span>{{position.weight}} г</span>
       </div>
     </div>
-    <div class="col-lg-5 col-md-5 col-sm-12 position-image">
-      <div class="position-img" [style.background-image]="'url(data:image/*;base64,'+position.image + ')'">
 
-      </div>
-    </div>
-    <div class="col-3 d-lg-block d-md-block d-none align-self-center">
-      <div class="d-flex justify-content-end">
-        @if(selectable){
-          @if(isSelected){
-            <button mat-button (click)="deselectPosition()">
-              <mat-icon>
-                done_outline
-              </mat-icon>
-            </button>
-          }
-          @else{
-            <button mat-button (click)="selectPosition()">
-              <mat-icon>add_circle_outline</mat-icon>
-            </button>
-          }
-
-        }@else{
-          <button mat-fab  aria-label="edit button" class="control-button mr-3" (click)="openModal()">
-            <mat-icon color="button-edit">edit</mat-icon>
-          </button>
-          <button mat-fab aria-label="edit button" style="background-color: var(--button-remove)" (click)="openDeleteModal()">
-            <mat-icon style="color: white;">delete</mat-icon>
+    <div class="position-actions">
+      @if(selectable){
+        @if(isSelected){
+          <button mat-stroked-button color="accent" (click)="deselectPosition()">
+            <mat-icon>done</mat-icon>
+            Вибрано
           </button>
         }
-
-      </div>
-    </div>
-
-
-    @if(selectable){
-      @if(isSelected){
-        <button mat-button (click)="deselectPosition()" class="position-menu-button d-block d-lg-none d-md-none">
-          <mat-icon>
-            done_outline
-          </mat-icon>
-        </button>
+        @else{
+          <button mat-flat-button color="accent" (click)="selectPosition()">
+            <mat-icon>add</mat-icon>
+            Додати
+          </button>
+        }
       }
       @else{
-        <button mat-button (click)="selectPosition()" class="position-menu-button d-block d-lg-none d-md-none">
-          <mat-icon>add_circle_outline</mat-icon>
+        <button mat-icon-button class="edit-button" aria-label="Редагувати" title="Редагувати" (click)="openModal()">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button class="delete-button" aria-label="Видалити" title="Видалити" (click)="openDeleteModal()">
+          <mat-icon>delete</mat-icon>
         </button>
       }
-    }
-    @else{
-      <button mat-icon-button [matMenuTriggerFor]="posMenu" class="position-menu-button d-block d-lg-none d-md-none">
-        <mat-icon>more_vert</mat-icon>
-      </button>
-      <mat-menu #posMenu="matMenu">
-        <button mat-menu-item  (click)="openModal()">
-          <mat-icon color="button-edit">edit</mat-icon>
-          <span>Редагувати</span>
-        </button>
-        <button mat-menu-item  (click)="openDeleteModal()">
-          <mat-icon color="button-edit">delete</mat-icon>
-          <span>Видалити</span>
-        </button>
-      </mat-menu>
-    }
-
-  </div>
-
+    </div>
+  </article>
 }
-
-
-

@@ -6,7 +6,7 @@ import {
   MatDialogContent,
   MatDialogRef
 } from "@angular/material/dialog";
-import {MatButton, MatFabButton} from "@angular/material/button";
+import {MatButton} from "@angular/material/button";
 import {OrdersService} from "../../../_services/orders.service";
 import {HotToastService} from "@ngxpert/hot-toast";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
@@ -17,7 +17,6 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
     MatDialogContent,
     MatDialogActions,
     MatDialogClose,
-    MatFabButton,
     MatButton,
     MatProgressSpinner
   ],

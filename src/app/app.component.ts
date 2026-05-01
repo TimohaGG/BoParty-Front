@@ -28,7 +28,8 @@ import {entityStorage} from "./_helpers/storage/entityStorage";
     MatSidenav,
     MatNavList,
     MatListItem,
-    RouterLink
+    RouterLink,
+    RouterLinkActive
   ],
   standalone:true
 })

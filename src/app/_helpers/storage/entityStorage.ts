@@ -108,6 +108,10 @@ export const entityStorage = signalStore(
       patchState(store,setAllEntities(orders, menusMinConfig))
       patchState(store,{loading:false});
     },
+    clearMinOrders(){
+      patchState(store,{loading:true});
+      patchState(store,removeAllEntities(menusMinConfig));
+    },
     setAllOrders(order:Menu[]){
       patchState(store, setAllEntities(order,menuConfig));
     },

@@ -1,51 +1,43 @@
 @if (menu) {
-<div class="d-flex">
-  <div class="row justify-content-center align-items-center">
-    <div class="col-6 text-center date">
-      <h3>{{menu.date}}</h3>
-    </div>
-    <div class="col-3 text-center price">
-      {{menu.sum}} грн
-    </div>
-    <div class="col-3">
+  <article class="order-row">
+    <div class="order-main">
       <div>
-        <button mat-fab class="favourite-button" [ngClass]="menu.payed ? 'full' : 'empty'" (click)="toggleFavourite()">
-          <mat-icon>star_border</mat-icon>
-        </button>
+        <span class="eyebrow">Дата події</span>
+        <h2>{{menu.date}}</h2>
       </div>
-    </div>
-    <div class="col-12">
-      <div class="d-flex justify-content-center control-buttons">
-        <button aria-label="edit button" class="control-button btn btn-outline-light btn-sm" (click)="downloadMenu(menu.id)">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-down" viewBox="0 0 16 16">
-            <path fill-rule="evenodd" d="M3.5 6a.5.5 0 0 0-.5.5v8a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5v-8a.5.5 0 0 0-.5-.5h-2a.5.5 0 0 1 0-1h2A1.5 1.5 0 0 1 14 6.5v8a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5v-8A1.5 1.5 0 0 1 3.5 5h2a.5.5 0 0 1 0 1z"/>
-            <path fill-rule="evenodd" d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/>
-          </svg>
-        </button>
-        <button aria-label="edit button" class="control-button btn btn-outline-light btn-sm" routerLinkActive [routerLink]="['/order/create']" [queryParams]="{orderId:menu.id}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
-            <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
-          </svg>
-        </button>
-        <button aria-label="edit button" class="control-button btn btn-outline-light btn-sm" style="border-color:var(--button-shopping)">
-          <mat-icon style="color:var(--button-shopping)">
-            shopping_cart
-          </mat-icon>
-        </button>
-        <button  aria-label="edit button" class="control-button btn btn-outline-light btn-sm" style="border-color: var(--button-copy)">
-          <mat-icon style="color: var(--button-copy)">content_copy</mat-icon>
-        </button>
-        <button  aria-label="edit button" class="control-button btn btn-outline-light btn-sm " style="border-color: var(--button-remove)" (click)="openDeleteDialog()">
-          <mat-icon style="color: var(--button-remove);">delete</mat-icon>
-        </button>
+      <div class="order-price">
+        <span class="eyebrow">Сума</span>
+        <strong>{{menu.sum}} грн</strong>
       </div>
-
+      <button
+        mat-icon-button
+        class="paid-button"
+        [ngClass]="menu.payed ? 'full' : 'empty'"
+        (click)="toggleFavourite()"
+        [attr.aria-label]="menu.payed ? 'Позначено як оплачено' : 'Позначити як оплачено'"
+        [title]="menu.payed ? 'Оплачено' : 'Не оплачено'">
+        <mat-icon>{{menu.payed ? 'paid' : 'payments'}}</mat-icon>
+      </button>
     </div>
 
-
-  </div>
-
-</div>
-
-
+    <div class="control-buttons" aria-label="Дії із замовленням">
+      <button mat-stroked-button class="control-button" (click)="downloadMenu(menu.id)">
+        <mat-icon>download</mat-icon>
+        <span>PDF</span>
+      </button>
+      <button mat-stroked-button class="control-button" routerLinkActive [routerLink]="['/order/create']" [queryParams]="{orderId:menu.id}">
+        <mat-icon>edit</mat-icon>
+        <span>Редагувати</span>
+      </button>
+      <button mat-icon-button class="shopping-button" aria-label="Закупівлі" title="Закупівлі">
+        <mat-icon>shopping_cart</mat-icon>
+      </button>
+      <button mat-icon-button class="copy-button" aria-label="Копіювати" title="Копіювати">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button class="delete-button" aria-label="Видалити" title="Видалити" (click)="openDeleteDialog()">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </article>
 }

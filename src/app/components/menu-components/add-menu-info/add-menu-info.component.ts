@@ -3,7 +3,7 @@ import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef} from "
 import {MatFormField, MatLabel} from "@angular/material/form-field";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatInput} from "@angular/material/input";
-import {MatButton, MatFabButton} from "@angular/material/button";
+import {MatButton} from "@angular/material/button";
 import {OrdersService} from "../../../_services/orders.service";
 import {MatCheckbox} from "@angular/material/checkbox";
 import {entityStorage} from "../../../_helpers/storage/entityStorage";
@@ -20,7 +20,6 @@ import {MatOption, MatSelect, MatSelectChange} from "@angular/material/select";
     MatDialogClose,
     ReactiveFormsModule,
     MatInput,
-    MatFabButton,
     MatButton,
     MatCheckbox,
     MatSelect,
@@ -52,7 +51,7 @@ export class AddMenuInfoComponent implements OnInit {
       if(this.commonOptions && this.commonOptions.length == 0){
         this.service.getAllCommonData().subscribe({
           next: data => {
-            this.toast.show("Варіанти завантажено");
+            this.toast.show("Шаблони завантажено");
           },
           error: err => {
             this.toast.show(err);

@@ -1,0 +1,29 @@
+.profile-card {
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.profile-card strong {
+  font-size: 1.05rem;
+}
+
+.roles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.roles span {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(246, 196, 83, 0.12);
+  color: var(--accent-color);
+}

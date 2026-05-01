@@ -1,58 +1,62 @@
+<section class="page-shell">
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">{{ needsArchive ? 'Архів замовлень' : 'Замовлення' }}</h1>
+      <p class="page-subtitle">{{ needsArchive ? 'Переглядайте минулі події та повторюйте вдалі меню.' : 'Плануйте активні події, меню та підсумки.' }}</p>
+    </div>
+    <button mat-flat-button class="new-order-button" [routerLink]="'/order/create'" [queryParams]="{editable:true}">
+      <span class="button-glow"></span>
+      <mat-icon>add</mat-icon>
+      <span>Нове замовлення</span>
+    </button>
+  </header>
 
-<div class="d-flex justify-content-center align-items-center">
+  @if(menus().length == 0 && !loadingFailure){
+    <div class="loading-state content-panel">
+      <mat-spinner color="accent"></mat-spinner>
+    </div>
+  }
 
-  @if (this.needsArchive){
-    <h3 class="text-center">Архів</h3>
+  @if(loadingFailure){
+    <div class="empty-state content-panel">
+      <div>
+        <mat-icon>inbox</mat-icon>
+        <p>Тут поки порожньо</p>
+      </div>
+    </div>
   }
   @else{
-    <h3 class="text-center">Замовлення</h3>
-  }
-
-  <button [routerLink]="'/order/create'" [queryParams]="{editable:true}" class="btn btn-outline-light mx-4">
-    <mat-icon style="color:white">
-      add
-    </mat-icon>
-  </button>
-</div>
-
-
-
-@if(menus().length ==0 && !loadingFailure){
-  <mat-spinner color="accent"></mat-spinner>
-}
-@if(loadingFailure){
-  <h5 class="text-center mt-3">Здається тут пусто :(</h5>
-}
-@else{
-  <div class="orders-list d-flex flex-column justify-content-center align-items-center mt-3">
-    @if(menus().length>0){
-      @for (item of menus();track $index){
-        <app-orders-list-item [menu]="item"></app-orders-list-item>
-      }
+    @if(menus().length > 0){
+      <div class="orders-list content-panel">
+        @for (item of menus(); track $index){
+          <app-orders-list-item [menu]="item"></app-orders-list-item>
+        }
+      </div>
     }
-  </div>
 
-  <mat-paginator
-    class="mt-3"
-    [length]="totalPages()"
-    [pageIndex]="currentPage()"
-    [pageSize]="perPage()"
-    [pageSizeOptions]="[5,10,25]"
-    (page)="onPageChange($event)"
-    aria-label="Select Page">
+    <mat-paginator
+      class="orders-paginator"
+      [length]="totalPages()"
+      [pageIndex]="currentPage()"
+      [pageSize]="perPage()"
+      [pageSizeOptions]="[5,10,25]"
+      (page)="onPageChange($event)"
+      aria-label="Сторінки замовлень">
+    </mat-paginator>
+  }
+</section>
 
-  </mat-paginator>
-
-
-
-
-}
-<button [matMenuTriggerFor]="menu" mat-fab class="menu-button">
+<button [matMenuTriggerFor]="menu" mat-fab class="menu-button" aria-label="Дії із замовленнями">
   <mat-icon>more_vert</mat-icon>
 </button>
 
-
 <mat-menu #menu="matMenu">
-  <button mat-menu-item [routerLink]="'/order/create'">Нове замовлення</button>
-  <button mat-menu-item>Об`єднати</button>
+  <button mat-menu-item [routerLink]="'/order/create'" [queryParams]="{editable:true}">
+    <mat-icon>add</mat-icon>
+    <span>Нове замовлення</span>
+  </button>
+  <button mat-menu-item>
+    <mat-icon>merge_type</mat-icon>
+    <span>Об'єднати</span>
+  </button>
 </mat-menu>

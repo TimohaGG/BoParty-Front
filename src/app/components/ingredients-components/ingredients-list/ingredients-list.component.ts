@@ -20,6 +20,7 @@ import {DeleteIngredientDialogueComponent} from "../delete-ingredient-dialogue/d
 import {
   DeleteIngCategoryDialogueComponent
 } from "../delete-ing-category-dialogue/delete-ing-category-dialogue.component";
+import {NgTemplateOutlet} from "@angular/common";
 
 
 @Component({
@@ -39,6 +40,7 @@ import {
     MatMenuItem,
     MatFabButton,
     MatMenuTrigger,
+    NgTemplateOutlet,
   ],
   templateUrl: './ingredients-list.component.html',
   styleUrl: './ingredients-list.component.css',
@@ -116,7 +118,7 @@ export class IngredientsListComponent implements OnInit {
   renameCategory(id: number, event: any) {
     let name = event.target.value
     if (name) {
-      this.toggleEdit(event, String(id));
+      this.toggleEdit(event, `category-${id}`);
       this.ingService.renameCategory(id, name).subscribe({
         next: data => {
           if (!isMessage(data)) {
@@ -162,7 +164,7 @@ export class IngredientsListComponent implements OnInit {
   renameIngredient(id: number, event: any) {
     let name = event.target.value
     if (name) {
-      this.toggleEdit(event, String(id));
+      this.toggleEdit(event, `ingredient-${id}`);
       this.ingService.renameIngredient(id, name).subscribe({
         next: data => {
           if (!isMessage(data)) {
