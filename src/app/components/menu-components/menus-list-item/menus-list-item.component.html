@@ -29,7 +29,7 @@
         <mat-icon>edit</mat-icon>
         <span>Редагувати</span>
       </button>
-      <button mat-icon-button class="shopping-button" aria-label="Закупівлі" title="Закупівлі">
+      <button mat-icon-button class="shopping-button" aria-label="Закупівлі" title="Закупівлі" [routerLink]="['/order/shopping/' + menu.id]">
         <mat-icon>shopping_cart</mat-icon>
       </button>
       <button mat-icon-button class="copy-button" aria-label="Копіювати" title="Копіювати">

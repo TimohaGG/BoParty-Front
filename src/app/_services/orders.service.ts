@@ -206,4 +206,21 @@ export class OrdersService{
   deleteOrderInfoFromStorage(id: number) {
     this.store.removeOrderData(id);
   }
+
+  getShoppingList(orderId: number) {
+    return this.http.getShoppingList(orderId).pipe(
+      map(res=>{
+        console.log(res);
+        if(!isMessage(res)){
+          console.log("Done");
+        }
+        return res;
+      }),
+      catchError((err:HttpErrorResponse)=>{
+        console.log(err);
+        throw new Error(err.error.message);
+      })
+    );
+
+  }
 }

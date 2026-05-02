@@ -17,6 +17,8 @@ import {Menu} from "../../models/Menu/Menu";
 import {AdditionalMenuData} from "../../models/Menu/AdditionalMenuData";
 import {CommonMenuInfo} from "../../models/Menu/CommonMenuInfo";
 import {Order} from "../../models/Orders/Order";
+import {ShoppingList} from "../../models/Menu/ShoppingList";
+import {ShoppingListItem} from "../../models/Menu/ShoppingListItem";
 
 
 
@@ -89,6 +91,13 @@ const orderConfig = entityConfig({
   collection:"orders",
   selectId:(data)=>data.id
 })
+
+const shoppingListConfig = entityConfig({
+  entity:type<ShoppingList>(),
+  collection:"shoppingList",
+  selectId:(data)=>data.id
+})
+
 export const entityStorage = signalStore(
   {providedIn:"root"},
   withState(initState),
@@ -101,6 +110,7 @@ export const entityStorage = signalStore(
   withEntities(orderInfoConfig),
   withEntities(commonOrderInfoConfig),
   withEntities(orderConfig),
+
 
   withMethods((store)=>({
     setAllMinOrders(orders:MinMenu[]){
@@ -131,6 +141,7 @@ export const entityStorage = signalStore(
     setAllOrderDetails(data:AdditionalMenuData[]){
       patchState(store,setAllEntities(data,orderInfoConfig));
     },
+
     clearOrderDetails(){
       patchState(store,removeAllEntities(orderInfoConfig));
     },
@@ -140,7 +151,6 @@ export const entityStorage = signalStore(
     selectAllOrdersData(data:Order[]){
       patchState(store,setAllEntities(data,orderConfig));
     },
-
     setOrder(order:Menu){
       patchState(store,removeAllEntities(orderInfoConfig));
       if(order.additionalInfo){

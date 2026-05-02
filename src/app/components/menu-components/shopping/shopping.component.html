@@ -1,0 +1,116 @@
+<section class="page-shell shopping-page">
+  <header class="page-header shopping-header">
+    <div>
+      <a routerLink="/home" class="back-link">
+        <mat-icon>arrow_back</mat-icon>
+        Замовлення
+      </a>
+      <h1 class="page-title">Закупівлі</h1>
+      <p class="page-subtitle">Список інгредієнтів для замовлення #{{orderId}}</p>
+    </div>
+
+    @if(shoppingList?.needsUpdate){
+      <div class="status-chip warning">
+        <mat-icon>sync_problem</mat-icon>
+        Потрібно оновити
+      </div>
+    }
+    @else if(shoppingList){
+      <div class="status-chip">
+        <mat-icon>check_circle</mat-icon>
+        Актуальний список
+      </div>
+    }
+  </header>
+
+  @if(isLoading){
+    <div class="loading-state content-panel">
+      <mat-spinner color="accent"></mat-spinner>
+    </div>
+  }
+  @else if(loadingFailure){
+    <div class="empty-state content-panel">
+      <div>
+        <mat-icon>error_outline</mat-icon>
+        <p>Не вдалося завантажити список закупівель</p>
+      </div>
+    </div>
+  }
+  @else if(items.length === 0){
+    <div class="empty-state content-panel">
+      <div>
+        <mat-icon>shopping_cart</mat-icon>
+        <p>Для цього замовлення ще немає позицій для закупівлі</p>
+      </div>
+    </div>
+  }
+  @else{
+    <div class="shopping-summary">
+      <article class="summary-card content-panel">
+        <span>Усього</span>
+        <strong>{{items.length}}</strong>
+      </article>
+      <article class="summary-card content-panel">
+        <span>Куплено</span>
+        <strong>{{boughtCount}}</strong>
+      </article>
+      <article class="summary-card content-panel">
+        <span>Залишилось</span>
+        <strong>{{remainingCount}}</strong>
+      </article>
+      <article class="summary-card progress-card content-panel">
+        <span>Прогрес</span>
+        <strong>{{progressPercent}}%</strong>
+        <div class="progress-track">
+          <div class="progress-fill" [style.width.%]="progressPercent"></div>
+        </div>
+      </article>
+    </div>
+
+    <div class="shopping-layout">
+      <aside class="shopping-sidebar content-panel">
+        <h2>Категорії</h2>
+        @for(group of groupedItems; track group.name){
+          <div class="category-row">
+            <span>{{group.name}}</span>
+            <strong>{{group.items.length}}</strong>
+          </div>
+        }
+      </aside>
+
+      <div class="shopping-groups">
+        @for(group of groupedItems; track group.name){
+          <section class="shopping-group content-panel">
+            <header class="group-header">
+              <div>
+                <h2>{{group.name}}</h2>
+                <p>{{group.items.length}} позицій</p>
+              </div>
+            </header>
+
+            <div class="items-list">
+              @for(item of group.items; track item.id){
+                <article class="shopping-item" [class.is-bought]="item.isBought">
+                  <button class="check-button" type="button" (click)="toggleBought(item)" [attr.aria-label]="item.isBought ? 'Позначити як не куплено' : 'Позначити як куплено'">
+                    <mat-icon>{{item.isBought ? 'check' : 'radio_button_unchecked'}}</mat-icon>
+                  </button>
+
+                  <div class="item-main">
+                    <h3>{{item.ingredient.name}}</h3>
+                    @if(item.comment){
+                      <p>{{item.comment}}</p>
+                    }
+                  </div>
+
+                  <div class="item-amount">
+                    {{item.amount}} {{item.unitName}}
+                  </div>
+                </article>
+              }
+            </div>
+          </section>
+        }
+      </div>
+    </div>
+  }
+</section>

@@ -13,6 +13,7 @@ import {MinPosAmount} from "../models/Positions/MinPosAmount";
 import {CommonMenuInfo} from "../models/Menu/CommonMenuInfo";
 import {AdditionalMenuData} from "../models/Menu/AdditionalMenuData";
 import {CategoryCreateResp} from "../models/Positions/DTOs/CategoryCreateResp";
+import {ShoppingList} from "../models/Menu/ShoppingList";
 
 @Injectable({providedIn:"root"})
 export class HttpService{
@@ -145,5 +146,10 @@ export class HttpService{
 
   deleteMenuInfo(id: number) {
     return this.clinet.post<number>(this.baseUrl + "orders/info/delete",{id:id});
+  }
+
+  getShoppingList(orderId: number) {
+    return this.clinet.get<ShoppingList>(this.baseUrl + "orders/shopping/get/"+orderId);
+
   }
 }
