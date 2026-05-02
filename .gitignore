@@ -40,6 +40,6 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
-
-/src/app/_services/auth.service.ts
-/src/app/_services/httpService.ts
+#
+#/src/app/_services/auth.service.ts
+#/src/app/_services/httpService.ts
