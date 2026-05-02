@@ -85,7 +85,7 @@ export class AddMenuComponent implements OnInit {
   public posAmounts = signal<TableRow[]>([]);
   displayedColumns: string[] = [ 'name','image', 'weight', 'price', 'amount','mob-actions'];
   public additionalInfo = signal<AdditionalMenuData[]>([]);
-  displayedColumnsInfo: string[] = [ 'name','description', 'price'];
+  displayedColumnsInfo: string[] = [ 'name','description', 'price','btn-remove'];
 
   public ordersForm: FormGroup = new FormGroup({
     client: new FormControl('', [Validators.required]),
@@ -200,7 +200,7 @@ export class AddMenuComponent implements OnInit {
             this.selectedPositions.push(el.position);
           });
           this.posAmounts.set(list);
-          this.additionalInfo.set((res as Menu).additionalInfo);
+          this.additionalInfo.set(this.normalizeAdditionalInfo((res as Menu).additionalInfo));
         }
         this.loading = false;
       }
@@ -228,17 +228,23 @@ export class AddMenuComponent implements OnInit {
     let items = this.parsePositions()
     this.loading = true;
 
+    const additionalInfo = this.normalizeAdditionalInfo(this.additionalInfo());
+    this.additionalInfo.set(additionalInfo);
+
     if(this.editOrderid<=0){
-      this.saveOrder(items);
+      this.saveOrder(items, additionalInfo);
     }else{
-      this.editOrder(items);
+      this.editOrder(items, additionalInfo);
     }
   }
 
-  private saveOrder(items:MinPosAmount[]){
-    this.ordersService.saveOrder(this.ordersForm.value,items,this.additionalInfo()).subscribe(
+  private saveOrder(items:MinPosAmount[], additionalInfo:AdditionalMenuData[]){
+    this.ordersService.saveOrder(this.ordersForm.value,items,additionalInfo).subscribe(
       {
         next: (data)=> {
+          if(!isMessage(data)){
+            this.additionalInfo.set(this.normalizeAdditionalInfo((data as Menu).additionalInfo));
+          }
           this.toast.show("Збережено!",{autoClose:true,position:"bottom-center",duration:2000})
           this.loading = false;
         },
@@ -250,9 +256,11 @@ export class AddMenuComponent implements OnInit {
     );
   }
 
-  private editOrder(items:MinPosAmount[]){
-    this.ordersService.editOrder(this.editOrderid, this.ordersForm.value,items, this.additionalInfo()).subscribe({
+  private editOrder(items:MinPosAmount[], additionalInfo:AdditionalMenuData[]){
+
+    this.ordersService.editOrder(this.editOrderid, this.ordersForm.value,items, additionalInfo).subscribe({
         next: (data)=> {
+          this.additionalInfo.set(this.normalizeAdditionalInfo((data as Menu).additionalInfo));
           this.toast.show("Збережено!",{autoClose:true,position:"bottom-center",duration:2000});
           this.loading = false;
         },
@@ -295,6 +303,21 @@ export class AddMenuComponent implements OnInit {
       });
     }
     return items;
+  }
+
+  private normalizeAdditionalInfo(items: AdditionalMenuData[] = []): AdditionalMenuData[] {
+    const map = new Map<string, AdditionalMenuData>();
+
+    for (const item of items) {
+      const key = `${item.id}|${item.description}|${item.price}`;
+      const existing = map.get(key);
+
+      if(!existing || existing.id === 0){
+        map.set(key, {...item});
+      }
+    }
+
+    return [...map.values()];
   }
 
 
@@ -344,7 +367,6 @@ export class AddMenuComponent implements OnInit {
   }
 
   openHeaderDialog(positionId:number){
-    console.log("GOT data", positionId);
     const dialogRef = this.dialog.open(AddHeaderDialogComponent);
     dialogRef.afterClosed().subscribe({
       next: (data)=> {
@@ -364,6 +386,16 @@ export class AddMenuComponent implements OnInit {
         }
       }
     })
+  }
+
+  removeMenuInfo(id:number){
+    console.log(id);
+    this.ordersService.deleteOrderInfo(id).subscribe();
+  }
+
+  removeMenuInfoNew(id:number){
+    this.additionalInfo.update(items=>items.filter(x=>x.id!=id));
+
   }
 
 

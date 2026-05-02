@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
 
   form:FormGroup = new FormGroup({
     username: new FormControl("", [Validators.required, Validators.minLength(3)]),
-    password: new FormControl("", [Validators.required, Validators.minLength(8)]),
+    password: new FormControl("", [Validators.required, Validators.minLength(4)]),
   })
 
   isLoggedIn = false;

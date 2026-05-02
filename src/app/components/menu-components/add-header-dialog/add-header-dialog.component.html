@@ -1,13 +1,18 @@
+<div class="bo-dialog">
+  <header class="bo-dialog-header">
+    <h2>Додати заголовок</h2>
+    <p>Вставте розділювач перед позицією в меню.</p>
+  </header>
 
-  <h2>Додати заголовок</h2>
-  <mat-dialog-content>
-
+  <mat-dialog-content class="bo-dialog-content">
     <mat-form-field>
       <mat-label>Заголовок</mat-label>
-      <input matInput type="text" [(ngModel)]="title"/>
+      <input matInput type="text" [(ngModel)]="title" />
     </mat-form-field>
   </mat-dialog-content>
-  <mat-dialog-actions>
+
+  <mat-dialog-actions class="bo-dialog-actions">
     <button mat-button mat-dialog-close>Скасувати</button>
-    <button mat-button (click)="addHeader()">Додати</button>
+    <button mat-flat-button color="accent" (click)="addHeader()">Додати</button>
   </mat-dialog-actions>
+</div>

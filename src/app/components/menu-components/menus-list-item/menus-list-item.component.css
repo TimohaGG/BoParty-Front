@@ -1,20 +1,152 @@
-.control-buttons{
-  margin-top:20px;
+.order-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  padding: 18px;
 }
 
-.control-buttons button:not(:last-child){
-  margin-right: 10px;
+.order-main {
+  display: grid;
+  grid-template-columns: minmax(140px, 1fr) minmax(100px, auto) auto;
+  gap: 16px;
+  align-items: center;
 }
 
+.eyebrow {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
 
-.favourite-button.empty{
+h2 {
+  margin: 4px 0 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.order-price strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--accent-color);
+  font-size: 1.15rem;
+}
+
+.paid-button.empty {
   background-color: transparent;
+  border: 1px solid var(--border-subtle);
 }
 
-.favourite-button.full{
-  background-color: green;
+.paid-button.full {
+  background-color: #2e7d32;
 }
 
-.btn.control-button{
-  border-radius: 20%;
+.control-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.control-button {
+  min-width: 112px;
+}
+
+.control-button mat-icon {
+  margin-right: 6px;
+}
+
+.shopping-button {
+  color: var(--button-shopping);
+}
+
+.copy-button {
+  color: var(--button-copy);
+}
+
+.delete-button {
+  color: var(--button-remove);
+}
+
+@media (max-width: 760px) {
+  .order-row {
+    grid-template-columns: 1fr;
+    padding-top: 18px;
+  }
+
+  .order-main {
+    grid-template-columns: 1fr;
+    padding-right: 58px;
+  }
+
+  .paid-button.empty,
+  .paid-button.full {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+  }
+
+  .control-buttons {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(74px, 1fr) minmax(128px, 1.45fr) 44px 44px 44px;
+    justify-content: initial;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .control-button {
+    min-width: 0;
+    width: 100%;
+    padding-inline: 8px;
+  }
+
+  .control-button span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .shopping-button,
+  .copy-button,
+  .delete-button {
+    width: 44px;
+    min-width: 44px;
+    justify-self: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .order-main {
+    grid-template-columns: 1fr;
+  }
+
+  .order-price {
+    grid-column: auto;
+  }
+
+  .control-buttons {
+    grid-template-columns: minmax(68px, 1fr) minmax(116px, 1.35fr) 36px 36px 36px;
+    gap: 6px;
+  }
+
+  .control-button {
+    padding-inline: 4px;
+  }
+
+  .shopping-button,
+  .copy-button,
+  .delete-button {
+    width: 36px;
+    min-width: 36px;
+  }
+
+  .shopping-button mat-icon,
+  .copy-button mat-icon,
+  .delete-button mat-icon {
+    margin: 0;
+  }
 }

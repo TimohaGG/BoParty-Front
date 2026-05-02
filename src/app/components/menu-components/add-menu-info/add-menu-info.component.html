@@ -1,39 +1,42 @@
-<mat-dialog-content class="d-flex flex-column" style="gap: 1em">
+<div class="bo-dialog bo-dialog-wide">
+  <header class="bo-dialog-header">
+    <h2>Додати рядок підсумку</h2>
+    <p>Додаткові витрати, коментарі або службові рядки для замовлення.</p>
+  </header>
 
-  <mat-form-field class="p-3">
-    <mat-label>Шаблон</mat-label>
-    <mat-select (selectionChange)="insertData($event)">
-      <mat-option value="-1">
-        -
-      </mat-option>
-      @for (item of this.commonOptions(); track item.id) {
-        <mat-option [value]="item">{{item.title}}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
-
-
-  <form [formGroup]="formData" class="d-flex flex-column p-3" style="gap: 1em">
+  <mat-dialog-content class="bo-dialog-content">
     <mat-form-field>
-      <mat-label>Назва</mat-label>
-      <input matInput formControlName="title" type="text"/>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Опис</mat-label>
-      <textarea rows="4" matInput formControlName="description" type="text">
-
-      </textarea>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Ціна</mat-label>
-      <input matInput formControlName="price" type="number"/>
+      <mat-label>Шаблон</mat-label>
+      <mat-select (selectionChange)="insertData($event)">
+        <mat-option value="-1">Без шаблону</mat-option>
+        @for (item of this.commonOptions(); track item.id) {
+          <mat-option [value]="item">{{item.title}}</mat-option>
+        }
+      </mat-select>
     </mat-form-field>
 
-    <mat-checkbox formControlName="isCommon">Зберегти</mat-checkbox>
-  </form>
+    <form [formGroup]="formData" class="bo-dialog-form">
+      <mat-form-field>
+        <mat-label>Назва</mat-label>
+        <input matInput formControlName="title" type="text" />
+      </mat-form-field>
 
-</mat-dialog-content>
-<mat-dialog-actions>
-  <button mat-button mat-dialog-close>Скасувати</button>
-  <button mat-stroked-button (click)="onClose()">Додати</button>
-</mat-dialog-actions>
+      <mat-form-field>
+        <mat-label>Опис</mat-label>
+        <textarea rows="4" matInput formControlName="description" type="text"></textarea>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Ціна</mat-label>
+        <input matInput formControlName="price" type="number" />
+      </mat-form-field>
+
+      <mat-checkbox formControlName="isCommon">Зберегти як шаблон</mat-checkbox>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="bo-dialog-actions">
+    <button mat-button mat-dialog-close>Скасувати</button>
+    <button mat-flat-button color="accent" (click)="onClose()">Додати</button>
+  </mat-dialog-actions>
+</div>

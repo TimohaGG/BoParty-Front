@@ -1,16 +1,21 @@
-<div class="p-4">
-  <h2>Видалити позицію?</h2>
-  <mat-dialog-content>
-    Ви дійсно хочете видалити "{{data.position.name}}"
+<div class="bo-dialog">
+  <header class="bo-dialog-header">
+    <h2>Видалити позицію?</h2>
+    <p>Позиція зникне з меню та списків вибору.</p>
+  </header>
+
+  <mat-dialog-content class="bo-dialog-content">
+    <div class="bo-danger-box">
+      Ви дійсно хочете видалити "{{data.position.name}}"?
+    </div>
   </mat-dialog-content>
-  <mat-dialog-actions>
+
+  <mat-dialog-actions class="bo-dialog-actions">
     <button mat-button (click)="onClose()">Ні</button>
     @if (loading) {
-      <mat-spinner [diameter]="40" ></mat-spinner>
+      <mat-spinner [diameter]="28"></mat-spinner>
     } @else {
-      <button mat-button (click)="onSubmit()">Так</button>
+      <button mat-flat-button class="bo-danger-action" (click)="onSubmit()">Так, видалити</button>
     }
-
   </mat-dialog-actions>
 </div>
-

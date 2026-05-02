@@ -1,7 +1,6 @@
 import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
-import {MatButton, MatFabButton, MatIconButton} from "@angular/material/button";
+import {MatButton, MatIconButton} from "@angular/material/button";
 import {MatIcon} from "@angular/material/icon";
-import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
 import {Position} from "../../../models/Positions/Position";
 import {MatDialog} from "@angular/material/dialog";
 import {AddPositionDialogComponent} from "../add-position-dialog/add-position-dialog.component";
@@ -10,12 +9,8 @@ import {DeletePositionsDialogComponent} from "../delete-positions-dialog/delete-
 @Component({
   selector: 'app-positions-list-item',
   imports: [
-    MatFabButton,
     MatIcon,
     MatIconButton,
-    MatMenuTrigger,
-    MatMenu,
-    MatMenuItem,
     MatButton
   ],
   templateUrl: './positions-list-item.component.html',

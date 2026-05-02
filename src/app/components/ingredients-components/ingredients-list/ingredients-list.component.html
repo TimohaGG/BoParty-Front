@@ -1,121 +1,80 @@
-<h2 class="text-center">Інгредієнти</h2>
-@if(ingredients().length!=0){
-  <div class="ingredients-list d-flex flex-column justify-content-center align-items-center">
+<section class="page-shell">
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">Інгредієнти</h1>
+      <p class="page-subtitle">Категорії та продукти для розрахунку меню.</p>
+    </div>
+    <button mat-flat-button color="accent" (click)="openDialogueIngredient()">
+      <mat-icon>add</mat-icon>
+      Новий інгредієнт
+    </button>
+  </header>
 
+  @if(ingredients().length != 0 || categories().length != 0){
+    <div class="ingredients-list content-panel">
+      <mat-tree #tree [dataSource]="treeData" [childrenAccessor]="childrenAccessor">
+        <mat-tree-node *matTreeNodeDef="let node" class="ingredient-node">
+          <button mat-icon-button disabled class="tree-spacer" aria-hidden="true"></button>
+          <ng-container [ngTemplateOutlet]="nodeContent" [ngTemplateOutletContext]="{$implicit: node}"></ng-container>
+        </mat-tree-node>
 
+        <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodeToggle matTreeNodePadding class="ingredient-node"
+                       [cdkTreeNodeTypeaheadLabel]="node.name">
+          <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Відкрити ' + node.name">
+            <mat-icon class="mat-icon-rtl-mirror">
+              {{tree.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+            </mat-icon>
+          </button>
+          <ng-container [ngTemplateOutlet]="nodeContent" [ngTemplateOutletContext]="{$implicit: node}"></ng-container>
+        </mat-tree-node>
+      </mat-tree>
+    </div>
+  }
+  @else{
+    <div class="loading-state content-panel">
+      <mat-spinner color="accent"></mat-spinner>
+    </div>
+  }
+</section>
 
-    <mat-tree #tree [dataSource]="treeData" [childrenAccessor]="childrenAccessor">
-      <mat-tree-node *matTreeNodeDef="let node">
-        <button mat-icon-button disabled style="visibility: collapse"></button>
-        @if (node.isParent){
-          <input
-            class="disabled"
-            [value]="node.name" id="{{node.id}}"
-            (change)="renameCategory(node.id, $event)"
-            (focus)="savePrev($event)"
-            (click)="stopPropagination($event)"
-
-            readonly/>
-          <button mat-button (click)="toggleEdit($event, node.id)">
-            <mat-icon>
-              edit
-            </mat-icon>
-          </button>
-          <button mat-button (click)="removeCategory(node.id,node.name, $event)">
-            <mat-icon>
-              delete
-            </mat-icon>
-          </button>
-        }
-        @else{
-          <input
-            class="disabled has-children"
-            [value]="node.name" id="{{node.id}}"
-            (change)="renameIngredient(node.id, $event)"
-            (focus)="savePrev($event)"
-            (click)="stopPropagination($event)"
-
-            readonly/>
-          <button mat-flat-button color="accent"  (click)="toggleEdit($event, node.id)">
-            <mat-icon>
-              edit
-            </mat-icon>
-          </button>
-          <button mat-button (click)="removeIngredient(node.id,node.name, $event)">
-            <mat-icon>
-              remove
-            </mat-icon>
-          </button>
-        }
-      </mat-tree-node>
-      <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodeToggle matTreeNodePadding
-                     [cdkTreeNodeTypeaheadLabel]="node.name">
-        <button mat-icon-button matTreeNodeToggle
-                [attr.aria-label]="'Toggle ' + node.name" >
-          <mat-icon class="mat-icon-rtl-mirror">
-            {{tree.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-          </mat-icon>
-        </button>
-        @if (node.isParent){
-          <input
-            class="disabled"
-            [value]="node.name" id="{{node.id}}"
-                  (change)="renameCategory(node.id, $event)"
-                  (focus)="savePrev($event)"
-                  (click)="stopPropagination($event)"
-
-                 readonly/>
-          <button mat-button (click)="toggleEdit($event, node.id)">
-            <mat-icon>
-              edit
-            </mat-icon>
-          </button>
-          <button mat-button (click)="removeCategory(node.id,node.name,$event)">
-            <mat-icon>
-              delete
-            </mat-icon>
-          </button>
-        }
-        @else{
-          <input
-            class="disabled"
-            [value]="node.name" id="{{node.id}}"
-            (change)="renameIngredient(node.id, $event)"
-            (focus)="savePrev($event)"
-            (click)="stopPropagination($event)"
-
-            readonly />
-          <button mat-flat-button (click)="toggleEdit($event, node.id)">
-            <mat-icon>
-              edit
-            </mat-icon>
-          </button>
-          <button mat-button (click)="removeIngredient(node.id,node.name, $event)">
-            <mat-icon>
-              delete
-            </mat-icon>
-          </button>
-        }
-      </mat-tree-node>
-    </mat-tree>
+<ng-template #nodeContent let-node>
+  <div class="node-content" [class.category-node]="node.isParent">
+    <input
+      class="node-name disabled"
+      [class.has-children]="!node.isParent"
+      [value]="node.name"
+      id="{{node.isParent ? 'category-' + node.id : 'ingredient-' + node.id}}"
+      (change)="node.isParent ? renameCategory(node.id, $event) : renameIngredient(node.id, $event)"
+      (focus)="savePrev($event)"
+      (click)="stopPropagination($event)"
+      readonly />
+    <div class="node-actions">
+      <button mat-icon-button aria-label="Редагувати" title="Редагувати" (click)="toggleEdit($event, node.isParent ? 'category-' + node.id : 'ingredient-' + node.id)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        class="delete-button"
+        aria-label="Видалити"
+        title="Видалити"
+        (click)="node.isParent ? removeCategory(node.id, node.name, $event) : removeIngredient(node.id, node.name, $event)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
   </div>
+</ng-template>
 
+<button mat-fab class="menu-button" [matMenuTriggerFor]="menu" aria-label="Дії з інгредієнтами">
+  <mat-icon>more_vert</mat-icon>
+</button>
 
-  <button mat-fab class="menu-button" [matMenuTriggerFor]="menu" >
-    <mat-icon>more_vert</mat-icon>
+<mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="openDialogueCategory()">
+    <mat-icon>create_new_folder</mat-icon>
+    <span>Нова категорія</span>
   </button>
-
-  <mat-menu #menu="matMenu">
-    <button mat-menu-item (click)="openDialogueCategory()">Нова категорія</button>
-    <button mat-menu-item (click)="openDialogueIngredient()">Новий інгридієнт</button>
-  </mat-menu>
-
-}
-@else{
-  <mat-spinner color="accent"></mat-spinner>
-}
-
-
-
-
-
+  <button mat-menu-item (click)="openDialogueIngredient()">
+    <mat-icon>add</mat-icon>
+    <span>Новий інгредієнт</span>
+  </button>
+</mat-menu>

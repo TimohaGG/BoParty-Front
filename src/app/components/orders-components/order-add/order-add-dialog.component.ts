@@ -5,7 +5,6 @@ import {
   MatDialogClose,
   MatDialogContent,
   MatDialogRef,
-  MatDialogTitle
 } from "@angular/material/dialog";
 import {MatFormField, MatLabel} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
@@ -17,7 +16,6 @@ import {MatOption, MatSelect} from "@angular/material/select";
 @Component({
   selector: 'app-order-add',
   imports: [
-    MatDialogTitle,
     MatDialogContent,
     MatFormField,
     MatLabel,

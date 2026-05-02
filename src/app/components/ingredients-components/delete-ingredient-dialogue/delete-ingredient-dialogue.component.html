@@ -1,11 +1,17 @@
-<div class="p-4">
-  <h2>Видалити інгридієнт?</h2>
-  <mat-dialog-content>
-    Ви дійсно хочете видалити "{{data.name}}"
+<div class="bo-dialog">
+  <header class="bo-dialog-header">
+    <h2>Видалити інгредієнт?</h2>
+    <p>Інгредієнт буде прибрано зі списку продуктів.</p>
+  </header>
+
+  <mat-dialog-content class="bo-dialog-content">
+    <div class="bo-danger-box">
+      Ви дійсно хочете видалити "{{data.name}}"?
+    </div>
   </mat-dialog-content>
-  <mat-dialog-actions>
+
+  <mat-dialog-actions class="bo-dialog-actions">
     <button mat-button (click)="onClose()">Ні</button>
-    <button mat-button (click)="onSubmit()">Так</button>
+    <button mat-flat-button class="bo-danger-action" (click)="onSubmit()">Так, видалити</button>
   </mat-dialog-actions>
 </div>
-

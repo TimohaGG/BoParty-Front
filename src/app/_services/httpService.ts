@@ -13,13 +13,14 @@ import {MinPosAmount} from "../models/Positions/MinPosAmount";
 import {CommonMenuInfo} from "../models/Menu/CommonMenuInfo";
 import {AdditionalMenuData} from "../models/Menu/AdditionalMenuData";
 import {CategoryCreateResp} from "../models/Positions/DTOs/CategoryCreateResp";
+import {ShoppingList} from "../models/Menu/ShoppingList";
 
 @Injectable({providedIn:"root"})
 export class HttpService{
 
-  
-  // private baseUrl:string = "http://147.93.127.39:8084"
-   private baseUrl:string = "http://72.60.88.151:8085/"
+
+  private baseUrl:string = "http://72.60.88.151:8085/"
+
 
   constructor(private clinet:HttpClient) {
   }
@@ -142,5 +143,14 @@ export class HttpService{
   // }
   download(id: number) {
     return this.clinet.get(this.baseUrl + "orders/generate/"+id,{responseType: "blob"});
+  }
+
+  deleteMenuInfo(id: number) {
+    return this.clinet.post<number>(this.baseUrl + "orders/info/delete",{id:id});
+  }
+
+  getShoppingList(orderId: number) {
+    return this.clinet.get<ShoppingList>(this.baseUrl + "orders/shopping/get/"+orderId);
+
   }
 }

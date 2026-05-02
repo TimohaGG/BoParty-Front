@@ -16,6 +16,7 @@ import {AddMenuComponent} from "./components/menu-components/add-menu/add-menu.c
 import {
   OrderListComponent
 } from "./components/orders-components/order-list-component/order-list.component";
+import {ShoppingComponent} from "./components/menu-components/shopping/shopping.component";
 
 export const routes: Routes = [
   { path: 'home', component: MenusListComponent,canActivate:[authGuard] },
@@ -26,5 +27,6 @@ export const routes: Routes = [
   {path: 'ingredients', component: IngredientsListComponent,canActivate:[authGuard]},
   {path: 'order/create', component: AddMenuComponent,canActivate:[authGuard]},
   {path: 'order/data', component: OrderListComponent,canActivate:[authGuard]},
+  {path: 'order/shopping/:orderId', component: ShoppingComponent,canActivate:[authGuard]},
   { path: '', redirectTo: 'home', pathMatch: 'full' },
 ];

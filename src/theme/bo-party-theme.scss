@@ -23,9 +23,9 @@ $bo-theme: mat.m2-define-dark-theme((
   --primary-darker: #{mat.m2-get-color-from-palette($bo-primary, 700)};
 
   --button-edit:#{mat.m2-get-color-from-palette($bo-accent, 800)};
-  --button-remove:#{mat.m2-get-color-from-palette($bo-warn)};
-  --button-shopping:#{mat.m2-get-color-from-palette(mat.$blue-palette, 20)};
-  --button-copy:#{mat.m2-get-color-from-palette(mat.$green-palette, 20)};
+  --button-remove: #d66a6a;
+  --button-shopping: #6f87c9;
+  --button-copy: #6da77a;
   --ingredient-color: #a6a6a6
 }
 

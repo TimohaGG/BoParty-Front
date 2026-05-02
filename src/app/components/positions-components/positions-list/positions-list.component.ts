@@ -73,6 +73,7 @@ export class PositionsListComponent implements OnInit {
   }
 
   public isLoading:boolean = true;
+  private loadedCategoryIds = new Set<number>();
 
 
   public selectedCategory:FormControl = new FormControl(0);
@@ -113,18 +114,22 @@ export class PositionsListComponent implements OnInit {
     this.isLoading = true;
     this.positionsService.getByCategory(categoryId).subscribe(
       res=>{
-        this.isLoading = false;
         if(isMessage(res)){
           let msg = res as ExceptionMessage;
           this.toast.error(msg.message, {duration: 3000, position: "bottom-center", autoClose: true});
+          this.isLoading = false;
         }
         else{
-          this.filterCategories();
-
+          this.loadedCategoryIds.add(categoryId);
+          if(this.selectedCategory.value == categoryId){
+            this.filteredPositions.set(this.positions().filter((pos)=>pos.category.id==categoryId));
+            this.isLoading = false;
+          }
         }
       },
       error => {
-        // console.log(error);
+        this.toast.show(error.message,{duration:3000,position:"bottom-center",autoClose:true});
+        this.isLoading = false;
       }
     )
 
@@ -136,11 +141,17 @@ export class PositionsListComponent implements OnInit {
     console.log(this.isLoading);
     let categoryId = this.selectedCategory.value;
     console.log("Filtering " + categoryId);
-    if(this.positions().filter(x=>x.category.id==categoryId).length==0){
+    const categoryPositions = this.positions().filter(x=>x.category.id==categoryId);
+    if(categoryPositions.length > 0){
+      this.loadedCategoryIds.add(categoryId);
+    }
+
+    if(!this.loadedCategoryIds.has(categoryId)){
       console.log("Havent found")
       this.loadPositions(categoryId);
+      return;
     }
-    this.filteredPositions.set(this.positions().filter((pos)=>pos.category.id==categoryId));
+    this.filteredPositions.set(categoryPositions);
     this.isLoading = false;
   }
 

@@ -1,4 +1,4 @@
-import {booleanAttribute, Component, computed, inject, OnInit, signal, Signal} from '@angular/core';
+import {Component, computed, inject, OnInit, Signal} from '@angular/core';
 import {MenusListItemComponent} from "../menus-list-item/menus-list-item.component";
 import {MatButton, MatFabButton} from "@angular/material/button";
 import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
@@ -6,13 +6,12 @@ import {MatIcon} from "@angular/material/icon";
 import {MinMenu} from "../../../models/Menu/MinMenu";
 import {entityStorage} from "../../../_helpers/storage/entityStorage";
 import {OrdersService} from "../../../_services/orders.service";
-import {of} from "rxjs";
+import {EMPTY} from "rxjs";
+import {catchError, distinctUntilChanged, map, switchMap, tap} from "rxjs/operators";
 import {HotToastService} from "@ngxpert/hot-toast";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
-import {Category} from "../../../models/Positions/Category";
 import {PositionsCategoryService} from "../../../_services/positions-category.service";
-import {Menu} from "../../../models/Menu/Menu";
-import {ActivatedRoute, Router, RouterLink} from "@angular/router";
+import {ActivatedRoute, RouterLink} from "@angular/router";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
 
 @Component({
@@ -58,19 +57,36 @@ export class MenusListComponent implements OnInit{
 
 
   ngOnInit(): void {
-    if(this.menus().length != 0)
-      return;
+    this.router.queryParamMap.pipe(
+      map(params => params.get("showArchive") === "true"),
+      distinctUntilChanged(),
+      tap(archive => {
+        if (this.needsArchive !== archive) {
+          this.store.setCurrentPage(0);
+        }
 
-    this.router.queryParams.subscribe((params) => {
-      this.needsArchive = params['showArchive']=="true";
-      this.getFutureAmount(this.needsArchive).subscribe(res=>{
-        this.loadFutureOrders(this.needsArchive);
-      });
-    })
+        this.needsArchive = archive;
+        this.loadingFailure = false;
+        this.store.clearMinOrders();
+      }),
+      switchMap(archive => this.getFutureAmount(archive).pipe(
+        switchMap(() => this.orderService.getOfPageMin(this.perPage(), this.currentPage(), archive)),
+        catchError(error => {
+          this.loadingFailure = true;
+          this.toast.show(error.message, {duration: 3000, position: "bottom-center", autoClose: true});
+          return EMPTY;
+        })
+      ))
+    ).subscribe();
   }
 
   loadFutureOrders(archive:boolean) {
+    this.loadingFailure = false;
+    this.store.clearMinOrders();
     this.orderService.getOfPageMin(this.perPage(), this.currentPage(), archive).subscribe({
+        next:res=>{
+          console.log(res);
+        },
         error: error=>{
           this.loadingFailure = true;
           this.toast.show(error.message,{duration:3000,position:"bottom-center",autoClose:true});
