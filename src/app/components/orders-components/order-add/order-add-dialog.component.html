@@ -1,0 +1,42 @@
+<h2 mat-dialog-title>Додати замовлення</h2>
+<mat-dialog-content>
+  <form class="d-flex flex-column">
+    <mat-form-field>
+      <mat-label>Меню</mat-label>
+      <mat-select>
+        @for (menuItem of menus() ; track $index) {
+          <mat-option [value]="menuItem.id">{{menuItem.client}} - {{menuItem.date}}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Закупівля</mat-label>
+      <input matInput name="shoppingSum"/>
+    </mat-form-field>
+
+
+    <mat-form-field>
+      <mat-label>Дат</mat-label>
+      <input matInput name="staffSum"/>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Персонал</mat-label>
+      <input matInput name="staffSum"/>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Податок</mat-label>
+      <input matInput name="staffSum"/>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Сума замовлення</mat-label>
+      <input matInput name="staffSum"/>
+    </mat-form-field>
+  </form>
+
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="menu()" cdkFocusInitial>Ok</button>
+</mat-dialog-actions>

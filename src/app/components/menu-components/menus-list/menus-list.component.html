@@ -1,6 +1,13 @@
 
 <div class="d-flex justify-content-center align-items-center">
-  <h3 class="text-center">Замовлення</h3>
+
+  @if (this.needsArchive){
+    <h3 class="text-center">Архів</h3>
+  }
+  @else{
+    <h3 class="text-center">Замовлення</h3>
+  }
+
   <button [routerLink]="'/order/create'" [queryParams]="{editable:true}" class="btn btn-outline-light mx-4">
     <mat-icon style="color:white">
       add
@@ -10,7 +17,7 @@
 
 
 
-@if(orders().length ==0 && !loadingFailure){
+@if(menus().length ==0 && !loadingFailure){
   <mat-spinner color="accent"></mat-spinner>
 }
 @if(loadingFailure){
@@ -18,12 +25,23 @@
 }
 @else{
   <div class="orders-list d-flex flex-column justify-content-center align-items-center mt-3">
-    @if(orders().length>0){
-      @for (item of orders();track $index){
-        <app-orders-list-item [order]="item"></app-orders-list-item>
+    @if(menus().length>0){
+      @for (item of menus();track $index){
+        <app-orders-list-item [menu]="item"></app-orders-list-item>
       }
     }
   </div>
+
+  <mat-paginator
+    class="mt-3"
+    [length]="totalPages()"
+    [pageIndex]="currentPage()"
+    [pageSize]="perPage()"
+    [pageSizeOptions]="[5,10,25]"
+    (page)="onPageChange($event)"
+    aria-label="Select Page">
+
+  </mat-paginator>
 
 
 

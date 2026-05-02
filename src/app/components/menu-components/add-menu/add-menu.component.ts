@@ -3,7 +3,7 @@ import {MatFormField, MatLabel} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {PositionsListComponent} from "../../positions-components/positions-list/positions-list.component";
 import {MatDialog} from "@angular/material/dialog";
-import {AddOrderPositionDialogComponent} from "../add-order-position-dialog/add-order-position-dialog.component";
+import {AddMenuPositionDialogComponent} from "../add-menu-position-dialog/add-menu-position-dialog.component";
 import {MatButton, MatFabButton} from "@angular/material/button";
 import {Position} from "../../../models/Positions/Position";
 import {PositionAmount} from "../../../models/Positions/PositionAmount";
@@ -28,11 +28,11 @@ import {AddHeaderDialogComponent} from "../add-header-dialog/add-header-dialog.c
 import {ActivatedRoute, Route, Router} from "@angular/router";
 import {ExceptionMessage, isMessage} from "../../../models/Exceptions/ExceptionMessage";
 import {HotToastService} from "@ngxpert/hot-toast";
-import {Order} from "../../../models/Orders/Order";
+import {Menu} from "../../../models/Menu/Menu";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {HttpErrorResponse} from "@angular/common/http";
-import {AdditionalOrderData} from "../../../models/Orders/AdditionalOrderData";
-import {AddOrderInfoComponent} from "../add-order-info/add-order-info.component";
+import {AdditionalMenuData} from "../../../models/Menu/AdditionalMenuData";
+import {AddMenuInfoComponent} from "../add-menu-info/add-menu-info.component";
 
 export interface PosAmount {
   amount: number;
@@ -64,14 +64,13 @@ export interface PosAmount {
     ReactiveFormsModule,
     CdkMenu,
     CdkMenuItem,
-    CdkContextMenuTrigger,
     MatProgressSpinner,
     CdkMenuTrigger,
   ],
-  templateUrl: './add-order.component.html',
-  styleUrl: './add-order.component.css'
+  templateUrl: './add-menu.component.html',
+  styleUrl: './add-menu.component.css'
 })
-export class AddOrderComponent implements OnInit {
+export class AddMenuComponent implements OnInit {
   @ViewChild('table', {static: true}) table!: MatTable<PositionAmount>;
   @ViewChild('datatable', {static: true}) datatable!: MatTable<PositionAmount>;
   private dialog = inject(MatDialog);
@@ -84,8 +83,8 @@ export class AddOrderComponent implements OnInit {
 
   public selectedPositions: Position[] = []
   public posAmounts = signal<TableRow[]>([]);
-  displayedColumns: string[] = [ 'action','name','image', 'weight', 'price', 'amount','action-delete','mob-actions'];
-  public additionalInfo = signal<AdditionalOrderData[]>([]);
+  displayedColumns: string[] = [ 'name','image', 'weight', 'price', 'amount','mob-actions'];
+  public additionalInfo = signal<AdditionalMenuData[]>([]);
   displayedColumnsInfo: string[] = [ 'name','description', 'price'];
 
   public ordersForm: FormGroup = new FormGroup({
@@ -114,7 +113,7 @@ export class AddOrderComponent implements OnInit {
     }
 
   openPositionsDialog(){
-    const ref = this.dialog.open(AddOrderPositionDialogComponent, {
+    const ref = this.dialog.open(AddMenuPositionDialogComponent, {
       data:{
         positions:this.selectedPositions
       },
@@ -144,7 +143,7 @@ export class AddOrderComponent implements OnInit {
   }
 
   openInfoDialog(){
-    let dialog = this.dialog.open(AddOrderInfoComponent);
+    let dialog = this.dialog.open(AddMenuInfoComponent);
     dialog.afterClosed().subscribe(res=>{
 
       if(res == null || res == ""){
@@ -175,7 +174,7 @@ export class AddOrderComponent implements OnInit {
     }
     this.loading = true;
     this.ordersService.getById(this.editOrderid).subscribe(
-      (res:Order|ExceptionMessage)=>{
+      (res:Menu|ExceptionMessage)=>{
         if(isMessage(res)){
           this.toast.show("Can't load order!",{autoClose:true,position:"bottom-center",duration:2000})
             .afterClosed.subscribe(()=>{
@@ -184,14 +183,14 @@ export class AddOrderComponent implements OnInit {
         }
         else{
           this.ordersForm.patchValue({
-            client:(res as Order).client,
-            guestsAmount:(res as Order).guestsAmount,
-            format:(res as Order).format,
-            date:(res as Order).date.slice(0,(res as Order).date.indexOf('T')),
-            duration:(res as Order).duration,
-            phoneNumber:(res as Order).phone
+            client:(res as Menu).client,
+            guestsAmount:(res as Menu).guestsAmount,
+            format:(res as Menu).format,
+            date:(res as Menu).date.slice(0,(res as Menu).date.indexOf('T')),
+            duration:(res as Menu).duration,
+            phoneNumber:(res as Menu).phone
           });
-          let recieved = (res as Order).positions;
+          let recieved = (res as Menu).positions;
           let list:TableRow[] = [];
           recieved.forEach(el=>{
             if(el.title!=="" && el.title!==null){
@@ -201,7 +200,7 @@ export class AddOrderComponent implements OnInit {
             this.selectedPositions.push(el.position);
           });
           this.posAmounts.set(list);
-          this.additionalInfo.set((res as Order).additionalInfo);
+          this.additionalInfo.set((res as Menu).additionalInfo);
         }
         this.loading = false;
       }
@@ -273,21 +272,26 @@ export class AddOrderComponent implements OnInit {
         if (row.unitedRow) {
           return; // skip unitedRow entries
         }
-
         const prev = amounts[i - 1];
+        // if (i > 0 && prev?.unitedRow) {
+        //   items.push(new MinPosAmount(
+        //     row.id as number,
+        //     row.amount as number,
+        //     prev.title as string
+        //   ));
+        // } else {
+        //   items.push(new MinPosAmount(
+        //     row.id as number,
+        //     row.amount as number
+        //   ));
+        // }
 
+        let tmp = new MinPosAmount(row.id as number,row.amount as number);
+        tmp.inMenuOrder = i;
         if (i > 0 && prev?.unitedRow) {
-          items.push(new MinPosAmount(
-            row.id as number,
-            row.amount as number,
-            prev.title as string
-          ));
-        } else {
-          items.push(new MinPosAmount(
-            row.id as number,
-            row.amount as number
-          ));
+          tmp.title = prev.title as string;
         }
+        items.push(tmp);
       });
     }
     return items;
@@ -332,6 +336,7 @@ export class AddOrderComponent implements OnInit {
     if(index!=-1){
       this.selectedPositions.splice(index, 1);
     }
+
   }
 
   prints(e:any){

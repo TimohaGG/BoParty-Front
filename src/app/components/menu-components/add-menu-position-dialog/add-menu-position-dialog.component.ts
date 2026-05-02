@@ -16,11 +16,11 @@ export interface AddOrderPositionDialogData {
     MatDialogContent,
     PositionsListComponent
   ],
-  templateUrl: './add-order-position-dialog.component.html',
-  styleUrl: './add-order-position-dialog.component.css'
+  templateUrl: './add-menu-position-dialog.component.html',
+  styleUrl: './add-menu-position-dialog.component.css'
 })
-export class AddOrderPositionDialogComponent {
-  readonly dialogue = inject(MatDialogRef<AddOrderPositionDialogComponent>);
+export class AddMenuPositionDialogComponent {
+  readonly dialogue = inject(MatDialogRef<AddMenuPositionDialogComponent>);
   readonly data = inject<AddOrderPositionDialogData>(MAT_DIALOG_DATA);
   selectedPositions = model(this.data.positions);
 

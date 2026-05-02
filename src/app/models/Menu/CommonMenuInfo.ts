@@ -1,4 +1,4 @@
-export interface CommonOrderInfo {
+export interface CommonMenuInfo {
   id:number;
   title:string;
   description:string;
