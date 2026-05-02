@@ -17,8 +17,9 @@ import {CategoryCreateResp} from "../models/Positions/DTOs/CategoryCreateResp";
 @Injectable({providedIn:"root"})
 export class HttpService{
 
-  private baseUrl:string = "http://localhost:8080/"
+  
   // private baseUrl:string = "http://147.93.127.39:8084"
+   private baseUrl:string = "http://72.60.88.151:8085/"
 
   constructor(private clinet:HttpClient) {
   }
