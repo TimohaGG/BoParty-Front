@@ -1,8 +1,9 @@
-.categories-list {
-  width: 100%;
-  margin: 0 auto 18px;
-  overflow-x: auto;
-  scrollbar-width: thin;
+.positions-list{
+  background-color: var(--primary-lighter);
+  border-radius: 20px;
+  position: relative;
+  margin: 0 auto;
+  width: 100%
 }
 
 .categories-list mat-button-toggle-group {
