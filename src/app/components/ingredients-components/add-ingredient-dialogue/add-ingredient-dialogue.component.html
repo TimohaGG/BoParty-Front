@@ -1,25 +1,29 @@
-<h2>Додати інгридієнт</h2>
+<div class="bo-dialog">
+  <header class="bo-dialog-header">
+    <h2>Новий інгредієнт</h2>
+    <p>Додайте продукт і одразу прив'яжіть його до категорії.</p>
+  </header>
 
-<mat-dialog-content>
-  <mat-form-field>
-    <mat-label>
-      Назва категорії
-    </mat-label>
-    <input matInput [(ngModel)]="name"/>
-  </mat-form-field>
+  <mat-dialog-content class="bo-dialog-content">
+    <div class="bo-dialog-form">
+      <mat-form-field>
+        <mat-label>Назва інгредієнта</mat-label>
+        <input matInput [(ngModel)]="name" />
+      </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>
-      Категорія
-    </mat-label>
-    <mat-select [(ngModel)]="selected">
-      @for (opt of categories();track $index){
-        <mat-option [value]="opt.id">{{opt.name}}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
-</mat-dialog-content>
-<mat-dialog-actions>
-  <button mat-button (click)="onClose()">Скасувати</button>
-  <button mat-button (click)="onSubmit()">Додати</button>
-</mat-dialog-actions>
+      <mat-form-field>
+        <mat-label>Категорія</mat-label>
+        <mat-select [(ngModel)]="selected">
+          @for (opt of categories(); track opt.id){
+            <mat-option [value]="opt.id">{{opt.name}}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="bo-dialog-actions">
+    <button mat-button (click)="onClose()">Скасувати</button>
+    <button mat-flat-button color="accent" (click)="onSubmit()">Додати</button>
+  </mat-dialog-actions>
+</div>

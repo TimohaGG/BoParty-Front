@@ -1,13 +1,18 @@
-<h2 mat-dialog-title>Додати категорію</h2>
-<mat-dialog-content>
-  <mat-form-field>
-    <mat-label>
-      Назва категорії
-    </mat-label>
-    <input matInput [(ngModel)]="name"/>
-  </mat-form-field>
-</mat-dialog-content>
-<mat-dialog-actions>
-  <button mat-button (click)="onClose()">Скасувати</button>
-  <button mat-button [mat-dialog-close]="name()">Додати</button>
-</mat-dialog-actions>
+<div class="bo-dialog">
+  <header class="bo-dialog-header">
+    <h2>Нова категорія</h2>
+    <p>Створіть групу для зручного сортування інгредієнтів.</p>
+  </header>
+
+  <mat-dialog-content class="bo-dialog-content">
+    <mat-form-field>
+      <mat-label>Назва категорії</mat-label>
+      <input matInput [(ngModel)]="name" />
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="bo-dialog-actions">
+    <button mat-button (click)="onClose()">Скасувати</button>
+    <button mat-flat-button color="accent" [mat-dialog-close]="name()">Додати</button>
+  </mat-dialog-actions>
+</div>

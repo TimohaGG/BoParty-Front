@@ -1,10 +1,15 @@
 <mat-dialog-content class="positions-picker-content">
+  <header class="picker-header">
+    <div>
+      <h2>Додати позиції</h2>
+      <p>Оберіть страви та послуги, які потрібно додати до замовлення.</p>
+    </div>
+  </header>
+
   <app-positions-list
     [selectable]="true"
     [selectedPositions]="selectedPositions()"
     (onSelectPosition)="displaySelected($event)"
     (onDeselectPosition)="deselect($event)"
   ></app-positions-list>
-
-
 </mat-dialog-content>

@@ -2,6 +2,22 @@
   padding: 20px 24px 84px !important;
 }
 
+.picker-header {
+  width: min(1120px, 100%);
+  margin: 0 auto 16px;
+}
+
+.picker-header h2 {
+  margin: 0;
+  font-size: 1.45rem;
+  font-weight: 800;
+}
+
+.picker-header p {
+  margin: 6px 0 0;
+  color: var(--text-muted);
+}
+
 @media (max-width: 576px) {
   .positions-picker-content {
     padding: 12px 12px 84px !important;

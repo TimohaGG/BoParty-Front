@@ -6,7 +6,6 @@ import {
   MatDialogActions, MatDialogClose,
   MatDialogContent,
   MatDialogRef,
-  MatDialogTitle
 } from "@angular/material/dialog";
 import {MatInput, MatLabel} from "@angular/material/input";
 import {MatFormField} from "@angular/material/form-field";
@@ -21,7 +20,6 @@ import {
     MatButton,
     MatDialogActions,
     MatDialogContent,
-    MatDialogTitle,
     MatFormField,
     MatInput,
     MatLabel,
