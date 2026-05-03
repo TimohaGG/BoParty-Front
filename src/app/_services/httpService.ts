@@ -19,7 +19,8 @@ import {ShoppingList} from "../models/Menu/ShoppingList";
 export class HttpService{
 
 
-  private baseUrl:string = "http://72.60.88.151:8085/"
+  // private baseUrl:string = "http://72.60.88.151:8085/"
+  private baseUrl:string = "http://localhost:8085/"
 
 
   constructor(private clinet:HttpClient) {
@@ -152,5 +153,9 @@ export class HttpService{
   getShoppingList(orderId: number) {
     return this.clinet.get<ShoppingList>(this.baseUrl + "orders/shopping/get/"+orderId);
 
+  }
+
+  toggleShoppingStatus(id: number, status: boolean) {
+    return this.clinet.post<boolean>(this.baseUrl + "orders/shopping/toggle", {status:status, id:id});
   }
 }

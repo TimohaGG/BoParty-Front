@@ -223,4 +223,16 @@ export class OrdersService{
     );
 
   }
+
+  toggleShoppingItem(id: number, status: boolean) {
+    return this.http.toggleShoppingStatus(id, status).pipe(
+      map(res=>{
+        return res as boolean;
+      }),
+      catchError((err:HttpErrorResponse)=>{
+        console.log(err);
+        throw new Error(err.error.message);
+      })
+    );
+  }
 }

@@ -44,6 +44,18 @@ export class MenusListComponent implements OnInit{
 
   public loadingFailure = false;
   public needsArchive:boolean;
+  public visibleRangeLabel = computed(() => {
+    const total = this.totalPages();
+
+    if (total === 0) {
+      return 'Немає замовлень';
+    }
+
+    const start = this.currentPage() * this.perPage() + 1;
+    const end = Math.min(start + this.perPage() - 1, total);
+
+    return `Показано ${start}-${end} із ${total}`;
+  });
 
 
   constructor(private orderService:OrdersService,

@@ -43,6 +43,8 @@ export class ShoppingComponent implements OnInit {
         this.isLoading = false;
       }
     });
+
+    console.log(this.shoppingList);
   }
 
   get items(): ShoppingListItem[] {
@@ -50,7 +52,7 @@ export class ShoppingComponent implements OnInit {
   }
 
   get boughtCount(): number {
-    return this.items.filter(item => item.isBought).length;
+    return this.items.filter(item => item.bought).length;
   }
 
   get remainingCount(): number {
@@ -77,11 +79,22 @@ export class ShoppingComponent implements OnInit {
   }
 
   toggleBought(item: ShoppingListItem): void {
-    item.isBought = !item.isBought;
+
+    item.loading = true;
+    this.service.toggleShoppingItem(item.id,!item.bought).subscribe(
+      result => {
+        item.bought = !item.bought;
+        item.loading = false;
+      }
+    );
   }
 
   itemTrackBy(_index: number, item: ShoppingListItem): number {
     return item.id;
+  }
+
+  toggleShoppingItem(id: number, status:boolean): void {
+
   }
 
 }

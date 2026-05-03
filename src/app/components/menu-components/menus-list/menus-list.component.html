@@ -34,15 +34,22 @@
       </div>
     }
 
-    <mat-paginator
-      class="orders-paginator"
-      [length]="totalPages()"
-      [pageIndex]="currentPage()"
-      [pageSize]="perPage()"
-      [pageSizeOptions]="[5,10,25]"
-      (page)="onPageChange($event)"
-      aria-label="Сторінки замовлень">
-    </mat-paginator>
+    <section class="pagination-shell content-panel" aria-label="Навігація сторінками">
+      <div class="pagination-copy">
+        <span class="pagination-eyebrow">{{ needsArchive ? 'Архів' : 'Активні замовлення' }}</span>
+        <p class="pagination-summary">{{ visibleRangeLabel() }}</p>
+      </div>
+
+      <mat-paginator
+        class="orders-paginator"
+        [length]="totalPages()"
+        [pageIndex]="currentPage()"
+        [pageSize]="perPage()"
+        [pageSizeOptions]="[5,10,25]"
+        (page)="onPageChange($event)"
+        aria-label="Сторінки замовлень">
+      </mat-paginator>
+    </section>
   }
 </section>
 

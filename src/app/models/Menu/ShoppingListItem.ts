@@ -5,8 +5,9 @@ export interface ShoppingListItem{
   id:number;
   ingredient:Ingredient;
   amount:number;
-  isBought:boolean;
+  bought:boolean;
   comment:string;
   unitName:string;
+  loading:boolean;
 
 }

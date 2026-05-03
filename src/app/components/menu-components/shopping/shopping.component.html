@@ -90,10 +90,20 @@
 
             <div class="items-list">
               @for(item of group.items; track item.id){
-                <article class="shopping-item" [class.is-bought]="item.isBought">
-                  <button class="check-button" type="button" (click)="toggleBought(item)" [attr.aria-label]="item.isBought ? 'Позначити як не куплено' : 'Позначити як куплено'">
-                    <mat-icon>{{item.isBought ? 'check' : 'radio_button_unchecked'}}</mat-icon>
-                  </button>
+                <article class="shopping-item" [class.is-bought]="item.bought">
+
+                  @if(item.loading){
+                    <button class="check-button" type="button" >
+                      <mat-spinner color="accent" diameter="20"></mat-spinner>
+                    </button>
+
+                  }
+                  @else{
+                    <button class="check-button" type="button" (click)="toggleBought(item)" [attr.aria-label]="item.bought ? 'Позначити як не куплено' : 'Позначити як куплено'">
+                      <mat-icon>{{item.bought ? 'check' : 'radio_button_unchecked'}}</mat-icon>
+                    </button>
+                  }
+
 
                   <div class="item-main">
                     <h3>{{item.ingredient.name}}</h3>
