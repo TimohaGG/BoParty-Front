@@ -12,7 +12,29 @@ import {HotToastService} from "@ngxpert/hot-toast";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {PositionsCategoryService} from "../../../_services/positions-category.service";
 import {ActivatedRoute, RouterLink} from "@angular/router";
-import {MatPaginator, PageEvent} from "@angular/material/paginator";
+import {MatPaginator, MatPaginatorIntl, PageEvent} from "@angular/material/paginator";
+
+function paginatorIntlFactory(): MatPaginatorIntl {
+  const intl = new MatPaginatorIntl();
+
+  intl.itemsPerPageLabel = 'На сторінці';
+  intl.nextPageLabel = 'Наступна сторінка';
+  intl.previousPageLabel = 'Попередня сторінка';
+  intl.firstPageLabel = 'Перша сторінка';
+  intl.lastPageLabel = 'Остання сторінка';
+  intl.getRangeLabel = (page: number, pageSize: number, length: number) => {
+    if (length === 0 || pageSize === 0) {
+      return `0 з ${length}`;
+    }
+
+    const start = page * pageSize + 1;
+    const end = Math.min(start + pageSize - 1, length);
+
+    return `${start} - ${end} з ${length}`;
+  };
+
+  return intl;
+}
 
 @Component({
   selector: 'app-orders-list',
@@ -28,7 +50,13 @@ import {MatPaginator, PageEvent} from "@angular/material/paginator";
     MatPaginator
   ],
   templateUrl: './menus-list.component.html',
-  styleUrl: './menus-list.component.css'
+  styleUrl: './menus-list.component.css',
+  providers: [
+    {
+      provide: MatPaginatorIntl,
+      useFactory: paginatorIntlFactory
+    }
+  ]
 })
 export class MenusListComponent implements OnInit{
 

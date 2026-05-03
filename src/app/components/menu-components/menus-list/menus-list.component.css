@@ -188,6 +188,54 @@
   }
 
   :host ::ng-deep .orders-paginator .mat-mdc-paginator-container {
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    justify-content: initial;
+    gap: 12px;
+    width: 100%;
+  }
+
+  :host ::ng-deep .orders-paginator .mat-mdc-paginator-page-size {
+    grid-column: 1;
+    margin: 0;
+  }
+
+  :host ::ng-deep .orders-paginator .mat-mdc-paginator-page-size-label,
+  :host ::ng-deep .orders-paginator .mat-mdc-paginator-range-label {
+    display: none;
+  }
+
+  :host ::ng-deep .orders-paginator .mat-mdc-paginator-range-actions {
+    grid-column: 2;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  :host ::ng-deep .orders-paginator .mat-mdc-icon-button {
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+  }
+
+  :host ::ng-deep .orders-paginator .mat-mdc-paginator-page-size-select {
+    width: 82px;
+    margin: 0;
+  }
+}
+
+@media (max-width: 380px) {
+  .pagination-shell {
+    padding: 14px;
+  }
+
+  :host ::ng-deep .orders-paginator .mat-mdc-paginator-container {
+    grid-template-columns: 74px 1fr;
+    gap: 8px;
+  }
+
+  :host ::ng-deep .orders-paginator .mat-mdc-paginator-page-size-select {
+    width: 74px;
   }
 }
