@@ -33,6 +33,7 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {HttpErrorResponse} from "@angular/common/http";
 import {AdditionalMenuData} from "../../../models/Menu/AdditionalMenuData";
 import {AddMenuInfoComponent} from "../add-menu-info/add-menu-info.component";
+import {MatCheckbox} from "@angular/material/checkbox";
 
 export interface PosAmount {
   amount: number;
@@ -66,6 +67,7 @@ export interface PosAmount {
     CdkMenuItem,
     MatProgressSpinner,
     CdkMenuTrigger,
+    MatCheckbox,
   ],
   templateUrl: './add-menu.component.html',
   styleUrl: './add-menu.component.css'
@@ -94,6 +96,11 @@ export class AddMenuComponent implements OnInit {
     date: new FormControl('', [Validators.required]),
     duration: new FormControl('', [Validators.required]),
     phoneNumber: new FormControl('', [Validators.required]),
+    serving:new FormControl(false),
+    taxAmount:new FormControl(''),
+
+    govTax: new FormControl(false),
+    govTaxAmount: new FormControl(''),
   })
 
   constructor(private ordersService:OrdersService,private route:ActivatedRoute,private router:Router,private toast:HotToastService) {
@@ -101,6 +108,7 @@ export class AddMenuComponent implements OnInit {
 
     if(this.route.snapshot.queryParamMap.has("editable")){
       this.editable = this.route.snapshot.queryParamMap.get("editable") == "true";
+
     }
     else{
       this.ordersForm.disable();
@@ -110,7 +118,11 @@ export class AddMenuComponent implements OnInit {
 
   ngOnInit(): void {
     this.initOrderEditData();
-    }
+
+    this.ordersForm.get('serving')?.valueChanges.subscribe(() => this.syncConditionalTaxControls());
+    this.ordersForm.get('govTax')?.valueChanges.subscribe(() => this.syncConditionalTaxControls());
+    this.syncConditionalTaxControls();
+  }
 
   openPositionsDialog(){
     const ref = this.dialog.open(AddMenuPositionDialogComponent, {
@@ -188,8 +200,13 @@ export class AddMenuComponent implements OnInit {
             format:(res as Menu).format,
             date:(res as Menu).date.slice(0,(res as Menu).date.indexOf('T')),
             duration:(res as Menu).duration,
-            phoneNumber:(res as Menu).phone
-          });
+            phoneNumber:(res as Menu).phone,
+            serving:(res as Menu).serving,
+            taxAmount:(res as Menu).taxAmount,
+            govTax:(res as Menu).govTax,
+            govTaxAmount:(res as Menu).govTaxAmount,
+          }, {emitEvent: false});
+          this.syncConditionalTaxControls();
           let recieved = (res as Menu).positions;
           let list:TableRow[] = [];
           recieved.forEach(el=>{
@@ -221,7 +238,22 @@ export class AddMenuComponent implements OnInit {
 
   toggleEdit(){
     this.editable = !this.editable;
-    this.editable ? this.ordersForm.enable() : this.ordersForm.disable();
+    this.editable ? this.ordersForm.enable({emitEvent: false}) : this.ordersForm.disable({emitEvent: false});
+    this.syncConditionalTaxControls();
+
+  }
+
+  private syncConditionalTaxControls(): void {
+    const taxAmount = this.ordersForm.get('taxAmount');
+    const govTaxAmount = this.ordersForm.get('govTaxAmount');
+
+    this.editable && this.ordersForm.get('serving')?.value
+      ? taxAmount?.enable({emitEvent: false})
+      : taxAmount?.disable({emitEvent: false});
+
+    this.editable && this.ordersForm.get('govTax')?.value
+      ? govTaxAmount?.enable({emitEvent: false})
+      : govTaxAmount?.disable({emitEvent: false});
   }
 
   save(){

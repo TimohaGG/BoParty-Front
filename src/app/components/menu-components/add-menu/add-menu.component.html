@@ -31,6 +31,20 @@
       <mat-label>Телефон менеджера</mat-label>
       <input type="text" matInput formControlName="phoneNumber"/>
     </mat-form-field>
+    <div class="tax-controls">
+      <mat-checkbox formControlName="serving">Обслуговування</mat-checkbox>
+      <mat-form-field>
+        <input type="number" matInput formControlName="taxAmount"/>
+        <mat-label> %</mat-label>
+      </mat-form-field>
+
+      <mat-checkbox formControlName="govTax">ФОП</mat-checkbox>
+      <mat-form-field>
+        <input type="number" matInput formControlName="govTaxAmount"/>
+        <mat-label> %</mat-label>
+      </mat-form-field>
+    </div>
+
   </form>
 
   <div class="editor-section">

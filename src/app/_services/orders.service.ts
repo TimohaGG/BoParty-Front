@@ -90,6 +90,7 @@ export class OrdersService{
   }
 
   editOrder(id:number, value:any, items: MinPosAmount[], additionalInfo:AdditionalMenuData[]) {
+    console.log(value);
     return this.http.editOrder(id, value,items,additionalInfo).pipe(
       map(res=>{
         let order = res as Menu;

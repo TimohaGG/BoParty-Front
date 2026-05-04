@@ -2,6 +2,7 @@ import {Position} from "../Positions/Position";
 import {PositionAmount} from "../Positions/PositionAmount";
 import {PositionAmountFull} from "../Positions/PositionAmountFull";
 import {AdditionalMenuData} from "./AdditionalMenuData";
+import {FormControl} from "@angular/forms";
 
 export interface Menu {
   id:number,
@@ -15,4 +16,10 @@ export interface Menu {
   positions:PositionAmountFull[];
   additionalInfo:AdditionalMenuData[];
   payed:boolean;
+
+  serving:boolean;
+  taxAmount:number;
+
+  govTax: boolean;
+  govTaxAmount: number;
 }
