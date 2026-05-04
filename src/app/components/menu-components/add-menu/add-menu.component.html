@@ -101,11 +101,20 @@
       <ng-container matColumnDef="mob-actions">
         <mat-header-cell *matHeaderCellDef></mat-header-cell>
         <mat-cell *matCellDef="let element">
-          <button class="btn" cdkMenuItem [cdkMenuTriggerFor]="menu" [cdkMenuTriggerData]="{item:element}" aria-label="Дії з позицією">
-            <mat-icon>more_vert</mat-icon>
-          </button>
+          @if(!element.unitedRow){
+            <button class="btn" cdkMenuItem [cdkMenuTriggerFor]="menu" [cdkMenuTriggerData]="{item:element}" aria-label="Дії з позицією">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+          }
+          @else{
+            <button class="btn" cdkMenuItem [cdkMenuTriggerFor]="menuHeader" [cdkMenuTriggerData]="{item:element}" aria-label="Дії з позицією">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+          }
+
         </mat-cell>
       </ng-container>
+
 
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumns;" cdkDrag
@@ -200,3 +209,10 @@
     <button cdkMenuItem (click)="removeFromList(item.id)">Видалити</button>
   </div>
 </ng-template>
+
+<ng-template #menuHeader let-item="item">
+  <div cdkMenu class="menu">
+    <button cdkMenuItem (click)="removeHeaderFromList(item.id)">Видалити</button>
+  </div>
+</ng-template>
+

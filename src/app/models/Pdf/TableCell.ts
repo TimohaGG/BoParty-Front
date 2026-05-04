@@ -18,6 +18,8 @@ export class TableRow{
     }
     this.unitedRow = unitedRow;
     this._id = id;
+
+    console.log()
   }
 
 

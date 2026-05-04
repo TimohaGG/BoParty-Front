@@ -122,6 +122,8 @@ export class AddMenuComponent implements OnInit {
     this.ordersForm.get('serving')?.valueChanges.subscribe(() => this.syncConditionalTaxControls());
     this.ordersForm.get('govTax')?.valueChanges.subscribe(() => this.syncConditionalTaxControls());
     this.syncConditionalTaxControls();
+
+
   }
 
   openPositionsDialog(){
@@ -211,7 +213,7 @@ export class AddMenuComponent implements OnInit {
           let list:TableRow[] = [];
           recieved.forEach(el=>{
             if(el.title!=="" && el.title!==null){
-              list.push(new TableRow(null,0,el.title,true));
+              list.push(new TableRow(null,0,el.title,true, crypto.randomUUID()));
             }
             list.push(new TableRow(el.position,el.amount));
             this.selectedPositions.push(el.position);
@@ -220,6 +222,7 @@ export class AddMenuComponent implements OnInit {
           this.additionalInfo.set(this.normalizeAdditionalInfo((res as Menu).additionalInfo));
         }
         this.loading = false;
+        console.log(this.posAmounts());
       }
 
     );
@@ -383,6 +386,8 @@ export class AddMenuComponent implements OnInit {
   removeFromList(id: number | string){
     let index: number;
 
+    console.log(this.posAmounts());
+
     this.posAmounts.update(items=>
       items.filter(x=> x.id!==id)
     );
@@ -406,7 +411,7 @@ export class AddMenuComponent implements OnInit {
         if(data){
           let index = this.posAmounts().findIndex(x=>x.id==positionId);
           if(index==-1){
-            this.posAmounts.update(arr=>[...arr,new TableRow(null,0,data, true) ]);
+            this.posAmounts.update(arr=>[...arr,new TableRow(null,0,data, true,crypto.randomUUID()) ]);
           }else{
             this.posAmounts.update(arr=>[
               ...arr.slice(0,index),
@@ -431,6 +436,12 @@ export class AddMenuComponent implements OnInit {
   }
 
 
+  removeHeaderFromList(id:string) {
+
+    console.log(id);
+    this.posAmounts.update(items=>items.filter(x=>x.id!=id));
+    console.log(this.posAmounts());
+  }
 }
 
 
