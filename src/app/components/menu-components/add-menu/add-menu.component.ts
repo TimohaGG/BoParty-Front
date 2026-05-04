@@ -213,7 +213,7 @@ export class AddMenuComponent implements OnInit {
           let list:TableRow[] = [];
           recieved.forEach(el=>{
             if(el.title!=="" && el.title!==null){
-              list.push(new TableRow(null,0,el.title,true, crypto.randomUUID()));
+              list.push(new TableRow(null,0,el.title,true, generateUUID()));
             }
             list.push(new TableRow(el.position,el.amount));
             this.selectedPositions.push(el.position);
@@ -411,11 +411,11 @@ export class AddMenuComponent implements OnInit {
         if(data){
           let index = this.posAmounts().findIndex(x=>x.id==positionId);
           if(index==-1){
-            this.posAmounts.update(arr=>[...arr,new TableRow(null,0,data, true,crypto.randomUUID()) ]);
+            this.posAmounts.update(arr=>[...arr,new TableRow(null,0,data, true,generateUUID()) ]);
           }else{
             this.posAmounts.update(arr=>[
               ...arr.slice(0,index),
-              new TableRow(null,1,data,true,crypto.randomUUID()),
+              new TableRow(null,1,data,true,generateUUID()),
               ...arr.slice(index),
             ]);
           }
@@ -442,6 +442,16 @@ export class AddMenuComponent implements OnInit {
     this.posAmounts.update(items=>items.filter(x=>x.id!=id));
     console.log(this.posAmounts());
   }
+
+
 }
 
 
+function generateUUID() {
+  return crypto.randomUUID
+    ? crypto.randomUUID()
+    : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      const r = crypto.getRandomValues(new Uint8Array(1))[0] % 16;
+      return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+    });
+}
