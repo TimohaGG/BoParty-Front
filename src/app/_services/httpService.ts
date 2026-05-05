@@ -19,7 +19,7 @@ import {ShoppingList} from "../models/Menu/ShoppingList";
 export class HttpService{
 
 
-  private baseUrl:string = "http://72.60.88.151:8085/"
+  private baseUrl:string = "https://72.60.88.151:8085/"
   // private baseUrl:string = "http://localhost:8085/"
 
 
