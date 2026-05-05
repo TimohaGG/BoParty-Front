@@ -36,6 +36,19 @@ body {
   max-height: calc(90vh - 24px);
 }
 
+.cdk-global-overlay-wrapper:has(.position-dialog-panel) {
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.position-dialog-panel {
+  margin: auto !important;
+}
+
+.position-dialog-panel .mat-mdc-dialog-surface {
+  max-height: 90vh !important;
+}
+
 .mat-mdc-form-field-subscript-wrapper {
   display: none !important;
   visibility: collapse !important;
@@ -232,7 +245,7 @@ body {
   color: #f2b1b1 !important;
 }
 
-@media (max-width: 576px) {
+@media (max-width: 720px) {
   .mat-horizontal-content-container,
   .mat-mdc-dialog-container .mat-mdc-dialog-content {
     padding: 0 !important;
@@ -241,6 +254,24 @@ body {
   .full-screen {
     max-width: 100vw !important;
     width: 100% !important;
+    height: 100dvh !important;
+    margin: 0 !important;
+  }
+
+  .cdk-global-overlay-wrapper:has(.full-screen) {
+    align-items: stretch !important;
+    justify-content: stretch !important;
+  }
+
+  .full-screen .mat-mdc-dialog-container,
+  .full-screen .mat-mdc-dialog-surface {
+    width: 100vw !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+  }
+
+  .full-screen .mat-mdc-dialog-surface {
+    border-radius: 0 !important;
   }
 
   .mdc-list-item--selected {

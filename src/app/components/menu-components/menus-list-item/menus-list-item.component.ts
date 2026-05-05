@@ -43,6 +43,9 @@ export class MenusListItemComponent implements OnInit {
         client:this.menu?.client,
         price:this.menu?.totalPrice
       }
+    }).afterClosed().subscribe(result => {
+      this.orderService.store.removeOrder(result);
+      this.orderService.store.removeMinOrder(result);
     });
 
 

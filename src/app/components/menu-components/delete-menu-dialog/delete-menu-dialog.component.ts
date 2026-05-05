@@ -37,7 +37,7 @@ export class DeleteMenuDialogComponent {
     this.service.deleteOrder(this.data.id).subscribe({
       next: data => {
         this.loading = false;
-        this.dialogRef.close();
+        this.dialogRef.close(this.data.id);
       },
       error: error => {
         this.toast.error(error.message);

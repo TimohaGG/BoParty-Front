@@ -205,6 +205,9 @@ export const entityStorage = signalStore(
     },
     removeOrder(id:number){
       patchState(store, removeEntity(id,menuConfig));
+    },
+    removeMinOrder(id:number){
+      patchState(store, removeEntity(id,menusMinConfig));
     }
   }))
 );

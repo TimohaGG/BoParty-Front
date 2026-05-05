@@ -29,10 +29,24 @@ export class PositionsListItemComponent {
 
 
   openModal(){
+    const isMobile = window.matchMedia('(max-width: 720px)').matches;
     const ref = this.dialog.open(AddPositionDialogComponent, {
       data: {
         position: this.position
-      }
+      },
+      ...(isMobile ? {
+        width: "100vw",
+        maxWidth: "100vw",
+        height: "100dvh",
+        maxHeight: "100dvh",
+        panelClass: "full-screen",
+      } : {
+        width: "min(900px, calc(100vw - 32px))",
+        maxWidth: "calc(100vw - 32px)",
+        height: "auto",
+        maxHeight: "90vh",
+        panelClass: "position-dialog-panel",
+      }),
     });
 
     ref.afterClosed().subscribe(result => {
