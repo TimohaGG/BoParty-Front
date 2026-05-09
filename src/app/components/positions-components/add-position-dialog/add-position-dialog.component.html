@@ -1,9 +1,11 @@
-<div class="p-3" style="height:100vh">
+<div class="position-dialog-shell">
+  <header class="position-dialog-header">
+    <h2>{{ editPositionModel() ? 'Редагувати позицію' : 'Додати позицію' }}</h2>
+    <p>Заповніть основні дані, додайте фото та підберіть інгредієнти для закупівель.</p>
+  </header>
 
-  <h2>Додати позицію</h2>
-
-  <mat-dialog-content>
-    <mat-stepper #stepper [linear]="false" class="position-stepper">
+  <mat-dialog-content class="position-dialog-content">
+    <mat-stepper [linear]="false" class="position-stepper">
       <mat-step [stepControl]="positionInfoGroup">
         <ng-template matStepLabel>Позиція</ng-template>
 

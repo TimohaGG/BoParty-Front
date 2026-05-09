@@ -1,0 +1,35 @@
+.shopping-join-dialog {
+  width: min(680px, calc(100vw - 24px));
+}
+
+.shopping-join-form {
+  display: grid;
+  gap: 14px;
+}
+
+.shopping-join-hint {
+  padding: 14px;
+  border: 1px solid rgba(246, 196, 83, 0.18);
+  border-radius: 10px;
+  color: var(--text-muted);
+  background: rgba(246, 196, 83, 0.08);
+}
+
+.shopping-join-field {
+  width: 100%;
+}
+
+.shopping-join-actions .mat-mdc-progress-spinner {
+  margin: 0 auto;
+}
+
+@media (max-width: 576px) {
+  .shopping-join-dialog {
+    width: calc(100vw - 16px);
+  }
+
+  .shopping-join-hint {
+    padding: 12px;
+    font-size: 0.95rem;
+  }
+}

@@ -2,14 +2,12 @@ import {Component, inject, model, OnInit} from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
-  MatDialogClose,
   MatDialogContent,
   MatDialogRef
 } from "@angular/material/dialog";
-import {PositionsListComponent} from "../../positions-components/positions-list/positions-list.component";
 import {MatOption, MatSelect} from "@angular/material/select";
 import {MatFormField, MatLabel} from "@angular/material/form-field";
-import {FormControl, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MinMenu} from "../../../models/Menu/MinMenu";
 import {entityStorage} from "../../../_helpers/storage/entityStorage";
 import {OrdersService} from "../../../_services/orders.service";
@@ -21,7 +19,6 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
   selector: 'app-shopping-join-dialog',
   imports: [
     MatDialogContent,
-    PositionsListComponent,
     MatFormField,
     MatLabel,
     MatSelect,
@@ -30,7 +27,6 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
     DatePipe,
     MatDialogActions,
     MatButton,
-    MatDialogClose,
     FormsModule,
     MatProgressSpinner,
   ],

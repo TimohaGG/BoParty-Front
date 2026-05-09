@@ -3,17 +3,13 @@ import {
   Component,
   computed,
   ElementRef,
-  inject, Input, model,
+  inject, model,
   OnInit,
-  signal,
-  Signal,
   ViewChild,
-  WritableSignal
 } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialog,
-  MatDialogActions,
   MatDialogClose,
   MatDialogContent,
   MatDialogRef
@@ -24,14 +20,12 @@ import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} fr
 import {MatFormField, MatLabel} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {MatSelect} from "@angular/material/select";
-import {MatLine, MatOption} from "@angular/material/core";
+import {MatOption} from "@angular/material/core";
 import {MatButton} from "@angular/material/button";
-import {MatSelectSearchComponent} from "ngx-mat-select-search";
 import {MatAutocomplete, MatAutocompleteTrigger} from "@angular/material/autocomplete";
 import {map, Observable, of, startWith} from "rxjs";
 import {Ingredient} from "../../../models/Positions/Ingredient";
 import {AsyncPipe} from "@angular/common";
-import {IngredientAmountComponent} from "../ingredient-amount/ingredient-amount.component";
 import {IngredientAmount} from "../../../models/Positions/IngredientAmount";
 import {getAllUnits, UnitType} from "../../../models/Positions/Units";
 import {MatIcon} from "@angular/material/icon";
@@ -40,12 +34,8 @@ import {
   AddIngredientDialogueComponent
 } from "../../ingredients-components/add-ingredient-dialogue/add-ingredient-dialogue.component";
 import {PositionsService} from "../../../_services/positions.service";
-import {resolve} from "@angular/compiler-cli";
 import {HotToastService} from "@ngxpert/hot-toast";
 import {Position} from "../../../models/Positions/Position";
-import {
-  AddCategoryDialogueData
-} from "../../ingredients-components/add-category-dialogue/add-category-dialogue.component";
 
 
 
