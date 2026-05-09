@@ -6,4 +6,5 @@ export interface MinMenu{
   totalPrice:number;
   client:string;
   payed:boolean;
+  temporary:boolean;
 }

@@ -1,0 +1,28 @@
+<mat-dialog-content>
+  <header class="picker-header">
+    <div>
+      <h2>Об`єднати замовлення</h2>
+      <p>Оберіть замовлення для об`єднання</p>
+    </div>
+  </header>
+
+    <mat-form-field class="w-100">
+      <mat-label>
+        Замовлення
+      </mat-label>
+      <mat-select [(ngModel)]="selected" multiple>
+        @for (ord of ordersList; track ord.id) {
+          <mat-option [value]="ord.id">{{ord.date | date}} | {{ord.client}} | {{ord.totalPrice}}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions class="d-flex justify-content-between">
+  @if(this.loading){
+    <mat-spinner diameter="20"></mat-spinner>
+  }
+  @else{
+    <button mat-button class="btn btn-outline-light w-50" (click)="onSubmit()"  >Об`єднати</button>
+  }
+  <button mat-button (click)="close()" class="btn btn-outline-danger w-50">Скасувати</button>
+</mat-dialog-actions>

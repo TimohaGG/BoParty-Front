@@ -1,10 +1,19 @@
 @if (menu) {
   <article class="order-row">
     <div class="order-main">
-      <div>
-        <span class="eyebrow">Дата події</span>
-        <h2>{{menu.date}}</h2>
-      </div>
+      @if(menu.temporary){
+        <div>
+          <span class="eyebrow">Об`єднано з дат</span>
+          <h2>{{menu.client}}</h2>
+        </div>
+      }@else{
+        <div>
+          <span class="eyebrow">Дата події</span>
+          <h2>{{menu.date}}</h2>
+        </div>
+      }
+
+
       <div class="order-price">
         <span class="eyebrow">Сума</span>
         <strong>{{menu.totalPrice}} грн</strong>

@@ -188,6 +188,9 @@ export const entityStorage = signalStore(
     addOrder(order:Menu){
       patchState(store,setEntity(order,menuConfig));
     },
+    addMinMenu(order:MinMenu){
+      patchState(store,setEntity(order,menusMinConfig));
+    },
     addPositionCategory(category:Category){
       patchState(store,addEntity(category,positionCategoryConfig));
     },

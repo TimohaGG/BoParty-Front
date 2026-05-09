@@ -26,8 +26,8 @@ export class HttpService{
   constructor(private clinet:HttpClient) {
   }
 
-  getAllOrders():Observable<Menu[] | ExceptionMessage>{
-    return this.clinet.get<Menu[] | ExceptionMessage>(this.baseUrl + "orders/get");
+  getAllOrders():Observable<MinMenu[] | ExceptionMessage>{
+    return this.clinet.get<MinMenu[] | ExceptionMessage>(this.baseUrl + "orders/get/min/all");
   }
 
   getMinOrders(pageSize:number, currentPage:number, archive:boolean):Observable<MinMenu[] | ExceptionMessage>{
@@ -157,5 +157,10 @@ export class HttpService{
 
   toggleShoppingStatus(id: number, status: boolean) {
     return this.clinet.post<boolean>(this.baseUrl + "orders/shopping/toggle", {status:status, id:id});
+  }
+
+  joinOrders(ordersIds: any) {
+    return this.clinet.post<MinMenu>(this.baseUrl + "orders/shopping/join",{ordersIds:ordersIds})
+
   }
 }

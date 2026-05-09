@@ -21,20 +21,20 @@ export class OrdersService{
   constructor(private http:HttpService, private toast:HotToastService) {
   }
 
-  public getAll():Observable<Menu[] | ExceptionMessage> {
-    return this.http.getAllOrders().pipe(
-      map(res=>{
-        if(!isMessage(res)){
-          this.store.setAllOrders(res as Menu[]);
-        }
-        return res as Menu[];
-      }),
-      catchError((error:HttpErrorResponse)=>{
-        let msg = new ExceptionMessage(error.error.message, error.error.status);
-        return of(msg);
-      })
-    );
-  }
+  // public getAll():Observable<Menu[] | ExceptionMessage> {
+  //   return this.http.getAllOrders().pipe(
+  //     map(res=>{
+  //       if(!isMessage(res)){
+  //         this.store.setAllOrders(res as Menu[]);
+  //       }
+  //       return res as Menu[];
+  //     }),
+  //     catchError((error:HttpErrorResponse)=>{
+  //       let msg = new ExceptionMessage(error.error.message, error.error.status);
+  //       return of(msg);
+  //     })
+  //   );
+  // }
 
   public getOfPageMin(pageSize:number, currentPage:number, archive:boolean) {
     return this.http.getMinOrders(pageSize,currentPage,archive).pipe(
@@ -235,5 +235,30 @@ export class OrdersService{
         throw new Error(err.error.message);
       })
     );
+  }
+
+  getAllOrders() {
+    return this.http.getAllOrders().pipe(
+      map(res=>{
+        return res as MinMenu[];
+      }),
+      catchError((err:HttpErrorResponse)=>{
+        throw new Error(err.error.message);
+      })
+    );
+  }
+
+  joinOrders(result: any) {
+    return this.http.joinOrders(result).pipe(
+      map(res=>{
+        if(!isMessage(res)){
+          this.store.addMinMenu(res)
+        }
+      }),
+      catchError((err:HttpErrorResponse)=>{
+        throw new Error(err.error.message);
+      })
+    );
+
   }
 }

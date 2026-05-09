@@ -28,5 +28,6 @@ export const routes: Routes = [
   {path: 'order/create', component: AddMenuComponent,canActivate:[authGuard]},
   {path: 'order/data', component: OrderListComponent,canActivate:[authGuard]},
   {path: 'order/shopping/:orderId', component: ShoppingComponent,canActivate:[authGuard]},
+
   { path: '', redirectTo: 'home', pathMatch: 'full' },
 ];

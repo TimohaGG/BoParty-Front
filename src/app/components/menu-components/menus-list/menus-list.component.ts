@@ -13,6 +13,8 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {PositionsCategoryService} from "../../../_services/positions-category.service";
 import {ActivatedRoute, RouterLink} from "@angular/router";
 import {MatPaginator, MatPaginatorIntl, PageEvent} from "@angular/material/paginator";
+import {MatDialog} from "@angular/material/dialog";
+import {ShoppingJoinDialogComponent} from "../shopping-join-dialog/shopping-join-dialog.component";
 
 function paginatorIntlFactory(): MatPaginatorIntl {
   const intl = new MatPaginatorIntl();
@@ -72,6 +74,7 @@ export class MenusListComponent implements OnInit{
 
   public loadingFailure = false;
   public needsArchive:boolean;
+  readonly dialog = inject(MatDialog);
   public visibleRangeLabel = computed(() => {
     const total = this.totalPages();
 
@@ -146,6 +149,14 @@ export class MenusListComponent implements OnInit{
   }
 
 
+  openShoppingDialog() {
+    const dialogRef = this.dialog.open(ShoppingJoinDialogComponent,{
+      data:{selectedOrders:[]}
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(result);
 
+    })
+  }
 }
