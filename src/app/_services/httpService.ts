@@ -14,6 +14,7 @@ import {CommonMenuInfo} from "../models/Menu/CommonMenuInfo";
 import {AdditionalMenuData} from "../models/Menu/AdditionalMenuData";
 import {CategoryCreateResp} from "../models/Positions/DTOs/CategoryCreateResp";
 import {ShoppingList} from "../models/Menu/ShoppingList";
+import {ShoppingListItem} from "../models/Menu/ShoppingListItem";
 
 @Injectable({providedIn:"root"})
 export class HttpService{
@@ -157,6 +158,22 @@ export class HttpService{
 
   toggleShoppingStatus(id: number, status: boolean) {
     return this.clinet.post<boolean>(this.baseUrl + "orders/shopping/toggle", {status:status, id:id});
+  }
+
+  addShoppingComment(shoppingItemId: number, comment: string) {
+    return this.clinet.post(this.baseUrl + "orders/shopping/comment/add", {shoppingItemId:shoppingItemId, comment:comment}, {responseType: "text"});
+  }
+
+  removeShoppingComment(id: number) {
+    return this.clinet.delete(this.baseUrl + "orders/shopping/comment/remove/" + id, {responseType: "text"});
+  }
+
+  addShoppingItem(data: any) {
+    return this.clinet.post<ShoppingListItem>(this.baseUrl + "orders/shopping/item/add", data);
+  }
+
+  removeShoppingItem(id: number) {
+    return this.clinet.delete(this.baseUrl + "orders/shopping/item/remove/" + id, {responseType: "text"});
   }
 
   joinOrders(ordersIds: any) {
