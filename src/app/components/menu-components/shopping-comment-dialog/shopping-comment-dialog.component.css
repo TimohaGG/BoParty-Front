@@ -1,0 +1,7 @@
+.shopping-comment-dialog {
+  width: min(440px, calc(100vw - 24px));
+}
+
+.shopping-comment-dialog textarea {
+  resize: vertical;
+}

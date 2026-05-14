@@ -1,0 +1,28 @@
+.create-shopping-item-dialog {
+  width: min(520px, calc(100vw - 24px));
+}
+
+.add-missing-ingredient {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid rgba(246, 196, 83, 0.28);
+  border-radius: 8px;
+  color: var(--accent-color);
+  background: rgba(246, 196, 83, 0.08);
+  cursor: pointer;
+}
+
+.add-missing-ingredient-option {
+  height: auto !important;
+  padding: 8px !important;
+}
+
+.add-missing-ingredient mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}

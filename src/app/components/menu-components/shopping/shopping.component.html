@@ -23,6 +23,23 @@
     }
   </header>
 
+  @if(shoppingList){
+    <div class="shopping-fab-stack">
+      <button mat-fab type="button" class="delete-mode-button" [class.is-active]="deleteMode" (click)="toggleDeleteMode()" aria-label="Показати видалення">
+        <mat-icon>{{deleteMode ? 'close' : 'delete_outline'}}</mat-icon>
+      </button>
+
+      <button mat-fab type="button" class="add-shopping-item-button" [disabled]="addingItem" (click)="openCreateItemDialog()" aria-label="Додати продукт">
+        @if(addingItem){
+          <mat-spinner diameter="22"></mat-spinner>
+        }
+        @else{
+          <mat-icon>add</mat-icon>
+        }
+      </button>
+    </div>
+  }
+
   @if(isLoading){
     <div class="loading-state content-panel">
       <mat-spinner color="accent"></mat-spinner>
@@ -105,16 +122,62 @@
                   }
 
 
-                  <div class="item-main">
+                  <button class="item-main item-toggle" type="button" (click)="toggleBought(item)" [disabled]="item.loading">
                     <h3>{{item.ingredient.name}}</h3>
-                    @if(item.comment){
-                      <p>{{item.comment}}</p>
+                  </button>
+
+                  <div class="comment-action">
+                    <button
+                      class="comment-button"
+                      type="button"
+                      [class.has-comment]="hasComment(item)"
+                      [disabled]="isCommentLoading(item)"
+                      (click)="toggleCommentPopup(item)"
+                      [attr.aria-label]="hasComment(item) ? 'Показати коментар' : 'Додати коментар'">
+                      @if(isCommentLoading(item)){
+                        <mat-spinner color="accent" diameter="18"></mat-spinner>
+                      }
+                      @else{
+                        <mat-icon>{{hasComment(item) ? 'info_outline' : 'add'}}</mat-icon>
+                      }
+                    </button>
+
+                    @if(openCommentItemId === item.id && hasComment(item)){
+                      <div class="comment-popover">
+                        <strong>Коментар</strong>
+                        <div class="comment-popover-body">
+                          <p>{{item.comment}}</p>
+                          <button class="comment-edit" type="button" [disabled]="isCommentLoading(item)" (click)="openCommentDialog(item)" aria-label="Редагувати коментар">
+                            <mat-icon>edit</mat-icon>
+                          </button>
+                        </div>
+                        <button class="comment-delete" type="button" [disabled]="isCommentLoading(item)" (click)="deleteComment(item)">
+                          @if(isCommentLoading(item)){
+                            <mat-spinner color="accent" diameter="18"></mat-spinner>
+                          }
+                          @else{
+                            <mat-icon>delete_outline</mat-icon>
+                            Видалити
+                          }
+                        </button>
+                      </div>
                     }
                   </div>
 
                   <div class="item-amount">
                     {{item.amount}} {{item.unitName}}
                   </div>
+
+                  @if(deleteMode){
+                    <button class="remove-item-button" type="button" [disabled]="isRemovingItem(item)" (click)="removeShoppingItem(item)" aria-label="Видалити продукт">
+                      @if(isRemovingItem(item)){
+                        <mat-spinner color="accent" diameter="18"></mat-spinner>
+                      }
+                      @else{
+                        <mat-icon>delete_outline</mat-icon>
+                      }
+                    </button>
+                  }
                 </article>
               }
             </div>

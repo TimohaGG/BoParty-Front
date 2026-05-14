@@ -1,0 +1,56 @@
+<div class="bo-dialog create-shopping-item-dialog">
+  <header class="bo-dialog-header">
+    <h2>Додати продукт</h2>
+    <p>Новий рядок у список закупівель.</p>
+  </header>
+
+  <mat-dialog-content class="bo-dialog-content">
+    <form [formGroup]="form" class="bo-dialog-form">
+      <mat-form-field>
+        <mat-label>Інгредієнт</mat-label>
+        <mat-select formControlName="ingredientId">
+          <mat-option>
+            <ngx-mat-select-search
+              [formControl]="ingredientSearch"
+              placeholderLabel="Пошук"
+              noEntriesFoundLabel="Нічого не знайдено">
+            </ngx-mat-select-search>
+          </mat-option>
+
+          @for (ingredient of filteredIngredients(); track ingredient.id) {
+            <mat-option [value]="ingredient.id">{{ingredient.name}}</mat-option>
+          }
+          @if(filteredIngredients().length === 0){
+            <mat-option class="add-missing-ingredient-option">
+              <button class="add-missing-ingredient" type="button" (click)="openAddIngredientDialog($event)">
+                <mat-icon>add</mat-icon>
+                Додати інгредієнт
+              </button>
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <div class="bo-dialog-grid">
+        <mat-form-field>
+          <mat-label>Кількість</mat-label>
+          <input matInput type="number" formControlName="amount" />
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Одиниця</mat-label>
+          <mat-select formControlName="unitId">
+            @for (unit of units; track unit.id) {
+              <mat-option [value]="unit.id">{{unit.name}}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="bo-dialog-actions">
+    <button mat-button mat-dialog-close>Скасувати</button>
+    <button mat-flat-button color="accent" (click)="save()">Додати</button>
+  </mat-dialog-actions>
+</div>

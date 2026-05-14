@@ -1,0 +1,18 @@
+<div class="bo-dialog shopping-comment-dialog">
+  <header class="bo-dialog-header">
+    <h2>Додати коментар</h2>
+    <p>{{data.itemName}}</p>
+  </header>
+
+  <mat-dialog-content class="bo-dialog-content">
+    <mat-form-field>
+      <mat-label>Коментар</mat-label>
+      <textarea rows="5" matInput [formControl]="comment"></textarea>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="bo-dialog-actions">
+    <button mat-button mat-dialog-close>Скасувати</button>
+    <button mat-flat-button color="accent" (click)="save()">Зберегти</button>
+  </mat-dialog-actions>
+</div>

@@ -237,6 +237,54 @@ export class OrdersService{
     );
   }
 
+  addShoppingComment(shoppingItemId: number, comment: string) {
+    return this.http.addShoppingComment(shoppingItemId, comment).pipe(
+      map(res=>{
+        return res;
+      }),
+      catchError((err:HttpErrorResponse)=>{
+        console.log(err);
+        throw new Error(err.error.message);
+      })
+    );
+  }
+
+  removeShoppingComment(id: number) {
+    return this.http.removeShoppingComment(id).pipe(
+      map(res=>{
+        return res;
+      }),
+      catchError((err:HttpErrorResponse)=>{
+        console.log(err);
+        throw new Error(err.error.message);
+      })
+    );
+  }
+
+  addShoppingItem(data: any) {
+    return this.http.addShoppingItem(data).pipe(
+      map(res=>{
+        return res;
+      }),
+      catchError((err:HttpErrorResponse)=>{
+        console.log(err);
+        throw new Error(err.error.message);
+      })
+    );
+  }
+
+  removeShoppingItem(id: number) {
+    return this.http.removeShoppingItem(id).pipe(
+      map(res=>{
+        return res;
+      }),
+      catchError((err:HttpErrorResponse)=>{
+        console.log(err);
+        throw new Error(err.error.message);
+      })
+    );
+  }
+
   getAllOrders() {
     return this.http.getAllOrders().pipe(
       map(res=>{
