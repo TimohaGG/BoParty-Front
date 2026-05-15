@@ -26,6 +26,12 @@
         <mat-icon class="side-nav-icon" matListItemIcon>bar_chart</mat-icon>
         <span class="side-nav-label">Статистика</span>
       </a>
+      @if (isLoggedIn) {
+        <button mat-list-item class="side-nav-item side-nav-logout" type="button" (click)="logout()">
+          <mat-icon class="side-nav-icon" matListItemIcon>logout</mat-icon>
+          <span class="side-nav-label">Вийти</span>
+        </button>
+      }
     </mat-nav-list>
   </mat-sidenav>
 
@@ -41,10 +47,10 @@
         <a mat-button routerLink="/positions" routerLinkActive="active-top-link">Позиції</a>
         <a mat-button routerLink="/ingredients" routerLinkActive="active-top-link">Інгредієнти</a>
         <a mat-button routerLink="/order/data" routerLinkActive="active-top-link">Статистика</a>
+        @if (isLoggedIn) {
+          <button mat-button class="logout-button" type="button" (click)="logout()">Вийти</button>
+        }
       </nav>
-      @if (isLoggedIn) {
-        <button mat-button class="logout-button" (click)="logout()">Вийти</button>
-      }
       <button mat-icon-button class="mobile-menu-button" aria-label="Відкрити меню" (click)="sidenav.toggle()" >
         <mat-icon>menu</mat-icon>
       </button>
