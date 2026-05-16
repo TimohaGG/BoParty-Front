@@ -42,10 +42,12 @@ export class AppComponent {
   showAdminBoard = false;
   showModeratorBoard = false;
   username?: string;
+  brandLogoSrc = '/assets/img/logo.png';
 
   opened=false;
 
   private store = inject(entityStorage);
+  private authStateSubscription?: Subscription;
 
 
   constructor(
@@ -55,17 +57,36 @@ export class AppComponent {
 
   }
   ngOnInit(): void {
-    this.isLoggedIn = this.storageService.isLoggedIn();
+    this.authStateSubscription = this.storageService.authUser$.subscribe(user => this.applyUser(user));
+  }
 
-    if (this.isLoggedIn) {
-      const user = this.storageService.getUser();
-      this.roles = user.roles;
+  ngOnDestroy(): void {
+    this.authStateSubscription?.unsubscribe();
+  }
 
-      this.showAdminBoard = this.roles.includes('ROLE_ADMIN');
-      this.showModeratorBoard = this.roles.includes('ROLE_MODERATOR');
+  private applyUser(user: any): void {
+    this.isLoggedIn = !!user;
+    this.roles = user?.roles ?? [];
+    this.showAdminBoard = this.roles.includes('ROLE_ADMIN');
+    this.showModeratorBoard = this.roles.includes('ROLE_MODERATOR');
+    this.username = user?.username;
+    this.brandLogoSrc = this.getLogoSrc(user?.logo);
+  }
 
-      this.username = user.username;
+  private getLogoSrc(logo?: string): string {
+    if(!logo){
+      return '/assets/img/logo.png';
     }
+
+    if(logo.startsWith('data:') || logo.startsWith('http') || logo.startsWith('/')){
+      return logo;
+    }
+
+    return `data:image/*;base64,${logo}`;
+  }
+
+  onLogoError(): void {
+    this.brandLogoSrc = '/assets/img/logo.png';
   }
 
   logout(): void {
