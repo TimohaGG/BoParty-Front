@@ -208,6 +208,7 @@
 <ng-template #menu let-item="item">
   <div cdkMenu class="menu">
     <button cdkMenuItem (click)="openHeaderDialog(item.position.id)">Додати заголовок</button>
+    <button cdkMenuItem (click)="dividePosition(item.position.id)">Розділити</button>
     <button cdkMenuItem (click)="removeFromList(item.id)">Видалити</button>
   </div>
 </ng-template>

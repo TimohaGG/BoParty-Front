@@ -78,16 +78,16 @@ export class AddMenuComponent implements OnInit {
   private dialog = inject(MatDialog);
 
 
-  public editOrderid:number = -1;
-  editable:boolean = false;
-  loading:boolean = false;
+  public editOrderid: number = -1;
+  editable: boolean = false;
+  loading: boolean = false;
 
 
   public selectedPositions: Position[] = []
   public posAmounts = signal<TableRow[]>([]);
-  displayedColumns: string[] = [ 'name','image', 'weight', 'price', 'amount','mob-actions'];
+  displayedColumns: string[] = ['name', 'image', 'weight', 'price', 'amount', 'mob-actions'];
   public additionalInfo = signal<AdditionalMenuData[]>([]);
-  displayedColumnsInfo: string[] = [ 'name','description', 'price','btn-remove'];
+  displayedColumnsInfo: string[] = ['name', 'description', 'price', 'btn-remove'];
 
   public ordersForm: FormGroup = new FormGroup({
     client: new FormControl('', [Validators.required]),
@@ -96,21 +96,20 @@ export class AddMenuComponent implements OnInit {
     date: new FormControl('', [Validators.required]),
     duration: new FormControl('', [Validators.required]),
     phoneNumber: new FormControl('', [Validators.required]),
-    serving:new FormControl(false),
-    taxAmount:new FormControl(''),
+    serving: new FormControl(false),
+    taxAmount: new FormControl(''),
 
     govTax: new FormControl(false),
     govTaxAmount: new FormControl(''),
   })
 
-  constructor(private ordersService:OrdersService,private route:ActivatedRoute,private router:Router,private toast:HotToastService) {
+  constructor(private ordersService: OrdersService, private route: ActivatedRoute, private router: Router, private toast: HotToastService) {
 
 
-    if(this.route.snapshot.queryParamMap.has("editable")){
+    if (this.route.snapshot.queryParamMap.has("editable")) {
       this.editable = this.route.snapshot.queryParamMap.get("editable") == "true";
 
-    }
-    else{
+    } else {
       this.ordersForm.disable();
       this.editOrderid = Number(this.route.snapshot.queryParamMap.get("orderId")) ?? -1;
     }
@@ -126,28 +125,28 @@ export class AddMenuComponent implements OnInit {
 
   }
 
-  openPositionsDialog(){
+  openPositionsDialog() {
     const ref = this.dialog.open(AddMenuPositionDialogComponent, {
-      data:{
-        positions:this.selectedPositions
+      data: {
+        positions: this.selectedPositions
       },
-      width:"100%",
-      maxWidth:"90vw",
-      maxHeight:"90vh",
-      height:"100%",
-      panelClass:"full-width",
-      disableClose:true,
+      width: "100%",
+      maxWidth: "90vw",
+      maxHeight: "90vh",
+      height: "100%",
+      panelClass: "full-width",
+      disableClose: true,
       closeOnNavigation: false
     });
 
     ref.afterClosed().subscribe({
-      next: (data)=> {
-        if(data){
+      next: (data) => {
+        if (data) {
           this.selectedPositions = data;
-          this.posAmounts.set(this.posAmounts().filter(x=>this.selectedPositions.some(el=>el.id===x.id || x.unitedRow)));
+          this.posAmounts.set(this.posAmounts().filter(x => this.selectedPositions.some(el => el.id === x.id || x.unitedRow)));
           for (let elem of this.selectedPositions) {
-            if(this.posAmounts().findIndex(x=>x.id == elem.id)==-1){
-              this.posAmounts().push(new TableRow(elem,0));
+            if (this.posAmounts().findIndex(x => x.id == elem.id) == -1) {
+              this.posAmounts().push(new TableRow(elem, 0));
             }
           }
         }
@@ -156,66 +155,64 @@ export class AddMenuComponent implements OnInit {
     })
   }
 
-  openInfoDialog(){
+  openInfoDialog() {
     let dialog = this.dialog.open(AddMenuInfoComponent);
-    dialog.afterClosed().subscribe(res=>{
+    dialog.afterClosed().subscribe(res => {
 
-      if(res == null || res == ""){
+      if (res == null || res == "") {
         return;
       }
-      if(res.isCommon){
+      if (res.isCommon) {
         console.log("Saving common!");
         console.log(res);
         this.ordersService.saveCommonInfo(res).subscribe({
-          next: (data)=> {
-            this.additionalInfo.update((old)=>[...old,{...data,id:0}])
+          next: (data) => {
+            this.additionalInfo.update((old) => [...old, {...data, id: 0}])
           },
-          error: (err)=> {
+          error: (err) => {
             this.toast.error(err)
           }
         })
-      }
-      else{
-        this.additionalInfo.update((old)=>[...old,{...res,id:0}])
+      } else {
+        this.additionalInfo.update((old) => [...old, {...res, id: 0}])
       }
     });
   }
 
-  initOrderEditData(){
-    if(this.editOrderid<=0){
+  initOrderEditData() {
+    if (this.editOrderid <= 0) {
       console.log("No order id");
       return;
     }
     this.loading = true;
     this.ordersService.getById(this.editOrderid).subscribe(
-      (res:Menu|ExceptionMessage)=>{
-        if(isMessage(res)){
-          this.toast.show("Can't load order!",{autoClose:true,position:"bottom-center",duration:2000})
-            .afterClosed.subscribe(()=>{
+      (res: Menu | ExceptionMessage) => {
+        if (isMessage(res)) {
+          this.toast.show("Can't load order!", {autoClose: true, position: "bottom-center", duration: 2000})
+            .afterClosed.subscribe(() => {
             this.router.navigate(['/']);
           });
-        }
-        else{
+        } else {
           this.ordersForm.patchValue({
-            client:(res as Menu).client,
-            guestsAmount:(res as Menu).guestsAmount,
-            format:(res as Menu).format,
-            date:(res as Menu).date.slice(0,(res as Menu).date.indexOf('T')),
-            duration:(res as Menu).duration,
-            phoneNumber:(res as Menu).phone,
-            serving:(res as Menu).serving,
-            taxAmount:(res as Menu).taxAmount,
-            govTax:(res as Menu).govTax,
-            govTaxAmount:(res as Menu).govTaxAmount,
+            client: (res as Menu).client,
+            guestsAmount: (res as Menu).guestsAmount,
+            format: (res as Menu).format,
+            date: (res as Menu).date.slice(0, (res as Menu).date.indexOf('T')),
+            duration: (res as Menu).duration,
+            phoneNumber: (res as Menu).phone,
+            serving: (res as Menu).serving,
+            taxAmount: (res as Menu).taxAmount,
+            govTax: (res as Menu).govTax,
+            govTaxAmount: (res as Menu).govTaxAmount,
           }, {emitEvent: false});
           this.syncConditionalTaxControls();
           let recieved = (res as Menu).positions;
-          let list:TableRow[] = [];
-          recieved.forEach(el=>{
-            if(el.title!=="" && el.title!==null){
-              list.push(new TableRow(null,0,el.title,true, generateUUID()));
+          let list: TableRow[] = [];
+          recieved.forEach(el => {
+            if (el.title !== "" && el.title !== null) {
+              list.push(new TableRow(null, 0, el.title, true, generateUUID()));
             }
-            list.push(new TableRow(el.position,el.amount));
+            list.push(new TableRow(el.position, el.amount));
             this.selectedPositions.push(el.position);
           });
           this.posAmounts.set(list);
@@ -224,9 +221,9 @@ export class AddMenuComponent implements OnInit {
         this.loading = false;
         console.log(this.posAmounts());
       }
-
     );
   }
+
   drop(event: CdkDragDrop<string>) {
     const previousIndex = this.posAmounts().findIndex(d => d === event.item.data);
     moveItemInArray(this.posAmounts(), previousIndex, event.currentIndex);
@@ -239,7 +236,7 @@ export class AddMenuComponent implements OnInit {
     this.datatable.renderRows();
   }
 
-  toggleEdit(){
+  toggleEdit() {
     this.editable = !this.editable;
     this.editable ? this.ordersForm.enable({emitEvent: false}) : this.ordersForm.disable({emitEvent: false});
     this.syncConditionalTaxControls();
@@ -259,57 +256,57 @@ export class AddMenuComponent implements OnInit {
       : govTaxAmount?.disable({emitEvent: false});
   }
 
-  save(){
+  save() {
     let items = this.parsePositions()
     this.loading = true;
 
     const additionalInfo = this.normalizeAdditionalInfo(this.additionalInfo());
     this.additionalInfo.set(additionalInfo);
 
-    if(this.editOrderid<=0){
+    if (this.editOrderid <= 0) {
       this.saveOrder(items, additionalInfo);
-    }else{
+    } else {
       this.editOrder(items, additionalInfo);
     }
   }
 
-  private saveOrder(items:MinPosAmount[], additionalInfo:AdditionalMenuData[]){
-    this.ordersService.saveOrder(this.ordersForm.value,items,additionalInfo).subscribe(
+  private saveOrder(items: MinPosAmount[], additionalInfo: AdditionalMenuData[]) {
+    this.ordersService.saveOrder(this.ordersForm.value, items, additionalInfo).subscribe(
       {
-        next: (data)=> {
-          if(!isMessage(data)){
+        next: (data) => {
+          if (!isMessage(data)) {
             this.additionalInfo.set(this.normalizeAdditionalInfo((data as Menu).additionalInfo));
           }
-          this.toast.show("Збережено!",{autoClose:true,position:"bottom-center",duration:2000})
+          this.toast.show("Збережено!", {autoClose: true, position: "bottom-center", duration: 2000})
           this.loading = false;
         },
-        error:(error:HttpErrorResponse)=>{
-          this.toast.error(`${error}`,{autoClose:true,position:"bottom-center",duration:2000});
+        error: (error: HttpErrorResponse) => {
+          this.toast.error(`${error}`, {autoClose: true, position: "bottom-center", duration: 2000});
           this.loading = false;
         }
       }
     );
   }
 
-  private editOrder(items:MinPosAmount[], additionalInfo:AdditionalMenuData[]){
+  private editOrder(items: MinPosAmount[], additionalInfo: AdditionalMenuData[]) {
 
-    this.ordersService.editOrder(this.editOrderid, this.ordersForm.value,items, additionalInfo).subscribe({
-        next: (data)=> {
+    this.ordersService.editOrder(this.editOrderid, this.ordersForm.value, items, additionalInfo).subscribe({
+        next: (data) => {
           this.additionalInfo.set(this.normalizeAdditionalInfo((data as Menu).additionalInfo));
-          this.toast.show("Збережено!",{autoClose:true,position:"bottom-center",duration:2000});
+          this.toast.show("Збережено!", {autoClose: true, position: "bottom-center", duration: 2000});
           this.loading = false;
         },
-        error: (data)=> {
-          this.toast.show(`Помилка редагування!\n${data}`,{autoClose:true,position:"bottom-center",duration:2000});
+        error: (data) => {
+          this.toast.show(`Помилка редагування!\n${data}`, {autoClose: true, position: "bottom-center", duration: 2000});
           this.loading = false;
         }
       }
     );
   }
 
-  parsePositions(){
-    let items:MinPosAmount[] = [];
-    if(this.posAmounts()){
+  parsePositions() {
+    let items: MinPosAmount[] = [];
+    if (this.posAmounts()) {
       const amounts = this.posAmounts();
       amounts.forEach((row, i) => {
         if (row.unitedRow) {
@@ -329,7 +326,7 @@ export class AddMenuComponent implements OnInit {
         //   ));
         // }
 
-        let tmp = new MinPosAmount(row.id as number,row.amount as number);
+        let tmp = new MinPosAmount(row.id as number, row.amount as number);
         tmp.inMenuOrder = i;
         if (i > 0 && prev?.unitedRow) {
           tmp.title = prev.title as string;
@@ -347,7 +344,7 @@ export class AddMenuComponent implements OnInit {
       const key = `${item.id}|${item.description}|${item.price}`;
       const existing = map.get(key);
 
-      if(!existing || existing.id === 0){
+      if (!existing || existing.id === 0) {
         map.set(key, {...item});
       }
     }
@@ -356,11 +353,10 @@ export class AddMenuComponent implements OnInit {
   }
 
 
-
-  changeAmount(id: number, event:any) {
-    let index = this.posAmounts().findIndex(x=>x.position !==null && x.position.id == id);
-    if(index!=-1){
-      this.posAmounts().at(index)!.amount  = event.target.value;
+  changeAmount(id: number, event: any) {
+    let index = this.posAmounts().findIndex(x => x.position !== null && x.position.id == id);
+    if (index != -1) {
+      this.posAmounts().at(index)!.amount = event.target.value;
     }
   }
 
@@ -374,7 +370,7 @@ export class AddMenuComponent implements OnInit {
     const copy = [...arr];
     copy.splice(oldIndex, 1);
     copy.splice(index, 0, item.data);
-    if(copy.at(copy.length-1)?.unitedRow){
+    if (copy.at(copy.length - 1)?.unitedRow) {
       return false;
     }
 
@@ -383,39 +379,39 @@ export class AddMenuComponent implements OnInit {
     return true;
   };
 
-  removeFromList(id: number | string){
+  removeFromList(id: number | string) {
     let index: number;
 
     console.log(this.posAmounts());
 
-    this.posAmounts.update(items=>
-      items.filter(x=> x.id!==id)
+    this.posAmounts.update(items =>
+      items.filter(x => x.id !== id)
     );
 
-    index = this.selectedPositions.findIndex(x=>x.id==id);
-    if(index!=-1){
+    index = this.selectedPositions.findIndex(x => x.id == id);
+    if (index != -1) {
       this.selectedPositions.splice(index, 1);
     }
 
   }
 
-  prints(e:any){
+  prints(e: any) {
     console.log(e);
   }
 
-  openHeaderDialog(positionId:number){
+  openHeaderDialog(positionId: number) {
     const dialogRef = this.dialog.open(AddHeaderDialogComponent);
     dialogRef.afterClosed().subscribe({
-      next: (data)=> {
+      next: (data) => {
         console.log(data);
-        if(data){
-          let index = this.posAmounts().findIndex(x=>x.id==positionId);
-          if(index==-1){
-            this.posAmounts.update(arr=>[...arr,new TableRow(null,0,data, true,generateUUID()) ]);
-          }else{
-            this.posAmounts.update(arr=>[
-              ...arr.slice(0,index),
-              new TableRow(null,1,data,true,generateUUID()),
+        if (data) {
+          let index = this.posAmounts().findIndex(x => x.id == positionId);
+          if (index == -1) {
+            this.posAmounts.update(arr => [...arr, new TableRow(null, 0, data, true, generateUUID())]);
+          } else {
+            this.posAmounts.update(arr => [
+              ...arr.slice(0, index),
+              new TableRow(null, 1, data, true, generateUUID()),
               ...arr.slice(index),
             ]);
           }
@@ -425,27 +421,50 @@ export class AddMenuComponent implements OnInit {
     })
   }
 
-  removeMenuInfo(id:number){
+  removeMenuInfo(id: number) {
     console.log(id);
     this.ordersService.deleteOrderInfo(id).subscribe();
   }
 
-  removeMenuInfoNew(id:number){
-    this.additionalInfo.update(items=>items.filter(x=>x.id!=id));
+  removeMenuInfoNew(id: number) {
+    this.additionalInfo.update(items => items.filter(x => x.id != id));
 
   }
 
 
-  removeHeaderFromList(id:string) {
+  removeHeaderFromList(id: string) {
 
     console.log(id);
-    this.posAmounts.update(items=>items.filter(x=>x.id!=id));
+    this.posAmounts.update(items => items.filter(x => x.id != id));
     console.log(this.posAmounts());
   }
 
 
-}
+  dividePosition(id: number) {
+    this.posAmounts.update(items =>
+      items.flatMap(item => {
+        if (item.posId !== id || item.amount <= 1) {
+          return [item];
+        }
 
+        return [
+          new TableRow(
+            item.position,
+            Math.floor(item.amount / 2),
+            item.title,
+            item.unitedRow
+          ),
+          new TableRow(
+            item.position,
+            Math.ceil(item.amount / 2),
+            item.title,
+            item.unitedRow
+          )
+        ];
+      })
+    );
+  }
+}
 
 function generateUUID() {
   return crypto.randomUUID

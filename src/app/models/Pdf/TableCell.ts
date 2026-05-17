@@ -39,8 +39,8 @@ export class TableRow{
     return this.position==null ? "" : this.position.price;
   }
 
-  get amount():number | string{
-    return this.position==null ? "" : this._amount;
+  get amount():number {
+    return this.position==null ? 0 : this._amount;
   }
 
   set amount(value:number){
@@ -49,5 +49,9 @@ export class TableRow{
 
   get id(){
     return this.position==null ? this._id : this.position.id;
+  }
+
+  get posId(){
+    return this.position==null ? 0 : this.position.id;
   }
 }
