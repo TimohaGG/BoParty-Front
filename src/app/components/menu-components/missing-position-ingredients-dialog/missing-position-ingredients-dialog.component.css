@@ -1,0 +1,53 @@
+.missing-position-ingredients-dialog {
+  width: min(460px, calc(100vw - 24px));
+}
+
+.missing-position-ingredients-dialog .bo-dialog-header {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.warning-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  color: #111;
+  background: var(--accent-color);
+}
+
+.warning-icon mat-icon {
+  width: 24px;
+  height: 24px;
+  font-size: 24px;
+}
+
+.missing-list {
+  display: grid;
+  gap: 8px;
+}
+
+.missing-item {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.missing-item mat-icon {
+  color: var(--accent-color);
+}
+
+.missing-item span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

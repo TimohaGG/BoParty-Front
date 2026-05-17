@@ -1,0 +1,26 @@
+<div class="bo-dialog missing-position-ingredients-dialog">
+  <header class="bo-dialog-header">
+    <div class="warning-icon">
+      <mat-icon>warning_amber</mat-icon>
+    </div>
+    <div>
+      <h2>Позиції без інгредієнтів</h2>
+      <p>Ці позиції не потраплять у закупівлі, поки для них не додані інгредієнти.</p>
+    </div>
+  </header>
+
+  <mat-dialog-content class="bo-dialog-content">
+    <div class="missing-list">
+      @for(position of data.positions; track position){
+        <div class="missing-item">
+          <mat-icon>restaurant_menu</mat-icon>
+          <span>{{position}}</span>
+        </div>
+      }
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="bo-dialog-actions">
+    <button mat-flat-button color="accent" mat-dialog-close>Зрозуміло</button>
+  </mat-dialog-actions>
+</div>

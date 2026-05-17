@@ -25,6 +25,10 @@
 
   @if(shoppingList){
     <div class="shopping-fab-stack">
+      <button mat-fab type="button" class="shopping-sidebar-button" [class.is-active]="shoppingSidebarOpen" (click)="toggleShoppingSidebar()" aria-label="Показати позиції">
+        <mat-icon>{{shoppingSidebarOpen ? 'keyboard_arrow_left' : 'restaurant_menu'}}</mat-icon>
+      </button>
+
       <button mat-fab type="button" class="delete-mode-button" [class.is-active]="deleteMode" (click)="toggleDeleteMode()" aria-label="Показати видалення">
         <mat-icon>{{deleteMode ? 'close' : 'delete_outline'}}</mat-icon>
       </button>
@@ -62,6 +66,10 @@
     </div>
   }
   @else{
+    @if(shoppingSidebarOpen){
+      <button class="shopping-sidebar-backdrop" type="button" (click)="closeShoppingSidebar()" aria-label="Закрити позиції"></button>
+    }
+
     <div class="shopping-summary">
       <article class="summary-card content-panel">
         <span>Усього</span>
@@ -84,15 +92,67 @@
       </article>
     </div>
 
-    <div class="shopping-layout">
-      <aside class="shopping-sidebar content-panel">
-        <h2>Категорії</h2>
-        @for(group of groupedItems; track group.name){
-          <div class="category-row">
-            <span>{{group.name}}</span>
-            <strong>{{group.items.length}}</strong>
+    <aside class="positions-sidebar content-panel" [class.is-open]="shoppingSidebarOpen">
+      <section class="sidebar-section">
+        <h2>Позиції</h2>
+        @if(shoppingPositions.length === 0){
+          <p class="sidebar-empty">Немає позицій</p>
+        }
+        @else{
+          <div class="positions-nav">
+            @for(pos of shoppingPositions; track $index){
+              <article class="position-nav-item" [class.is-open]="isShoppingPositionOpen(pos)">
+                <button class="position-nav-button" type="button" (click)="toggleShoppingPosition(pos)">
+                  <div class="position-nav-image">
+                    @if(getShoppingPositionImage(pos)){
+                      <img src="data:image/*;base64,{{getShoppingPositionImage(pos)}}" alt="" />
+                    }
+                    @else{
+                      <mat-icon>restaurant_menu</mat-icon>
+                    }
+                  </div>
+                  <div>
+                    <strong>{{getShoppingPositionName(pos)}}</strong>
+                    @if(getShoppingPositionMeta(pos)){
+                      <span>{{getShoppingPositionMeta(pos)}}</span>
+                    }
+                  </div>
+                  <mat-icon class="position-nav-chevron">{{isShoppingPositionOpen(pos) ? 'expand_less' : 'expand_more'}}</mat-icon>
+                </button>
+
+                @if(isShoppingPositionOpen(pos)){
+                  <div class="position-ingredients-slider">
+                    @if(getShoppingPositionIngredients(pos).length === 0){
+                      <p class="sidebar-empty">Немає інгредієнтів</p>
+                    }
+                    @else{
+                      @for(ing of getShoppingPositionIngredients(pos); track $index){
+                        <article class="position-ingredient-slide">
+                          <strong>{{ing.ingredient.name}}</strong>
+                          <span>{{ing.amount}} {{ing.unit}}</span>
+                        </article>
+                      }
+                    }
+                  </div>
+                }
+              </article>
+            }
           </div>
         }
+      </section>
+    </aside>
+
+    <div class="shopping-layout">
+      <aside class="shopping-sidebar content-panel">
+        <section class="sidebar-section">
+          <h2>Категорії</h2>
+          @for(group of groupedItems; track group.name){
+            <div class="category-row">
+              <span>{{group.name}}</span>
+              <strong>{{group.items.length}}</strong>
+            </div>
+          }
+        </section>
       </aside>
 
       <div class="shopping-groups">

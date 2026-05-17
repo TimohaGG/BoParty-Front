@@ -16,6 +16,9 @@ import {
   CreateShoppingItemDialogComponent,
   CreateShoppingItemPayload
 } from "../create-shopping-item-dialog/create-shopping-item-dialog.component";
+import {
+  MissingPositionIngredientsDialogComponent
+} from "../missing-position-ingredients-dialog/missing-position-ingredients-dialog.component";
 
 @Component({
   selector: 'app-shopping',
@@ -38,6 +41,9 @@ export class ShoppingComponent implements OnInit {
   public removingItemId: number | null = null;
   public addingItem = false;
   public deleteMode = false;
+  public selectedPositionId: number | string | null = null;
+  public shoppingSidebarOpen = false;
+  private missingIngredientsWarningShown = false;
 
   constructor(private service:OrdersService, route:ActivatedRoute, private dialog:MatDialog, private toast:HotToastService) {
     if(route.snapshot.paramMap.has("orderId")){
@@ -56,8 +62,8 @@ export class ShoppingComponent implements OnInit {
     this.service.getShoppingList(this.orderId).subscribe({
       next: (data) => {
         this.shoppingList = data;
-        console.log(data);
         this.isLoading = false;
+        this.showMissingIngredientsWarning();
       },
       error: () => {
         this.loadingFailure = true;
@@ -65,11 +71,80 @@ export class ShoppingComponent implements OnInit {
       }
     });
 
-    console.log(this.shoppingList);
   }
 
   get items(): ShoppingListItem[] {
     return this.shoppingList?.items ?? [];
+  }
+
+  get shoppingPositions() {
+    return this.shoppingList?.positions ?? [];
+  }
+
+  getShoppingPositionData(item: any) {
+    return item?.position ?? item;
+  }
+
+  getShoppingPositionId(item: any): number | string | null {
+    return this.getShoppingPositionData(item)?.id ?? item?.id ?? null;
+  }
+
+  getShoppingPositionName(item: any): string {
+    return this.getShoppingPositionData(item)?.name ?? item?.title ?? 'Позиція';
+  }
+
+  getShoppingPositionImage(item: any): string {
+    return this.getShoppingPositionData(item)?.image ?? '';
+  }
+
+  getShoppingPositionMeta(item: any): string {
+    const data = this.getShoppingPositionData(item);
+    const parts: string[] = [];
+
+    if(data?.weight){
+      parts.push(`${data.weight} г`);
+    }
+
+    if(item?.amount){
+      parts.push(`${item.amount} порц.`);
+    }
+
+    return parts.join(' · ');
+  }
+
+  getShoppingPositionIngredients(item: any) {
+    return this.getShoppingPositionData(item)?.ingredients ?? [];
+  }
+
+  private showMissingIngredientsWarning(): void {
+    if(this.missingIngredientsWarningShown){
+      return;
+    }
+
+    const missingPositions = this.shoppingPositions
+      .filter(position => this.getShoppingPositionIngredients(position).length === 0)
+      .map(position => this.getShoppingPositionName(position));
+
+    if(missingPositions.length === 0){
+      return;
+    }
+
+    this.missingIngredientsWarningShown = true;
+    this.dialog.open(MissingPositionIngredientsDialogComponent, {
+      data: {
+        positions: missingPositions,
+      },
+      panelClass: 'missing-position-ingredients-panel',
+    });
+  }
+
+  isShoppingPositionOpen(item: any): boolean {
+    return this.selectedPositionId === this.getShoppingPositionId(item);
+  }
+
+  toggleShoppingPosition(item: any): void {
+    const id = this.getShoppingPositionId(item);
+    this.selectedPositionId = this.selectedPositionId === id ? null : id;
   }
 
   get boughtCount(): number {
@@ -246,6 +321,14 @@ export class ShoppingComponent implements OnInit {
   toggleDeleteMode(): void {
     this.deleteMode = !this.deleteMode;
     this.openCommentItemId = null;
+  }
+
+  toggleShoppingSidebar(): void {
+    this.shoppingSidebarOpen = !this.shoppingSidebarOpen;
+  }
+
+  closeShoppingSidebar(): void {
+    this.shoppingSidebarOpen = false;
   }
 
   itemTrackBy(_index: number, item: ShoppingListItem): number {
