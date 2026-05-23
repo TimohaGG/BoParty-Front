@@ -4,4 +4,5 @@ export interface PositionAmountFull {
   position: Position;
   amount:number;
   title:string;
+  inMenuOrder:number;
 }
