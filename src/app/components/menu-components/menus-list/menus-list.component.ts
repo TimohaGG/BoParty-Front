@@ -15,6 +15,9 @@ import {ActivatedRoute, RouterLink} from "@angular/router";
 import {MatPaginator, MatPaginatorIntl, PageEvent} from "@angular/material/paginator";
 import {MatDialog} from "@angular/material/dialog";
 import {ShoppingJoinDialogComponent} from "../shopping-join-dialog/shopping-join-dialog.component";
+import {FormsModule} from "@angular/forms";
+import {MatFormField, MatLabel} from "@angular/material/form-field";
+import {MatInput} from "@angular/material/input";
 
 function paginatorIntlFactory(): MatPaginatorIntl {
   const intl = new MatPaginatorIntl();
@@ -42,6 +45,7 @@ function paginatorIntlFactory(): MatPaginatorIntl {
   selector: 'app-orders-list',
   imports: [
     MenusListItemComponent,
+    MatButton,
     MatMenuTrigger,
     MatMenu,
     MatMenuItem,
@@ -49,7 +53,11 @@ function paginatorIntlFactory(): MatPaginatorIntl {
     MatProgressSpinner,
     MatFabButton,
     RouterLink,
-    MatPaginator
+    MatPaginator,
+    FormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput
   ],
   templateUrl: './menus-list.component.html',
   styleUrl: './menus-list.component.css',
@@ -74,6 +82,9 @@ export class MenusListComponent implements OnInit{
 
   public loadingFailure = false;
   public needsArchive:boolean;
+  public showSearch = false;
+  public searchName = '';
+  public searchDate = '';
   readonly dialog = inject(MatDialog);
   public visibleRangeLabel = computed(() => {
     const total = this.totalPages();
@@ -138,11 +149,62 @@ export class MenusListComponent implements OnInit{
     );
   }
 
+  searchOrders() {
+    const name = this.searchName.trim();
+    const date = this.searchDate;
+
+    if (!name && !date) {
+      this.clearSearch();
+      return;
+    }
+
+    this.loadingFailure = false;
+    this.store.setCurrentPage(0);
+    this.store.clearMinOrders();
+    this.orderService.searchOrders(name, date).subscribe({
+      error: error => {
+        this.loadingFailure = true;
+        this.toast.show(error.message, {duration: 3000, position: "bottom-center", autoClose: true});
+      }
+    });
+  }
+
+  clearSearch() {
+    this.loadingFailure = false;
+    this.searchName = '';
+    this.searchDate = '';
+    this.showSearch = false;
+    this.store.setCurrentPage(0);
+    this.getFutureAmount(this.needsArchive).subscribe({
+      next: () => this.loadFutureOrders(this.needsArchive),
+      error: error => {
+        this.loadingFailure = true;
+        this.toast.show(error.message, {duration: 3000, position: "bottom-center", autoClose: true});
+      }
+    });
+  }
+
+  toggleSearch() {
+    this.showSearch = !this.showSearch;
+
+    if (!this.showSearch && !this.hasActiveSearch()) {
+      this.clearSearch();
+    }
+  }
+
+  hasActiveSearch() {
+    return this.searchName.trim().length > 0 || this.searchDate.length > 0;
+  }
+
   getFutureAmount(archive:boolean) {
     return this.orderService.getOrdersAmount(archive);
   }
 
   onPageChange($event: PageEvent) {
+    if (this.hasActiveSearch()) {
+      return;
+    }
+
     this.store.setCurrentPage($event.pageIndex);
     this.store.setPerPage($event.pageSize);
     this.loadFutureOrders(this.needsArchive);

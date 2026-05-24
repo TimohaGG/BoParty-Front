@@ -7,6 +7,85 @@
   border-bottom: 1px solid var(--border-subtle);
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.search-toggle-button {
+  min-height: 44px;
+  padding: 0 16px;
+  border-color: rgba(246, 196, 83, 0.22) !important;
+  border-radius: 12px !important;
+  color: var(--text-main) !important;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.search-toggle-button mat-icon {
+  margin-right: 6px;
+  color: var(--accent-color);
+}
+
+.search-shell {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding: 18px 20px;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at top right, rgba(246, 196, 83, 0.18), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015)),
+    var(--surface);
+}
+
+.search-copy {
+  display: grid;
+  gap: 6px;
+}
+
+.search-eyebrow {
+  color: var(--accent-color);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.search-summary {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.search-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(180px, 0.8fr) auto;
+  gap: 12px;
+  align-items: start;
+}
+
+.search-field {
+  width: 100%;
+}
+
+.search-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.search-submit-button {
+  min-height: 56px;
+  padding: 0 18px;
+  border-radius: 14px;
+  color: #241a02;
+  background: linear-gradient(135deg, #f3d27a, #dba936);
+}
+
+.search-clear-button {
+  min-height: 56px;
+  padding: 0 10px;
+}
+
 .orders-paginator {
   min-width: min(100%, 560px);
   border-radius: 18px;
@@ -177,6 +256,29 @@
 }
 
 @media (max-width: 720px) {
+  .header-actions {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+
+  .search-shell {
+    padding: 16px;
+  }
+
+  .search-form {
+    grid-template-columns: 1fr;
+  }
+
+  .search-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .search-actions .mat-mdc-button-base {
+    width: 100%;
+  }
+
   .pagination-shell {
     align-items: stretch;
     flex-direction: column;

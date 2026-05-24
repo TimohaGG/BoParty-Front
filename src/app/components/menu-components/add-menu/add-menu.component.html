@@ -20,8 +20,8 @@
       <input type="text" matInput formControlName="format"/>
     </mat-form-field>
     <mat-form-field>
-      <mat-label>Дата</mat-label>
-      <input type="date" matInput formControlName="date"/>
+      <mat-label>Дата і час</mat-label>
+      <input type="datetime-local" matInput formControlName="dateTime"/>
     </mat-form-field>
     <mat-form-field>
       <mat-label>Тривалість</mat-label>
@@ -218,4 +218,3 @@
     <button cdkMenuItem (click)="removeHeaderFromList(item.id)">Видалити</button>
   </div>
 </ng-template>
-

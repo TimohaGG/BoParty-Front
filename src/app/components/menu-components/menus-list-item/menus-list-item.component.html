@@ -10,6 +10,9 @@
         <div>
           <span class="eyebrow">Дата події</span>
           <h2>{{menu.date}}</h2>
+          @if(menu.client && menu.client.trim()){
+            <p class="client-name">{{menu.client}}</p>
+          }
         </div>
       }
 

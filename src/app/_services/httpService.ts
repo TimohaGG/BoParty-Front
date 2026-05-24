@@ -35,6 +35,15 @@ export class HttpService{
     return this.clinet.get<MinMenu[] | ExceptionMessage>(this.baseUrl + "orders/get/min", {params:{pageSize:pageSize, currentPage:currentPage, archive:archive}});
   }
 
+  searchOrders(name: string, date: string): Observable<MinMenu[] | ExceptionMessage> {
+    return this.clinet.get<MinMenu[] | ExceptionMessage>(this.baseUrl + "orders/search", {
+      params: {
+        name,
+        date
+      }
+    });
+  }
+
   getAllPositions() {
     return this.clinet.get<Position[] | ExceptionMessage>(this.baseUrl + "positions/get");
   }

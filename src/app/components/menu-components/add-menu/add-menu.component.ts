@@ -93,7 +93,7 @@ export class AddMenuComponent implements OnInit {
     client: new FormControl('', [Validators.required]),
     guestsAmount: new FormControl(0, [Validators.required]),
     format: new FormControl('', [Validators.required]),
-    date: new FormControl('', [Validators.required]),
+    dateTime: new FormControl('', [Validators.required]),
     duration: new FormControl('', [Validators.required]),
     phoneNumber: new FormControl('', [Validators.required]),
     serving: new FormControl(false),
@@ -197,7 +197,7 @@ export class AddMenuComponent implements OnInit {
             client: (res as Menu).client,
             guestsAmount: (res as Menu).guestsAmount,
             format: (res as Menu).format,
-            date: (res as Menu).date.slice(0, (res as Menu).date.indexOf('T')),
+            dateTime: this.toDateTimeLocalValue((res as Menu).date),
             duration: (res as Menu).duration,
             phoneNumber: (res as Menu).phone,
             serving: (res as Menu).serving,
@@ -257,6 +257,11 @@ export class AddMenuComponent implements OnInit {
   }
 
   save() {
+    if (this.ordersForm.invalid) {
+      this.ordersForm.markAllAsTouched();
+      return;
+    }
+
     let items = this.parsePositions()
     this.loading = true;
 
@@ -271,7 +276,7 @@ export class AddMenuComponent implements OnInit {
   }
 
   private saveOrder(items: MinPosAmount[], additionalInfo: AdditionalMenuData[]) {
-    this.ordersService.saveOrder(this.ordersForm.value, items, additionalInfo).subscribe(
+    this.ordersService.saveOrder(this.buildOrderPayload(), items, additionalInfo).subscribe(
       {
         next: (data) => {
           if (!isMessage(data)) {
@@ -290,7 +295,7 @@ export class AddMenuComponent implements OnInit {
 
   private editOrder(items: MinPosAmount[], additionalInfo: AdditionalMenuData[]) {
 
-    this.ordersService.editOrder(this.editOrderid, this.ordersForm.value, items, additionalInfo).subscribe({
+    this.ordersService.editOrder(this.editOrderid, this.buildOrderPayload(), items, additionalInfo).subscribe({
         next: (data) => {
           this.additionalInfo.set(this.normalizeAdditionalInfo((data as Menu).additionalInfo));
           this.toast.show("Збережено!", {autoClose: true, position: "bottom-center", duration: 2000});
@@ -302,6 +307,31 @@ export class AddMenuComponent implements OnInit {
         }
       }
     );
+  }
+
+  private buildOrderPayload() {
+    const rawValue = this.ordersForm.getRawValue();
+
+    return {
+      ...rawValue,
+      date: this.toIsoDateTime(rawValue.dateTime)
+    };
+  }
+
+  private toDateTimeLocalValue(dateTime: string) {
+    if (!dateTime) {
+      return '';
+    }
+
+    return dateTime.slice(0, 16);
+  }
+
+  private toIsoDateTime(dateTime: string) {
+    if (!dateTime) {
+      return '';
+    }
+
+    return dateTime.length === 16 ? `${dateTime}:00` : dateTime;
   }
 
   parsePositions() {

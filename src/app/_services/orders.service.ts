@@ -51,6 +51,21 @@ export class OrdersService{
     )
   }
 
+  public searchOrders(name: string, date: string) {
+    return this.http.searchOrders(name, date).pipe(
+      map(res => {
+        if (!isMessage(res)) {
+          const orders = res as MinMenu[];
+          this.store.setAllMinOrders(orders);
+          this.store.setTotalPages(orders.length);
+        }
+      }),
+      catchError((error: HttpErrorResponse) => {
+        throw new Error(error.error.message);
+      })
+    );
+  }
+
 
   saveOrder(data:any, positions:MinPosAmount[], additionalData:AdditionalMenuData[]):Observable<Menu | ExceptionMessage> {
     console.log(data);
