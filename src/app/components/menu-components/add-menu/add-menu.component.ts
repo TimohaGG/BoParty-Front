@@ -34,6 +34,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {AdditionalMenuData} from "../../../models/Menu/AdditionalMenuData";
 import {AddMenuInfoComponent} from "../add-menu-info/add-menu-info.component";
 import {MatCheckbox} from "@angular/material/checkbox";
+import {MatOption, MatSelect} from "@angular/material/select";
 
 export interface PosAmount {
   amount: number;
@@ -68,6 +69,8 @@ export interface PosAmount {
     MatProgressSpinner,
     CdkMenuTrigger,
     MatCheckbox,
+    MatSelect,
+    MatOption,
   ],
   templateUrl: './add-menu.component.html',
   styleUrl: './add-menu.component.css'
@@ -88,6 +91,8 @@ export class AddMenuComponent implements OnInit {
   displayedColumns: string[] = ['name', 'image', 'weight', 'price', 'amount', 'mob-actions'];
   public additionalInfo = signal<AdditionalMenuData[]>([]);
   displayedColumnsInfo: string[] = ['name', 'description', 'price', 'btn-remove'];
+  public bulkAmountPreset = new FormControl('5', {nonNullable: true});
+  public bulkAmountCustom = new FormControl(20, {nonNullable: true});
 
   public ordersForm: FormGroup = new FormGroup({
     client: new FormControl('', [Validators.required]),
@@ -388,6 +393,28 @@ export class AddMenuComponent implements OnInit {
     if (index != -1) {
       this.posAmounts().at(index)!.amount = event.target.value;
     }
+  }
+
+  setBulkAmount() {
+    const selectedValue = this.bulkAmountPreset.value;
+    const resolvedAmount = selectedValue === 'custom'
+      ? Number(this.bulkAmountCustom.value)
+      : Number(selectedValue);
+
+    if (!Number.isFinite(resolvedAmount) || resolvedAmount <= 0) {
+      this.toast.show("Вкажіть коректну кількість", {autoClose: true, position: "bottom-center", duration: 2000});
+      return;
+    }
+
+    this.posAmounts.update(items => {
+      items.forEach(item => {
+        if (!item.unitedRow) {
+          item.amount = resolvedAmount;
+        }
+      });
+
+      return [...items];
+    });
   }
 
 

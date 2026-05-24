@@ -189,4 +189,8 @@ export class HttpService{
     return this.clinet.post<MinMenu>(this.baseUrl + "orders/shopping/join",{ordersIds:ordersIds})
 
   }
+
+  copyOrder(orderId: number) {
+    return this.clinet.post<MinMenu | ExceptionMessage>(this.baseUrl + `orders/copy/${orderId}`, {});
+  }
 }

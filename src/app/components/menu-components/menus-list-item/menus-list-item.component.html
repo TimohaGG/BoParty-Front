@@ -44,7 +44,7 @@
       <button mat-icon-button class="shopping-button" aria-label="Закупівлі" title="Закупівлі" [routerLink]="['/order/shopping/' + menu.id]">
         <mat-icon>shopping_cart</mat-icon>
       </button>
-      <button mat-icon-button class="copy-button" aria-label="Копіювати" title="Копіювати">
+      <button mat-icon-button class="copy-button" aria-label="Копіювати" title="Копіювати" (click)="copyMenu(menu.id)">
         <mat-icon>content_copy</mat-icon>
       </button>
       <button mat-icon-button class="delete-button" aria-label="Видалити" title="Видалити" (click)="openDeleteDialog()">

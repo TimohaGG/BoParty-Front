@@ -8,6 +8,7 @@ import {Menu} from "../../../models/Menu/Menu";
 import {DeleteMenuDialogComponent, DeleteMenuDialogData} from "../delete-menu-dialog/delete-menu-dialog.component";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {OrdersService} from "../../../_services/orders.service";
+import {HotToastService} from "@ngxpert/hot-toast";
 
 
 
@@ -30,7 +31,8 @@ export class MenusListItemComponent implements OnInit {
 
   private dialog = inject(MatDialog);
 
-  constructor(private orderService:OrdersService) {
+  constructor(private orderService:OrdersService,
+              private toast:HotToastService) {
 
   }
 
@@ -66,5 +68,16 @@ export class MenusListItemComponent implements OnInit {
 
   downloadMenu(id:number){
     this.orderService.download(id).subscribe();
+  }
+
+  copyMenu(id: number) {
+    this.orderService.copyOrder(id).subscribe({
+      next: () => {
+        this.toast.show("Замовлення скопійовано", {duration: 2000, position: "bottom-center", autoClose: true});
+      },
+      error: error => {
+        this.toast.show(error.message, {duration: 3000, position: "bottom-center", autoClose: true});
+      }
+    });
   }
 }

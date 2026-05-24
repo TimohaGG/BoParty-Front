@@ -324,4 +324,25 @@ export class OrdersService{
     );
 
   }
+
+  copyOrder(orderId: number) {
+    return this.http.copyOrder(orderId).pipe(
+      map(res => {
+        if (!isMessage(res)) {
+          const copiedOrder = res as MinMenu;
+          const currentOrders = this.store.minMenusEntities().filter(order => order.id !== copiedOrder.id);
+
+          this.store.setAllMinOrders([copiedOrder, ...currentOrders]);
+          this.store.setTotalPages(this.store.ordersTotal() + 1);
+
+          return copiedOrder;
+        }
+
+        return res;
+      }),
+      catchError((err:HttpErrorResponse)=>{
+        throw new Error(err.error.message);
+      })
+    );
+  }
 }

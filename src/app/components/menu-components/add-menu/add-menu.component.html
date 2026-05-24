@@ -55,10 +55,41 @@
         <h2>Позиції</h2>
         <p>Перетягуйте рядки, щоб змінити порядок у меню.</p>
       </div>
+
       <button mat-flat-button color="accent" [disabled]="!editable" (click)="openPositionsDialog()">
         <mat-icon>add</mat-icon>
         Додати позиції
       </button>
+    </div>
+
+    <div class="bulk-amount-bar content-panel">
+      <div class="bulk-amount-copy">
+        <span class="bulk-amount-label">Кількість для всіх позицій</span>
+        <p>Швидко встановіть однакову кількість для всіх вибраних рядків.</p>
+      </div>
+
+      <div class="bulk-amount-controls">
+        <mat-form-field class="bulk-amount-select">
+          <mat-label>Кількість</mat-label>
+          <mat-select [formControl]="bulkAmountPreset">
+            <mat-option value="5">5</mat-option>
+            <mat-option value="10">10</mat-option>
+            <mat-option value="15">15</mat-option>
+            <mat-option value="custom">Своя</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        @if(bulkAmountPreset.value === 'custom'){
+          <mat-form-field class="bulk-amount-custom">
+            <mat-label>Своя кількість</mat-label>
+            <input type="number" min="1" matInput [formControl]="bulkAmountCustom"/>
+          </mat-form-field>
+        }
+
+        <button mat-flat-button color="accent" [disabled]="!editable || posAmounts().length === 0" (click)="setBulkAmount()">
+          Встановити
+        </button>
+      </div>
     </div>
 
     <mat-table #table [dataSource]="posAmounts()" class="content-panel menu-table" cdkDropList
