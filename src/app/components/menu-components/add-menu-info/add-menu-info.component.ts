@@ -1,5 +1,5 @@
 import {Component, computed, inject, OnInit} from '@angular/core';
-import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef} from "@angular/material/dialog";
 import {MatFormField, MatLabel} from "@angular/material/form-field";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatInput} from "@angular/material/input";
@@ -9,6 +9,11 @@ import {MatCheckbox} from "@angular/material/checkbox";
 import {entityStorage} from "../../../_helpers/storage/entityStorage";
 import {HotToastService} from "@ngxpert/hot-toast";
 import {MatOption, MatSelect, MatSelectChange} from "@angular/material/select";
+import {AdditionalMenuData} from "../../../models/Menu/AdditionalMenuData";
+
+export interface AddMenuInfoDialogData {
+  info?: AdditionalMenuData;
+}
 
 @Component({
   selector: 'app-add-order-info',
@@ -31,8 +36,10 @@ import {MatOption, MatSelect, MatSelectChange} from "@angular/material/select";
 export class AddMenuInfoComponent implements OnInit {
 
   readonly store = inject(entityStorage);
+  readonly data = inject<AddMenuInfoDialogData | null>(MAT_DIALOG_DATA, {optional: true});
 
   commonOptions = computed(()=>this.store.commonDataEntities());
+  isEditMode = !!this.data?.info;
 
 
 
@@ -45,6 +52,14 @@ export class AddMenuInfoComponent implements OnInit {
   })
 
   constructor(private service:OrdersService, private toast:HotToastService) {
+    if(this.data?.info){
+      this.formData.patchValue({
+        title: this.data.info.title,
+        description: this.data.info.description,
+        price: String(this.data.info.price),
+        isCommon: false,
+      });
+    }
   }
 
   ngOnInit(): void {
@@ -61,6 +76,11 @@ export class AddMenuInfoComponent implements OnInit {
     }
 
   onClose(){
+    if(this.formData.invalid){
+      this.formData.markAllAsTouched();
+      return;
+    }
+
     this.dialogRef.close(this.formData.value);
   }
 

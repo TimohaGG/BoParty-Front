@@ -192,12 +192,17 @@
       </ng-container>
 
 
-        <ng-container matColumnDef="btn-remove">
+        <ng-container matColumnDef="actions">
             <mat-header-cell *matHeaderCellDef></mat-header-cell>
             <mat-cell *matCellDef="let element">
-                <button class="btn" (click)="removeMenuInfoNew(element.id)">
-                    <mat-icon>delete</mat-icon>
+              <div class="info-actions">
+                <button class="btn" [disabled]="!editable" (click)="openEditInfoDialog(element)" aria-label="Редагувати рядок">
+                  <mat-icon>edit</mat-icon>
                 </button>
+                <button class="btn" [disabled]="!editable" (click)="removeMenuInfoNew(element)" aria-label="Видалити рядок">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
             </mat-cell>
         </ng-container>
 

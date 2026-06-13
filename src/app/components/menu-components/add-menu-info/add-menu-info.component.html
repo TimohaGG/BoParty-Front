@@ -1,19 +1,21 @@
 <div class="bo-dialog bo-dialog-wide">
   <header class="bo-dialog-header">
-    <h2>Додати рядок підсумку</h2>
-    <p>Додаткові витрати, коментарі або службові рядки для замовлення.</p>
+    <h2>{{isEditMode ? 'Редагувати рядок підсумку' : 'Додати рядок підсумку'}}</h2>
+    <p>{{isEditMode ? 'Змініть назву, опис або ціну цього рядка.' : 'Додаткові витрати, коментарі або службові рядки для замовлення.'}}</p>
   </header>
 
   <mat-dialog-content class="bo-dialog-content">
-    <mat-form-field>
-      <mat-label>Шаблон</mat-label>
-      <mat-select (selectionChange)="insertData($event)">
-        <mat-option value="-1">Без шаблону</mat-option>
-        @for (item of this.commonOptions(); track item.id) {
-          <mat-option [value]="item">{{item.title}}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
+    @if(!isEditMode){
+      <mat-form-field>
+        <mat-label>Шаблон</mat-label>
+        <mat-select (selectionChange)="insertData($event)">
+          <mat-option value="-1">Без шаблону</mat-option>
+          @for (item of this.commonOptions(); track item.id) {
+            <mat-option [value]="item">{{item.title}}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    }
 
     <form [formGroup]="formData" class="bo-dialog-form">
       <mat-form-field>
@@ -31,12 +33,14 @@
         <input matInput formControlName="price" type="number" />
       </mat-form-field>
 
-      <mat-checkbox formControlName="isCommon">Зберегти як шаблон</mat-checkbox>
+      @if(!isEditMode){
+        <mat-checkbox formControlName="isCommon">Зберегти як шаблон</mat-checkbox>
+      }
     </form>
   </mat-dialog-content>
 
   <mat-dialog-actions class="bo-dialog-actions">
     <button mat-button mat-dialog-close>Скасувати</button>
-    <button mat-flat-button color="accent" (click)="onClose()">Додати</button>
+    <button mat-flat-button color="accent" (click)="onClose()">{{isEditMode ? 'Зберегти' : 'Додати'}}</button>
   </mat-dialog-actions>
 </div>

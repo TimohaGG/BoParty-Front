@@ -90,7 +90,7 @@ export class AddMenuComponent implements OnInit {
   public posAmounts = signal<TableRow[]>([]);
   displayedColumns: string[] = ['name', 'image', 'weight', 'price', 'amount', 'mob-actions'];
   public additionalInfo = signal<AdditionalMenuData[]>([]);
-  displayedColumnsInfo: string[] = ['name', 'description', 'price', 'btn-remove'];
+  displayedColumnsInfo: string[] = ['name', 'description', 'price', 'actions'];
   public bulkAmountPreset = new FormControl('5', {nonNullable: true});
   public bulkAmountCustom = new FormControl(20, {nonNullable: true});
 
@@ -168,19 +168,42 @@ export class AddMenuComponent implements OnInit {
         return;
       }
       if (res.isCommon) {
-        console.log("Saving common!");
-        console.log(res);
         this.ordersService.saveCommonInfo(res).subscribe({
           next: (data) => {
-            this.additionalInfo.update((old) => [...old, {...data, id: 0}])
+            this.additionalInfo.update((old) => [...old, {...data, id: 0, price: Number(data.price)}])
           },
           error: (err) => {
             this.toast.error(err)
           }
         })
       } else {
-        this.additionalInfo.update((old) => [...old, {...res, id: 0}])
+        this.additionalInfo.update((old) => [...old, {...res, id: 0, price: Number(res.price)}])
       }
+    });
+  }
+
+  openEditInfoDialog(info: AdditionalMenuData) {
+    const dialog = this.dialog.open(AddMenuInfoComponent, {
+      data: {
+        info,
+      },
+    });
+
+    dialog.afterClosed().subscribe(res => {
+      if (res == null || res == "") {
+        return;
+      }
+
+      this.additionalInfo.update(items => items.map(item =>
+        item === info
+          ? {
+            ...item,
+            title: res.title,
+            description: res.description,
+            price: Number(res.price),
+          }
+          : item
+      ));
     });
   }
 
@@ -483,8 +506,8 @@ export class AddMenuComponent implements OnInit {
     this.ordersService.deleteOrderInfo(id).subscribe();
   }
 
-  removeMenuInfoNew(id: number) {
-    this.additionalInfo.update(items => items.filter(x => x.id != id));
+  removeMenuInfoNew(info: AdditionalMenuData) {
+    this.additionalInfo.update(items => items.filter(x => x !== info));
 
   }
 
