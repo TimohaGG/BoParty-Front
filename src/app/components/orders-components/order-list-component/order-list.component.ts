@@ -114,6 +114,7 @@ export class OrderListComponent implements OnInit {
       data: {
         startDate: this.startDate,
         endDate: this.endDate,
+        usedMenuIds: this.getUsedMenuIds(),
       },
     });
 
@@ -143,6 +144,7 @@ export class OrderListComponent implements OnInit {
         expences,
         startDate: this.startDate,
         endDate: this.endDate,
+        usedMenuIds: this.getUsedMenuIds(),
       },
     });
 
@@ -270,5 +272,11 @@ export class OrderListComponent implements OnInit {
 
   private storeExpences(items: Expences[]): void {
     this.store.setAllExpences(items);
+  }
+
+  private getUsedMenuIds(): number[] {
+    return this.expences()
+      .map(item => item.menuId)
+      .filter((menuId): menuId is number => menuId !== null);
   }
 }

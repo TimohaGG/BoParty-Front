@@ -19,6 +19,7 @@ export interface ExpencesDialogData {
   expences?: Expences;
   startDate?: string;
   endDate?: string;
+  usedMenuIds?: number[];
 }
 
 type WaiterForm = FormGroup<{
@@ -88,7 +89,7 @@ export class ExpencesDialogComponent implements OnInit {
       waiters: this.waitersService.getAll(),
     }).subscribe({
       next: ({menus, waiters}) => {
-        this.menus = this.filterMenusByPeriod(menus);
+        this.menus = this.filterMenus(menus);
         this.waitersList = waiters;
         this.patchRows();
         this.loadingOptions = false;
@@ -191,15 +192,21 @@ export class ExpencesDialogComponent implements OnInit {
     expences.otherExpences.forEach(item => this.addOtherExpence(item.id, item.name, item.amount));
   }
 
-  private filterMenusByPeriod(menus: MinMenu[]): MinMenu[] {
+  private filterMenus(menus: MinMenu[]): MinMenu[] {
     const startDate = this.data?.startDate;
     const endDate = this.data?.endDate;
-
-    if(!startDate || !endDate){
-      return menus;
-    }
+    const currentMenuId = this.data?.expences?.menuId;
+    const usedMenuIds = new Set(this.data?.usedMenuIds ?? []);
 
     return menus.filter(menu => {
+      if(usedMenuIds.has(menu.id) && menu.id !== currentMenuId){
+        return false;
+      }
+
+      if(!startDate || !endDate){
+        return true;
+      }
+
       const menuDate = this.getDatePart(menu.date);
       return menuDate >= startDate && menuDate <= endDate;
     });
