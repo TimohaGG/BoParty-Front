@@ -1,31 +1,215 @@
-<div class="container">
-  <form method="get" class="d-flex justify-content-center">
-    <mat-form-field class="form-field">
-      <mat-label>Місяць</mat-label>
-      <mat-select>
-        @for (monthOp of monthList; track $index) {
-          <mat-option [value]="$index">{{monthOp}}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
+<section class="page-shell expences-page">
+  <header class="page-header expences-header">
+    <div>
+      <h1 class="page-title">Витрати</h1>
+      <p class="page-subtitle">Закупівлі, кухня, офіціанти та інші витрати за вибраний період.</p>
+    </div>
 
-    <mat-form-field class="form-field">
-      <mat-label>Рік</mat-label>
-      <input matInput type="text" [(ngModel)]="year" name="year">
-      @if (year) {
-        <button matSuffix mat-icon-button aria-label="Clear" (click)="year=0">
-          <mat-icon>close</mat-icon>
-        </button>
+    <button mat-flat-button color="accent" type="button" [disabled]="saving" (click)="openDialog()">
+      @if(saving){
+        <mat-spinner diameter="20"></mat-spinner>
       }
+      @else{
+        <mat-icon>add</mat-icon>
+      }
+      Додати
+    </button>
+  </header>
+
+  <form class="expences-filters content-panel" (ngSubmit)="loadExpences()">
+    <mat-form-field>
+      <mat-label>Початкова дата</mat-label>
+      <input matInput type="date" [(ngModel)]="startDate" name="startDate">
     </mat-form-field>
 
+    <mat-form-field>
+      <mat-label>Кінцева дата</mat-label>
+      <input matInput type="date" [(ngModel)]="endDate" name="endDate">
+    </mat-form-field>
 
-    <button mat-flat-button class="h-auto ml-2"  (click)="openDialog()">
-      <mat-icon>add</mat-icon>
+    <button mat-flat-button color="accent" type="submit" [disabled]="loading">
+      @if(loading){
+        <mat-spinner diameter="20"></mat-spinner>
+      }
+      @else{
+        <mat-icon>search</mat-icon>
+      }
+      Показати
     </button>
   </form>
 
-  <div class="container">
+  @if(error){
+    <div class="content-panel expences-message error-message">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{error}}</span>
+    </div>
+  }
 
+  <section class="summary-section" [class.summary-collapsed]="summaryCollapsed">
+    <button class="summary-toggle content-panel" type="button" (click)="toggleSummary()" [attr.aria-expanded]="!summaryCollapsed">
+      <span class="summary-toggle-title">Підсумок</span>
+      <span class="summary-toggle-values">
+        <span class="income-preview">{{totalIncome()}} грн</span>
+        <span>{{totalExpences()}} грн</span>
+      </span>
+      <mat-icon>{{summaryCollapsed ? 'expand_more' : 'expand_less'}}</mat-icon>
+    </button>
+
+    @if(!summaryCollapsed){
+  <div class="expences-summary">
+    <article class="summary-card content-panel income-card">
+      <span>Дохід</span>
+      <strong>{{totalIncome()}} грн</strong>
+    </article>
+    <article class="summary-card content-panel">
+      <span>Закупівлі</span>
+      <strong>{{totalShopping()}} грн</strong>
+    </article>
+    <article class="summary-card content-panel">
+      <span>Кухня</span>
+      <strong>{{totalCook()}} грн</strong>
+    </article>
+    <article class="summary-card content-panel">
+      <span>Офіціанти</span>
+      <strong>{{totalWaiters()}} грн</strong>
+    </article>
+    <article class="summary-card content-panel">
+      <span>Інше</span>
+      <strong>{{totalOther()}} грн</strong>
+    </article>
+    <article class="summary-card content-panel total-card">
+      <span>Разом витрат</span>
+      <strong>{{totalExpences()}} грн</strong>
+    </article>
   </div>
-</div>
+    }
+  </section>
+
+  @if(loading && expences().length === 0){
+    <div class="content-panel loading-state">
+      <mat-spinner diameter="42"></mat-spinner>
+    </div>
+  }
+  @else if(expences().length === 0){
+    <div class="content-panel expences-message">
+      <mat-icon>receipt_long</mat-icon>
+      <span>За вибраний період витрат не знайдено.</span>
+    </div>
+  }
+  @else{
+    <div class="expences-list">
+      @for(item of expences(); track item.id){
+        <article class="expence-card content-panel">
+          <header class="expence-card-header">
+            <div>
+              <h2>{{item.client || 'Без клієнта'}}</h2>
+              <p>{{formatDate(item.date)}} · Меню #{{item.menuId || '-'}}</p>
+            </div>
+            <div class="expence-card-side">
+              <div class="expence-card-totals">
+                <span>
+                  <small>Сума</small>
+                  <strong>{{getSum(item)}} грн</strong>
+                </span>
+                <span>
+                  <small>Витрати</small>
+                  <strong>{{getExpenceTotal(item)}} грн</strong>
+                </span>
+                <span class="income-preview">
+                  <small>Дохід</small>
+                  <strong>{{getIncome(item)}} грн</strong>
+                </span>
+              </div>
+              <strong>{{getExpenceTotal(item)}} грн</strong>
+              <div class="expence-actions">
+                <button mat-icon-button type="button" (click)="toggleExpenceDetails(item)" [attr.aria-expanded]="isExpenceExpanded(item)" aria-label="Показати деталі витрат">
+                  <mat-icon>{{isExpenceExpanded(item) ? 'expand_less' : 'expand_more'}}</mat-icon>
+                </button>
+                <button mat-icon-button type="button" [disabled]="saving || isDeleting(item)" (click)="openEditDialog(item)" aria-label="Редагувати витрати">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button type="button" class="danger-button" [disabled]="saving || isDeleting(item)" (click)="deleteExpences(item)" aria-label="Видалити витрати">
+                  @if(isDeleting(item)){
+                    <mat-spinner diameter="20"></mat-spinner>
+                  }
+                  @else{
+                    <mat-icon>delete_outline</mat-icon>
+                  }
+                </button>
+              </div>
+            </div>
+          </header>
+
+          @if(isExpenceExpanded(item)){
+          <div class="expence-breakdown">
+          <div class="breakdown-row sum-row">
+              <span>Сума</span>
+              <strong>{{getSum(item)}} грн</strong>
+          </div>
+            <div class="breakdown-row">
+              <span>Закупівлі</span>
+              <strong>{{getShoppingTotal(item)}} грн</strong>
+            </div>
+            <div class="breakdown-row">
+              <span>Кухня</span>
+              <strong>{{item.cook}} грн</strong>
+            </div>
+            <div class="breakdown-row">
+              <span>Офіціанти</span>
+              <strong>{{getWaitersTotal(item)}} грн</strong>
+            </div>
+            <div class="breakdown-row">
+              <span>Інше</span>
+              <strong>{{getOtherTotal(item)}} грн</strong>
+            </div>
+              <div class="breakdown-row income-row">
+                  <span>Дохід</span>
+                  <strong>{{getIncome(item)}} грн</strong>
+              </div>
+          </div>
+
+          @if(item.shoppingSums.length > 0 || item.waiters.length > 0 || item.otherExpences.length > 0){
+            <div class="expence-details">
+              @if(item.shoppingSums.length > 0){
+                <section class="detail-section">
+                  <h3>Закупівлі</h3>
+                  @for(shopping of item.shoppingSums; track shopping.id){
+                    <div class="detail-row">
+                      <span>{{shopping.name}} · {{formatDate(shopping.date)}}</span>
+                      <strong>{{shopping.sum}} грн</strong>
+                    </div>
+                  }
+                </section>
+              }
+
+              @if(item.waiters.length > 0){
+                <section class="detail-section">
+                  <h3>Офіціанти</h3>
+                  @for(waiter of item.waiters; track waiter.id){
+                    <div class="detail-row">
+                      <span>{{waiter.name || 'Офіціант #' + waiter.waiterId}}</span>
+                      <strong>{{waiter.price}} грн</strong>
+                    </div>
+                  }
+                </section>
+              }
+
+              @if(item.otherExpences.length > 0){
+                <section class="detail-section">
+                  <h3>Інші витрати</h3>
+                  @for(expence of item.otherExpences; track expence.id){
+                    <div class="detail-row">
+                      <span>{{expence.name}}</span>
+                      <strong>{{expence.amount}} грн</strong>
+                    </div>
+                  }
+                </section>
+              }
+            </div>
+          }
+          }
+        </article>
+      }
+    </div>
+  }
+</section>

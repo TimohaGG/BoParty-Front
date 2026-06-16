@@ -18,6 +18,10 @@
         <mat-icon class="side-nav-icon" matListItemIcon>inventory_2</mat-icon>
         <span class="side-nav-label">Інгредієнти</span>
       </a>
+      <a mat-list-item class="side-nav-item" routerLink="/waiters" routerLinkActive="active-link" (click)="sidenav!.close()">
+        <mat-icon class="side-nav-icon" matListItemIcon>groups</mat-icon>
+        <span class="side-nav-label">Офіціанти</span>
+      </a>
       <a mat-list-item class="side-nav-item" routerLink="/profile" routerLinkActive="active-link" (click)="sidenav!.close()">
         <mat-icon class="side-nav-icon" matListItemIcon>person</mat-icon>
         <span class="side-nav-label">Профіль</span>
@@ -47,6 +51,7 @@
         <a mat-button routerLink="/home" routerLinkActive="active-top-link" [queryParams]="{showArchive:true}">Архів</a>
         <a mat-button routerLink="/positions" routerLinkActive="active-top-link">Позиції</a>
         <a mat-button routerLink="/ingredients" routerLinkActive="active-top-link">Інгредієнти</a>
+        <a mat-button routerLink="/waiters" routerLinkActive="active-top-link">Офіціанти</a>
         <a mat-button routerLink="/order/data" routerLinkActive="active-top-link">Статистика</a>
         <button mat-button class="logout-button" type="button" (click)="logout()">Вийти</button>
       </nav>

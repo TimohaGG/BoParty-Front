@@ -1,0 +1,61 @@
+<section class="page-shell waiters-page">
+  <header class="page-header waiters-header">
+    <div>
+      <h1 class="page-title">Офіціанти</h1>
+      <p class="page-subtitle">Список офіціантів, яких можна додавати до витрат.</p>
+    </div>
+
+    <button mat-flat-button color="accent" type="button" [disabled]="saving" (click)="openCreateDialog()">
+      @if(saving){
+        <mat-spinner diameter="20"></mat-spinner>
+      }
+      @else{
+        <mat-icon>add</mat-icon>
+      }
+      Додати
+    </button>
+  </header>
+
+  @if(loading){
+    <div class="content-panel waiters-state">
+      <mat-spinner diameter="42"></mat-spinner>
+    </div>
+  }
+  @else if(waiters.length === 0){
+    <div class="content-panel waiters-state">
+      <mat-icon>group</mat-icon>
+      <span>Офіціантів ще немає.</span>
+    </div>
+  }
+  @else{
+    <div class="content-panel waiters-list">
+      @for(waiter of waiters; track waiter.id){
+        <article class="waiter-row">
+          <div class="waiter-avatar">
+            <mat-icon>person</mat-icon>
+          </div>
+
+          <div class="waiter-main">
+            <h2>{{waiter.name}}</h2>
+            <span>ID {{waiter.id}}</span>
+          </div>
+
+          <div class="waiter-actions">
+            <button mat-icon-button type="button" [disabled]="saving || isDeleting(waiter)" (click)="openEditDialog(waiter)" aria-label="Редагувати офіціанта">
+              <mat-icon>edit</mat-icon>
+            </button>
+
+            <button mat-icon-button type="button" class="danger-button" [disabled]="saving || isDeleting(waiter)" (click)="deleteWaiter(waiter)" aria-label="Видалити офіціанта">
+              @if(isDeleting(waiter)){
+                <mat-spinner diameter="20"></mat-spinner>
+              }
+              @else{
+                <mat-icon>delete_outline</mat-icon>
+              }
+            </button>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>

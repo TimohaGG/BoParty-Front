@@ -1,0 +1,91 @@
+.expences-dialog {
+  width: min(760px, calc(100vw - 24px));
+}
+
+.dialog-loading {
+  display: grid;
+  place-items: center;
+  min-height: 90px;
+}
+
+.expences-form,
+.form-section,
+.rows-list {
+  display: grid;
+  gap: 12px;
+}
+
+.main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 160px;
+  gap: 12px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.section-title h3 {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.section-title button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.expense-row {
+  display: grid;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.shopping-row {
+  grid-template-columns: minmax(0, 1fr) 150px 140px 40px;
+}
+
+.waiter-row,
+.other-row {
+  grid-template-columns: minmax(0, 1fr) 140px 40px;
+}
+
+.remove-row {
+  color: #f2b1b1;
+}
+
+@media (max-width: 640px) {
+  .main-grid,
+  .shopping-row,
+  .waiter-row,
+  .other-row {
+    grid-template-columns: 1fr;
+  }
+
+  .section-title {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .section-title button {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .remove-row {
+    justify-self: end;
+  }
+}

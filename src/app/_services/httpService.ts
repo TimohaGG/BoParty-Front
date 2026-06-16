@@ -15,6 +15,8 @@ import {AdditionalMenuData} from "../models/Menu/AdditionalMenuData";
 import {CategoryCreateResp} from "../models/Positions/DTOs/CategoryCreateResp";
 import {ShoppingList} from "../models/Menu/ShoppingList";
 import {ShoppingListItem} from "../models/Menu/ShoppingListItem";
+import {Expences, ExpencesRequest} from "../models/Expences/Expences";
+import {Waiter, WaiterRequest} from "../models/Waiters/Waiter";
 
 @Injectable({providedIn:"root"})
 export class HttpService{
@@ -31,6 +33,10 @@ export class HttpService{
     return this.clinet.get<MinMenu[] | ExceptionMessage>(this.baseUrl + "orders/get/min/all");
   }
 
+  getCurrentUserMinOrders():Observable<MinMenu[] | ExceptionMessage>{
+    return this.clinet.get<MinMenu[] | ExceptionMessage>(this.baseUrl + "orders/get/min/current");
+  }
+
   getMinOrders(pageSize:number, currentPage:number, archive:boolean):Observable<MinMenu[] | ExceptionMessage>{
     return this.clinet.get<MinMenu[] | ExceptionMessage>(this.baseUrl + "orders/get/min", {params:{pageSize:pageSize, currentPage:currentPage, archive:archive}});
   }
@@ -42,6 +48,43 @@ export class HttpService{
         date
       }
     });
+  }
+
+  getExpences(startDate: string, endDate: string): Observable<Expences[] | ExceptionMessage> {
+    return this.clinet.get<Expences[] | ExceptionMessage>(this.baseUrl + "expences/get", {
+      params: {
+        startDate,
+        endDate
+      }
+    });
+  }
+
+  createExpences(data: ExpencesRequest): Observable<Expences | ExceptionMessage> {
+    return this.clinet.post<Expences | ExceptionMessage>(this.baseUrl + "expences/create", data);
+  }
+
+  editExpences(data: ExpencesRequest): Observable<Expences | ExceptionMessage> {
+    return this.clinet.post<Expences | ExceptionMessage>(this.baseUrl + "expences/edit", data);
+  }
+
+  deleteExpences(id: number): Observable<number | ExceptionMessage> {
+    return this.clinet.delete<number | ExceptionMessage>(this.baseUrl + "expences/delete/" + id);
+  }
+
+  getWaiters(): Observable<Waiter[] | ExceptionMessage> {
+    return this.clinet.get<Waiter[] | ExceptionMessage>(this.baseUrl + "waiters/get");
+  }
+
+  createWaiter(data: WaiterRequest): Observable<Waiter | ExceptionMessage> {
+    return this.clinet.post<Waiter | ExceptionMessage>(this.baseUrl + "waiters/create", data);
+  }
+
+  editWaiter(data: WaiterRequest): Observable<Waiter | ExceptionMessage> {
+    return this.clinet.post<Waiter | ExceptionMessage>(this.baseUrl + "waiters/edit", data);
+  }
+
+  deleteWaiter(id: number): Observable<number | ExceptionMessage> {
+    return this.clinet.delete<number | ExceptionMessage>(this.baseUrl + "waiters/delete/" + id);
   }
 
   getAllPositions() {

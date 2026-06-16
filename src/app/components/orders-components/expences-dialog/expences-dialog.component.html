@@ -1,0 +1,136 @@
+<div class="bo-dialog expences-dialog">
+  <header class="bo-dialog-header">
+    <h2>{{isEditMode ? 'Редагувати витрати' : 'Додати витрати'}}</h2>
+    <p>Вкажіть меню, закупівлі, оплату кухні, офіціантів та інші витрати.</p>
+  </header>
+
+  <mat-dialog-content class="bo-dialog-content">
+    @if(loadingOptions){
+      <div class="dialog-loading">
+        <mat-spinner diameter="36"></mat-spinner>
+      </div>
+    }
+
+    <form [formGroup]="form" class="expences-form">
+      <div class="main-grid">
+        <mat-form-field>
+          <mat-label>Меню</mat-label>
+          <mat-select formControlName="menuId">
+            @for(menu of menus; track menu.id){
+              <mat-option [value]="menu.id">{{menu.client}} · {{menu.date | date}} · {{menu.totalPrice | number}} грн </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Кухня</mat-label>
+          <input matInput type="number" formControlName="cook" />
+        </mat-form-field>
+      </div>
+
+      <section class="form-section">
+        <div class="section-title">
+          <h3>Закупівлі</h3>
+          <button mat-stroked-button type="button" (click)="addShoppingSum()">
+            <mat-icon>add</mat-icon>
+            Додати
+          </button>
+        </div>
+
+        <div formArrayName="shoppingSums" class="rows-list">
+          @for(row of shoppingSums.controls; track $index){
+            <div [formGroupName]="$index" class="expense-row shopping-row">
+              <mat-form-field>
+                <mat-label>Назва</mat-label>
+                <input matInput formControlName="name" />
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>Дата</mat-label>
+                <input matInput type="date" formControlName="date" />
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>Сума</mat-label>
+                <input matInput type="number" formControlName="sum" />
+              </mat-form-field>
+
+              <button mat-icon-button type="button" class="remove-row" (click)="removeShoppingSum($index)" aria-label="Видалити закупівлю">
+                <mat-icon>delete_outline</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+      </section>
+
+      <section class="form-section">
+        <div class="section-title">
+          <h3>Офіціанти</h3>
+          <button mat-stroked-button type="button" (click)="addWaiter()">
+            <mat-icon>add</mat-icon>
+            Додати
+          </button>
+        </div>
+
+        <div formArrayName="waiters" class="rows-list">
+          @for(row of waiters.controls; track $index){
+            <div [formGroupName]="$index" class="expense-row waiter-row">
+              <mat-form-field>
+                <mat-label>Офіціант</mat-label>
+                <mat-select formControlName="waiterId">
+                  @for(waiter of waitersList; track waiter.id){
+                    <mat-option [value]="waiter.id">{{waiter.name}}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>Сума</mat-label>
+                <input matInput type="number" formControlName="price" />
+              </mat-form-field>
+
+              <button mat-icon-button type="button" class="remove-row" (click)="removeWaiter($index)" aria-label="Видалити офіціанта">
+                <mat-icon>delete_outline</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+      </section>
+
+      <section class="form-section">
+        <div class="section-title">
+          <h3>Інші витрати</h3>
+          <button mat-stroked-button type="button" (click)="addOtherExpence()">
+            <mat-icon>add</mat-icon>
+            Додати
+          </button>
+        </div>
+
+        <div formArrayName="otherExpences" class="rows-list">
+          @for(row of otherExpences.controls; track $index){
+            <div [formGroupName]="$index" class="expense-row other-row">
+              <mat-form-field>
+                <mat-label>Назва</mat-label>
+                <input matInput formControlName="name" />
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>Сума</mat-label>
+                <input matInput type="number" formControlName="amount" />
+              </mat-form-field>
+
+              <button mat-icon-button type="button" class="remove-row" (click)="removeOtherExpence($index)" aria-label="Видалити витрату">
+                <mat-icon>delete_outline</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+      </section>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="bo-dialog-actions">
+    <button mat-button mat-dialog-close>Скасувати</button>
+    <button mat-flat-button color="accent" (click)="save()">{{isEditMode ? 'Зберегти' : 'Додати'}}</button>
+  </mat-dialog-actions>
+</div>

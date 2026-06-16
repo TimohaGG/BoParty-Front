@@ -10,6 +10,7 @@ import {Menu} from "../models/Menu/Menu";
 import {MinPosAmount} from "../models/Positions/MinPosAmount";
 import {CommonMenuInfo} from "../models/Menu/CommonMenuInfo";
 import {AdditionalMenuData} from "../models/Menu/AdditionalMenuData";
+import {Expences, ExpencesRequest} from "../models/Expences/Expences";
 
 @Injectable({
   providedIn:"root"
@@ -60,6 +61,50 @@ export class OrdersService{
           this.store.setTotalPages(orders.length);
         }
       }),
+      catchError((error: HttpErrorResponse) => {
+        throw new Error(error.error.message);
+      })
+    );
+  }
+
+  public getExpences(startDate: string, endDate: string) {
+    return this.http.getExpences(startDate, endDate).pipe(
+      map(res => {
+        if(!isMessage(res)){
+          const expences = res as Expences[];
+          this.store.setAllExpences(expences);
+          return expences;
+        }
+
+        return [];
+      }),
+      catchError((error: HttpErrorResponse) => {
+        throw new Error(error.error.message);
+      })
+    );
+  }
+
+  public createExpences(data: ExpencesRequest) {
+    return this.http.createExpences(data).pipe(
+      map(res => res as Expences),
+      catchError((error: HttpErrorResponse) => {
+        throw new Error(error.error.message);
+      })
+    );
+  }
+
+  public editExpences(data: ExpencesRequest) {
+    return this.http.editExpences(data).pipe(
+      map(res => res as Expences),
+      catchError((error: HttpErrorResponse) => {
+        throw new Error(error.error.message);
+      })
+    );
+  }
+
+  public deleteExpences(id: number) {
+    return this.http.deleteExpences(id).pipe(
+      map(res => res as number),
       catchError((error: HttpErrorResponse) => {
         throw new Error(error.error.message);
       })
@@ -303,6 +348,21 @@ export class OrdersService{
   getAllOrders() {
     return this.http.getAllOrders().pipe(
       map(res=>{
+        return res as MinMenu[];
+      }),
+      catchError((err:HttpErrorResponse)=>{
+        throw new Error(err.error.message);
+      })
+    );
+  }
+
+  getCurrentUserOrderOptions() {
+    return this.http.getCurrentUserMinOrders().pipe(
+      map(res=>{
+        if(isMessage(res)){
+          return [];
+        }
+
         return res as MinMenu[];
       }),
       catchError((err:HttpErrorResponse)=>{

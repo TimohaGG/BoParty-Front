@@ -16,9 +16,9 @@ import {Ingredient} from "../../models/Positions/Ingredient";
 import {Menu} from "../../models/Menu/Menu";
 import {AdditionalMenuData} from "../../models/Menu/AdditionalMenuData";
 import {CommonMenuInfo} from "../../models/Menu/CommonMenuInfo";
-import {Order} from "../../models/Orders/Order";
 import {ShoppingList} from "../../models/Menu/ShoppingList";
 import {ShoppingListItem} from "../../models/Menu/ShoppingListItem";
+import {Expences} from "../../models/Expences/Expences";
 
 
 
@@ -86,9 +86,9 @@ const commonOrderInfoConfig = entityConfig({
 })
 
 
-const orderConfig = entityConfig({
-  entity:type<Order>(),
-  collection:"orders",
+const expencesConfig = entityConfig({
+  entity:type<Expences>(),
+  collection:"expences",
   selectId:(data)=>data.id
 })
 
@@ -109,7 +109,7 @@ export const entityStorage = signalStore(
   withEntities(ingCategoryConfig),
   withEntities(orderInfoConfig),
   withEntities(commonOrderInfoConfig),
-  withEntities(orderConfig),
+  withEntities(expencesConfig),
 
 
   withMethods((store)=>({
@@ -148,8 +148,11 @@ export const entityStorage = signalStore(
     setAllCommonData(data:CommonMenuInfo[]){
       patchState(store,setAllEntities(data,commonOrderInfoConfig));
     },
-    selectAllOrdersData(data:Order[]){
-      patchState(store,setAllEntities(data,orderConfig));
+    setAllExpences(data:Expences[]){
+      patchState(store,setAllEntities(data,expencesConfig));
+    },
+    clearExpences(){
+      patchState(store,removeAllEntities(expencesConfig));
     },
     setOrder(order:Menu){
       patchState(store,removeAllEntities(orderInfoConfig));

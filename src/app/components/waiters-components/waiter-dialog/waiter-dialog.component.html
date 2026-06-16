@@ -1,0 +1,18 @@
+<div class="bo-dialog waiter-dialog">
+  <header class="bo-dialog-header">
+    <h2>{{isEditMode ? 'Редагувати офіціанта' : 'Додати офіціанта'}}</h2>
+    <p>{{isEditMode ? 'Оновіть імʼя офіціанта.' : 'Додайте нового офіціанта для витрат.'}}</p>
+  </header>
+
+  <mat-dialog-content class="bo-dialog-content">
+    <mat-form-field>
+      <mat-label>Імʼя</mat-label>
+      <input matInput [formControl]="name" type="text" />
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="bo-dialog-actions">
+    <button mat-button mat-dialog-close>Скасувати</button>
+    <button mat-flat-button color="accent" (click)="save()">{{isEditMode ? 'Зберегти' : 'Додати'}}</button>
+  </mat-dialog-actions>
+</div>

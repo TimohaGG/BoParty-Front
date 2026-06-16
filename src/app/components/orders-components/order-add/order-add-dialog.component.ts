@@ -12,6 +12,7 @@ import {MatButton} from "@angular/material/button";
 import {FormsModule} from "@angular/forms";
 import {entityStorage} from "../../../_helpers/storage/entityStorage";
 import {MatOption, MatSelect} from "@angular/material/select";
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: 'app-order-add',
@@ -25,7 +26,8 @@ import {MatOption, MatSelect} from "@angular/material/select";
     MatDialogClose,
     FormsModule,
     MatSelect,
-    MatOption
+    MatOption,
+    DatePipe
   ],
   templateUrl: './order-add-dialog.component.html',
   styleUrl: './order-add-dialog.component.css'
