@@ -2,7 +2,7 @@ import {Component, inject, Input, OnInit} from '@angular/core';
 import {MatButton, MatIconButton} from "@angular/material/button";
 import {MatIcon} from "@angular/material/icon";
 import {MinMenu} from "../../../models/Menu/MinMenu";
-import {NgClass} from "@angular/common";
+import {DatePipe, NgClass} from "@angular/common";
 import {RouterLink, RouterLinkActive} from "@angular/router";
 import {Menu} from "../../../models/Menu/Menu";
 import {DeleteMenuDialogComponent, DeleteMenuDialogData} from "../delete-menu-dialog/delete-menu-dialog.component";
@@ -20,7 +20,8 @@ import {HotToastService} from "@ngxpert/hot-toast";
     RouterLinkActive,
     MatButton,
     MatIconButton,
-    NgClass
+    NgClass,
+    DatePipe
   ],
   templateUrl: './menus-list-item.component.html',
   styleUrl: './menus-list-item.component.css'

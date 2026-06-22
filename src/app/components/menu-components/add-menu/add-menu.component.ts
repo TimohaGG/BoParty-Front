@@ -97,10 +97,10 @@ export class AddMenuComponent implements OnInit {
   public ordersForm: FormGroup = new FormGroup({
     client: new FormControl('', [Validators.required]),
     guestsAmount: new FormControl(0, [Validators.required]),
-    format: new FormControl('', [Validators.required]),
+    format: new FormControl(''),
     dateTime: new FormControl('', [Validators.required]),
-    duration: new FormControl('', [Validators.required]),
-    phoneNumber: new FormControl('', [Validators.required]),
+    duration: new FormControl(''),
+    phoneNumber: new FormControl('0688714410', [Validators.required]),
     serving: new FormControl(false),
     taxAmount: new FormControl(''),
     govTax: new FormControl(false),
