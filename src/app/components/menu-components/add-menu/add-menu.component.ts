@@ -103,14 +103,11 @@ export class AddMenuComponent implements OnInit {
     phoneNumber: new FormControl('', [Validators.required]),
     serving: new FormControl(false),
     taxAmount: new FormControl(''),
-
     govTax: new FormControl(false),
     govTaxAmount: new FormControl(''),
   })
 
   constructor(private ordersService: OrdersService, private route: ActivatedRoute, private router: Router, private toast: HotToastService) {
-
-
     if (this.route.snapshot.queryParamMap.has("editable")) {
       this.editable = this.route.snapshot.queryParamMap.get("editable") == "true";
 
@@ -122,12 +119,9 @@ export class AddMenuComponent implements OnInit {
 
   ngOnInit(): void {
     this.initOrderEditData();
-
     this.ordersForm.get('serving')?.valueChanges.subscribe(() => this.syncConditionalTaxControls());
     this.ordersForm.get('govTax')?.valueChanges.subscribe(() => this.syncConditionalTaxControls());
     this.syncConditionalTaxControls();
-
-
   }
 
   openPositionsDialog() {
@@ -543,6 +537,41 @@ export class AddMenuComponent implements OnInit {
         ];
       })
     );
+  }
+
+
+  getTotalPrice(){
+
+    let positionsPrice = this.getTotalMenuPrice();
+    let additionalInfoPrice = this.additionalInfo().reduce((sum,item)=>{return sum+item.price},0);
+
+    if(this.ordersForm.get("taxAmount")?.value!=0){
+      positionsPrice = positionsPrice + positionsPrice/10;
+    }
+
+    let total = positionsPrice + additionalInfoPrice;
+    if(this.ordersForm.get("govTaxAmount")?.value!=0){
+      return total + total / 10;
+    }
+    else
+      return total;
+  }
+
+  getTotalMenuPrice(){
+    return this.posAmounts().reduce((sum,item)=>{return sum+(item.price == "" ? 0:item.price) * item.amount},0);
+  }
+
+  moveUp(id: any) {
+    let prevIndex = this.posAmounts().findIndex(x => x.position?.id == id);
+    moveItemInArray(this.posAmounts(),prevIndex,0);
+    this.table.renderRows();
+  }
+
+  moveDown(id: any) {
+    let prevIndex = this.posAmounts().findIndex(x => x.position?.id == id);
+    let lastIndex = this.posAmounts().length - 1;
+    moveItemInArray(this.posAmounts(),prevIndex,lastIndex);
+    this.table.renderRows();
   }
 }
 

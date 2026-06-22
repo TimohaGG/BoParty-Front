@@ -31,17 +31,27 @@
 import {HttpInterceptorFn} from "@angular/common/http";
 import {inject} from "@angular/core";
 import {StorageService} from "../_services/storage.service";
+import {EMPTY} from "rxjs";
 
 export const HttpRequestInterceptor: HttpInterceptorFn = (req, next) => {
   const storage = inject(StorageService);
-  const token = storage.getUser()?.accessToken;
+  const user = storage.getUser();
+  const token = user?.accessToken;
+
+  if (token && storage.isTokenExpired(token)) {
+    storage.handleExpiredSession(true);
+    return EMPTY;
+  }
 
   if (token) {
+    console.log(token);
     req = req.clone({
       withCredentials: true,
       headers: req.headers.set('Authorization', `Bearer ${token}`)
     });
+    console.log("asd1");
   }
+
 
   return next(req);
 };

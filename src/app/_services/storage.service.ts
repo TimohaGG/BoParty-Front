@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
+import {Router} from "@angular/router";
 import {BehaviorSubject} from "rxjs";
 
 const USER_KEY = 'auth-user';
@@ -24,8 +24,19 @@ export class StorageService {
     this.authUserSubject.next(user);
   }
 
-  public getUser(): any {
-    return this.getStoredUser();
+  public getUser(redirectIfExpired = false): any {
+    const user = this.getStoredUser();
+
+    if (!user?.accessToken) {
+      return user;
+    }
+
+    if (this.isTokenExpired(user.accessToken)) {
+      this.handleExpiredSession(redirectIfExpired);
+      return null;
+    }
+
+    return user;
   }
 
   private getStoredUser(): any {
@@ -37,9 +48,9 @@ export class StorageService {
   }
 
   public getUserId(){
-    const user = window.localStorage.getItem(USER_KEY);
+    const user = this.getUser(true);
     if(user){
-      return JSON.parse(user).id;
+      return user.id;
     }
     else{
       this.router.navigate(['/login']);
@@ -47,13 +58,30 @@ export class StorageService {
   }
 
   public isLoggedIn(): boolean {
-    const user = window.localStorage.getItem(USER_KEY);
-    if (user) {
-      return true;
-    }
-
-    return false;
+    return !!this.getUser();
   }
 
+  public isTokenExpired(token: string): boolean {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const exp = payload?.exp;
+
+      if (!exp) {
+        return false;
+      }
+
+      return Date.now() >= exp * 1000;
+    } catch {
+      return true;
+    }
+  }
+
+  public handleExpiredSession(redirectToLogin = true): void {
+    this.clean();
+
+    if (redirectToLogin) {
+      this.router.navigate(['/login']);
+    }
+  }
 
 }
