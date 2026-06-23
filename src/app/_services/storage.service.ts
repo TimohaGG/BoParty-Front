@@ -53,7 +53,7 @@ export class StorageService {
       return user.id;
     }
     else{
-      this.router.navigate(['/login']);
+      this.router.navigate(['/service/login']);
     }
   }
 
@@ -80,7 +80,7 @@ export class StorageService {
     this.clean();
 
     if (redirectToLogin) {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/service/login']);
     }
   }
 

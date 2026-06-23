@@ -10,7 +10,7 @@
         <span>{{ showSearch ? 'Сховати пошук' : 'Пошук' }}</span>
       </button>
 
-      <button mat-flat-button class="new-order-button" [routerLink]="'/order/create'" [queryParams]="{editable:true}">
+      <button mat-flat-button class="new-order-button" [routerLink]="'/service/orders/new'" [queryParams]="{editable:true}">
         <span class="button-glow"></span>
         <mat-icon>add</mat-icon>
         <span>Нове замовлення</span>
@@ -106,7 +106,7 @@
 </button>
 
 <mat-menu #menu="matMenu">
-  <button mat-menu-item [routerLink]="'/order/create'" [queryParams]="{editable:true}">
+  <button mat-menu-item [routerLink]="'/service/orders/new'" [queryParams]="{editable:true}">
     <mat-icon>add</mat-icon>
     <span>Нове замовлення</span>
   </button>

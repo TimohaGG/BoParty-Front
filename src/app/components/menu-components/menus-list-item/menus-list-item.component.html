@@ -37,11 +37,11 @@
         <mat-icon>download</mat-icon>
         <span>PDF</span>
       </button>
-      <button mat-stroked-button class="control-button" routerLinkActive [routerLink]="['/order/create']" [queryParams]="{orderId:menu.id}">
+      <button mat-stroked-button class="control-button" routerLinkActive [routerLink]="['/service/orders/new']" [queryParams]="{orderId:menu.id}">
         <mat-icon>edit</mat-icon>
         <span>Редагувати</span>
       </button>
-      <button mat-icon-button class="shopping-button" aria-label="Закупівлі" title="Закупівлі" [routerLink]="['/order/shopping/' + menu.id]">
+      <button mat-icon-button class="shopping-button" aria-label="Закупівлі" title="Закупівлі" [routerLink]="['/service/orders', menu.id, 'shopping']">
         <mat-icon>shopping_cart</mat-icon>
       </button>
       <button mat-icon-button class="copy-button" aria-label="Копіювати" title="Копіювати" (click)="copyMenu(menu.id)">

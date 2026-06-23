@@ -212,7 +212,7 @@ export class AddMenuComponent implements OnInit {
         if (isMessage(res)) {
           this.toast.show("Can't load order!", {autoClose: true, position: "bottom-center", duration: 2000})
             .afterClosed.subscribe(() => {
-            this.router.navigate(['/']);
+            this.router.navigate(['/service/orders']);
           });
         } else {
           this.ordersForm.patchValue({
