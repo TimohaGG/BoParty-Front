@@ -38,20 +38,22 @@
           <mat-icon class="side-nav-icon" matListItemIcon>groups</mat-icon>
           <span class="side-nav-label">Офіціанти</span>
         </a>
-        <a mat-list-item class="side-nav-item" routerLink="/service/profile" routerLinkActive="active-link" (click)="sidenav!.close()">
-          <mat-icon class="side-nav-icon" matListItemIcon>person</mat-icon>
-          <span class="side-nav-label">Профіль</span>
-        </a>
+
         <a mat-list-item class="side-nav-item" routerLink="/service/reports/orders" routerLinkActive="active-link" (click)="sidenav!.close()">
           <mat-icon class="side-nav-icon" matListItemIcon>bar_chart</mat-icon>
           <span class="side-nav-label">Статистика</span>
         </a>
 
+      }
+      @if(isLoggedIn){
+        <a mat-list-item class="side-nav-item" routerLink="/service/profile" routerLinkActive="active-link" (click)="sidenav!.close()">
+          <mat-icon class="side-nav-icon" matListItemIcon>person</mat-icon>
+          <span class="side-nav-label">Профіль</span>
+        </a>
         <button mat-list-item class="side-nav-item side-nav-logout" type="button" (click)="logout()">
           <mat-icon class="side-nav-icon" matListItemIcon>logout</mat-icon>
           <span class="side-nav-label">Вийти</span>
         </button>
-
       }
 
 
