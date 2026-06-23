@@ -11,6 +11,7 @@ import {MinPosAmount} from "../models/Positions/MinPosAmount";
 import {CommonMenuInfo} from "../models/Menu/CommonMenuInfo";
 import {AdditionalMenuData} from "../models/Menu/AdditionalMenuData";
 import {Expences, ExpencesRequest} from "../models/Expences/Expences";
+import {Position} from "../models/Positions/Position";
 
 @Injectable({
   providedIn:"root"
@@ -80,6 +81,22 @@ export class OrdersService{
       }),
       catchError((error: HttpErrorResponse) => {
         throw new Error(error.error.message);
+      })
+    );
+  }
+
+  public getOrderPositionsByCategory(categoryId:number):Observable<Position[] | ExceptionMessage>{
+    return this.http.getOrderPositionsByCategoryId(categoryId).pipe(
+      map((res:Position[] | ExceptionMessage)=>{
+        if(!isMessage(res)){
+          this.store.addOrderPositions(res as Position[]);
+        }
+
+        return res as Position[];
+      }),
+      catchError((error:HttpErrorResponse)=>{
+        const msg = new ExceptionMessage(error.error.message, error.error.status);
+        return of(msg);
       })
     );
   }
@@ -238,7 +255,7 @@ export class OrdersService{
       map(res=>{
         if(!isMessage(res)){
           const url = window.URL.createObjectURL(res);
-          window.open(url, '_blank');
+          window.open(url);
         }
       }),
       catchError((err:HttpErrorResponse)=>{

@@ -35,6 +35,8 @@ import {AdditionalMenuData} from "../../../models/Menu/AdditionalMenuData";
 import {AddMenuInfoComponent} from "../add-menu-info/add-menu-info.component";
 import {MatCheckbox} from "@angular/material/checkbox";
 import {MatOption, MatSelect} from "@angular/material/select";
+import {entityStorage} from "../../../_helpers/storage/entityStorage";
+import {SelectedOrderPosition} from "../../../models/Orders/SelectedOrderPosition";
 
 export interface PosAmount {
   amount: number;
@@ -79,6 +81,7 @@ export class AddMenuComponent implements OnInit {
   @ViewChild('table', {static: true}) table!: MatTable<PositionAmount>;
   @ViewChild('datatable', {static: true}) datatable!: MatTable<PositionAmount>;
   private dialog = inject(MatDialog);
+  private store = inject(entityStorage);
 
 
   public editOrderid: number = -1;
@@ -118,6 +121,10 @@ export class AddMenuComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.store.hydrateSelectedOrderPositions();
+    if(this.editOrderid <= 0 && this.store.selectedOrderPositionsEntities().length > 0){
+      this.applySelectedOrderPositions(this.store.selectedOrderPositionsEntities());
+    }
     this.initOrderEditData();
     this.ordersForm.get('serving')?.valueChanges.subscribe(() => this.syncConditionalTaxControls());
     this.ordersForm.get('govTax')?.valueChanges.subscribe(() => this.syncConditionalTaxControls());
@@ -139,7 +146,7 @@ export class AddMenuComponent implements OnInit {
     });
 
     ref.afterClosed().subscribe({
-      next: (data) => {
+      next: (data: Position[] | undefined) => {
         if (data) {
           this.selectedPositions = data;
           this.posAmounts.set(this.posAmounts().filter(x => this.selectedPositions.some(el => el.id === x.id || x.unitedRow)));
@@ -149,7 +156,6 @@ export class AddMenuComponent implements OnInit {
             }
           }
         }
-
       }
     })
   }
@@ -238,6 +244,13 @@ export class AddMenuComponent implements OnInit {
             this.selectedPositions.push(el.position);
           });
           this.posAmounts.set(list);
+          this.store.replaceSelectedOrderPositions(
+            recieved.map(item => ({
+              id: item.position.id,
+              amount: item.amount,
+              position: item.position
+            }))
+          );
           this.additionalInfo.set(this.normalizeAdditionalInfo((res as Menu).additionalInfo));
         }
         this.loading = false;
@@ -408,7 +421,22 @@ export class AddMenuComponent implements OnInit {
   changeAmount(id: number, event: any) {
     let index = this.posAmounts().findIndex(x => x.position !== null && x.position.id == id);
     if (index != -1) {
-      this.posAmounts().at(index)!.amount = event.target.value;
+      const amount = Number(event.target.value);
+      this.posAmounts().at(index)!.amount = amount;
+      const position = this.selectedPositions.find(item => item.id === id);
+
+      if(position){
+        if(!Number.isFinite(amount) || amount <= 0){
+          this.store.removeSelectedOrderPosition(id);
+        }
+        else{
+          this.store.setSelectedOrderPosition({
+            id,
+            amount,
+            position
+          });
+        }
+      }
     }
   }
 
@@ -427,6 +455,13 @@ export class AddMenuComponent implements OnInit {
       items.forEach(item => {
         if (!item.unitedRow) {
           item.amount = resolvedAmount;
+          if(item.position){
+            this.store.setSelectedOrderPosition({
+              id: item.position.id,
+              amount: resolvedAmount,
+              position: item.position
+            });
+          }
         }
       });
 
@@ -465,6 +500,10 @@ export class AddMenuComponent implements OnInit {
     index = this.selectedPositions.findIndex(x => x.id == id);
     if (index != -1) {
       this.selectedPositions.splice(index, 1);
+    }
+
+    if(typeof id === "number"){
+      this.store.removeSelectedOrderPosition(id);
     }
 
   }
@@ -537,6 +576,31 @@ export class AddMenuComponent implements OnInit {
         ];
       })
     );
+  }
+
+  private buildSelectedOrderPositionsPayload(): SelectedOrderPosition[] {
+    const selectedFromStore = this.store.selectedOrderPositionsEntities();
+    if(selectedFromStore.length > 0){
+      return selectedFromStore;
+    }
+
+    return this.selectedPositions.map(position => {
+      const row = this.posAmounts().find(item => !item.unitedRow && item.position?.id === position.id);
+      return {
+        id: position.id,
+        amount: Number(row?.amount ?? 0),
+        position
+      };
+    });
+  }
+
+  private applySelectedOrderPositions(items: SelectedOrderPosition[]): void {
+    this.store.replaceSelectedOrderPositions(items);
+    this.selectedPositions = items.map(item => item.position);
+
+    const currentRows = this.posAmounts().filter(row => row.unitedRow);
+    const nextRows = items.map(item => new TableRow(item.position, item.amount));
+    this.posAmounts.set([...currentRows, ...nextRows]);
   }
 
 

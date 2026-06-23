@@ -2,40 +2,62 @@
   <mat-sidenav mode="over" class="sidenav" position="end" #sidenav [(opened)]="opened">
     <mat-toolbar class="sidenav-title">Catering.smm</mat-toolbar>
     <mat-nav-list>
-      <a mat-list-item class="side-nav-item" routerLink="/service/orders" routerLinkActive="active-link" (click)="sidenav!.close()" [routerLinkActiveOptions]="{exact:true}">
-        <mat-icon class="side-nav-icon" matListItemIcon>event_note</mat-icon>
-        <span class="side-nav-label">Замовлення</span>
-      </a>
-      <a mat-list-item class="side-nav-item" routerLink="/service/orders" routerLinkActive="active-link" (click)="sidenav!.close()" [queryParams]="{showArchive:true}">
-        <mat-icon class="side-nav-icon" matListItemIcon>archive</mat-icon>
-        <span class="side-nav-label">Архів</span>
-      </a>
-      <a mat-list-item class="side-nav-item" routerLink="/service/positions" routerLinkActive="active-link" (click)="sidenav!.close()">
-        <mat-icon class="side-nav-icon" matListItemIcon>restaurant_menu</mat-icon>
-        <span class="side-nav-label">Позиції</span>
-      </a>
-      <a mat-list-item class="side-nav-item" routerLink="/service/ingredients" routerLinkActive="active-link" (click)="sidenav!.close()">
-        <mat-icon class="side-nav-icon" matListItemIcon>inventory_2</mat-icon>
-        <span class="side-nav-label">Інгредієнти</span>
-      </a>
-      <a mat-list-item class="side-nav-item" routerLink="/service/waiters" routerLinkActive="active-link" (click)="sidenav!.close()">
-        <mat-icon class="side-nav-icon" matListItemIcon>groups</mat-icon>
-        <span class="side-nav-label">Офіціанти</span>
-      </a>
-      <a mat-list-item class="side-nav-item" routerLink="/service/profile" routerLinkActive="active-link" (click)="sidenav!.close()">
-        <mat-icon class="side-nav-icon" matListItemIcon>person</mat-icon>
-        <span class="side-nav-label">Профіль</span>
-      </a>
-      <a mat-list-item class="side-nav-item" routerLink="/service/reports/orders" routerLinkActive="active-link" (click)="sidenav!.close()">
-        <mat-icon class="side-nav-icon" matListItemIcon>bar_chart</mat-icon>
-        <span class="side-nav-label">Статистика</span>
-      </a>
-      @if (isLoggedIn) {
+
+      @if(!showAdminBoard){
+        <a mat-list-item class="side-nav-item" routerLink="/menu" routerLinkActive="active-link" (click)="sidenav!.close()">
+          <mat-icon class="side-nav-icon" matListItemIcon>event_note</mat-icon>
+          <span class="side-nav-label">Меню</span>
+        </a>
+      }
+
+      @if(!isLoggedIn){
+        <a mat-list-item class="side-nav-item" routerLink="/service/login" routerLinkActive="active-link" (click)="sidenav!.close()">
+          <mat-icon class="side-nav-icon" matListItemIcon>person</mat-icon>
+          <span class="side-nav-label">Увійти</span>
+        </a>
+      }
+
+      @if(isLoggedIn && showAdminBoard){
+        <a mat-list-item class="side-nav-item" routerLink="/service/orders" routerLinkActive="active-link" (click)="sidenav!.close()" [routerLinkActiveOptions]="{exact:true}">
+          <mat-icon class="side-nav-icon" matListItemIcon>event_note</mat-icon>
+          <span class="side-nav-label">Замовлення</span>
+        </a>
+        <a mat-list-item class="side-nav-item" routerLink="/service/orders" routerLinkActive="active-link" (click)="sidenav!.close()" [queryParams]="{showArchive:true}">
+          <mat-icon class="side-nav-icon" matListItemIcon>archive</mat-icon>
+          <span class="side-nav-label">Архів</span>
+        </a>
+        <a mat-list-item class="side-nav-item" routerLink="/service/positions" routerLinkActive="active-link" (click)="sidenav!.close()">
+          <mat-icon class="side-nav-icon" matListItemIcon>restaurant_menu</mat-icon>
+          <span class="side-nav-label">Позиції</span>
+        </a>
+        <a mat-list-item class="side-nav-item" routerLink="/service/ingredients" routerLinkActive="active-link" (click)="sidenav!.close()">
+          <mat-icon class="side-nav-icon" matListItemIcon>inventory_2</mat-icon>
+          <span class="side-nav-label">Інгредієнти</span>
+        </a>
+        <a mat-list-item class="side-nav-item" routerLink="/service/waiters" routerLinkActive="active-link" (click)="sidenav!.close()">
+          <mat-icon class="side-nav-icon" matListItemIcon>groups</mat-icon>
+          <span class="side-nav-label">Офіціанти</span>
+        </a>
+        <a mat-list-item class="side-nav-item" routerLink="/service/profile" routerLinkActive="active-link" (click)="sidenav!.close()">
+          <mat-icon class="side-nav-icon" matListItemIcon>person</mat-icon>
+          <span class="side-nav-label">Профіль</span>
+        </a>
+        <a mat-list-item class="side-nav-item" routerLink="/service/reports/orders" routerLinkActive="active-link" (click)="sidenav!.close()">
+          <mat-icon class="side-nav-icon" matListItemIcon>bar_chart</mat-icon>
+          <span class="side-nav-label">Статистика</span>
+        </a>
+
         <button mat-list-item class="side-nav-item side-nav-logout" type="button" (click)="logout()">
           <mat-icon class="side-nav-icon" matListItemIcon>logout</mat-icon>
           <span class="side-nav-label">Вийти</span>
         </button>
+
       }
+
+
+
+
+
     </mat-nav-list>
   </mat-sidenav>
 
@@ -45,23 +67,102 @@
         <img [src]="brandLogoSrc" alt="" (error)="onLogoError()" />
         <span>{{username || 'Catering.smm'}}</span>
       </div>
-      @if (isLoggedIn) {
+
       <nav class="desktop-nav" aria-label="Main navigation">
-        <a mat-button routerLink="/service/orders" routerLinkActive="active-top-link" [routerLinkActiveOptions]="{exact:true}">Замовлення</a>
-        <a mat-button routerLink="/service/orders" routerLinkActive="active-top-link" [queryParams]="{showArchive:true}">Архів</a>
-        <a mat-button routerLink="/service/positions" routerLinkActive="active-top-link">Позиції</a>
-        <a mat-button routerLink="/service/ingredients" routerLinkActive="active-top-link">Інгредієнти</a>
-        <a mat-button routerLink="/service/waiters" routerLinkActive="active-top-link">Офіціанти</a>
-        <a mat-button routerLink="/service/reports/orders" routerLinkActive="active-top-link">Статистика</a>
-        <button mat-button class="logout-button" type="button" (click)="logout()">Вийти</button>
+        @if (isLoggedIn && showAdminBoard) {
+          <a mat-button routerLink="/service/orders" routerLinkActive="active-top-link" [routerLinkActiveOptions]="{exact:true}">Замовлення</a>
+          <a mat-button routerLink="/service/orders" routerLinkActive="active-top-link" [queryParams]="{showArchive:true}">Архів</a>
+          <a mat-button routerLink="/service/positions" routerLinkActive="active-top-link">Позиції</a>
+          <a mat-button routerLink="/service/ingredients" routerLinkActive="active-top-link">Інгредієнти</a>
+          <a mat-button routerLink="/service/waiters" routerLinkActive="active-top-link">Офіціанти</a>
+          <a mat-button routerLink="/service/reports/orders" routerLinkActive="active-top-link">Статистика</a>
+        }
+
+
+
+        @if(!showAdminBoard){
+          <a mat-button routerLink="/menu" routerLinkActive="active-top-link" [routerLinkActiveOptions]="{exact:true}">Меню</a>
+        }
+
+        @if(!isLoggedIn){
+          <a mat-button routerLink="/service/login" routerLinkActive="active-top-link" [routerLinkActiveOptions]="{exact:true}">Увійти</a>
+        }
+        @if(isLoggedIn){
+          <a mat-button routerLink="/service/profile" routerLinkActive="active-top-link">Профіль</a>
+          <button mat-button class="logout-button" type="button" (click)="logout()">Вийти</button>
+        }
+
       </nav>
+
       <button mat-icon-button class="mobile-menu-button" aria-label="Відкрити меню" (click)="sidenav.toggle()" >
         <mat-icon>menu</mat-icon>
       </button>
-      }
+
+
+        <button mat-icon-button class="bin-button mobile-bin-button" aria-label="Відкрити кошик" (click)="toggleBin()">
+          <mat-icon>shopping_bag</mat-icon>
+          @if(selectedOrderPositions().length > 0){
+            <span class="bin-badge">{{selectedOrderPositions().length}}</span>
+          }
+        </button>
+
+
+
+
     </mat-toolbar>
     <div class="main-content">
       <router-outlet></router-outlet>
     </div>
+
+    @if(binOpened && !showAdminBoard){
+      <button class="bin-backdrop" type="button" aria-label="Закрити кошик" (click)="closeBin()"></button>
+    }
+
+    @if(!showAdminBoard){
+      <aside class="bin-sidebar" [class.is-open]="binOpened">
+        <header class="bin-sidebar-header">
+          <div>
+            <h2>Кошик</h2>
+            <p>Обрані позиції з меню</p>
+          </div>
+          <button mat-icon-button type="button" aria-label="Закрити кошик" (click)="closeBin()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </header>
+
+        @if(selectedOrderPositions().length === 0){
+          <div class="bin-empty-state">
+            <mat-icon>shopping_bag</mat-icon>
+            <p>Поки що немає обраних позицій.</p>
+          </div>
+        }
+        @else{
+          <div class="bin-items">
+            @for(item of selectedOrderPositions(); track item.id){
+              <article class="bin-item">
+                <div class="bin-item-main">
+                  <strong>{{item.position.name}}</strong>
+                  <span>{{item.position.price}} грн × {{item.amount}}</span>
+                </div>
+                <div class="bin-item-actions">
+                  <strong>{{item.position.price * item.amount}} грн</strong>
+                  <button mat-icon-button type="button" aria-label="Видалити позицію" (click)="removeBinItem(item.id)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </article>
+            }
+          </div>
+
+          <footer class="bin-footer">
+            <div class="bin-total-row">
+              <span>Загальна сума</span>
+              <strong>{{getBinTotal()}} грн</strong>
+            </div>
+            <button mat-stroked-button type="button" (click)="clearBin()">Очистити</button>
+          </footer>
+        }
+      </aside>
+    }
   </mat-sidenav-content>
 </mat-sidenav-container>

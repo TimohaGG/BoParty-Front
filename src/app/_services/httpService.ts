@@ -23,26 +23,26 @@ export class HttpService{
 
 
   // private baseUrl:string = "https://72.60.88.151:8085/"
-  // private baseUrl:string = "http://localhost:8085/"
+  // private baseUrl:string = "http://localhost:8085/api/"
  private baseUrl:string = "/";
 
   constructor(private clinet:HttpClient) {
   }
 
   getAllOrders():Observable<MinMenu[] | ExceptionMessage>{
-    return this.clinet.get<MinMenu[] | ExceptionMessage>(this.baseUrl + "orders/get/min/all");
+    return this.clinet.get<MinMenu[] | ExceptionMessage>(this.baseUrl + "menus/get/min/all");
   }
 
   getCurrentUserMinOrders():Observable<MinMenu[] | ExceptionMessage>{
-    return this.clinet.get<MinMenu[] | ExceptionMessage>(this.baseUrl + "orders/get/min/current");
+    return this.clinet.get<MinMenu[] | ExceptionMessage>(this.baseUrl + "menus/get/min/current");
   }
 
   getMinOrders(pageSize:number, currentPage:number, archive:boolean):Observable<MinMenu[] | ExceptionMessage>{
-    return this.clinet.get<MinMenu[] | ExceptionMessage>(this.baseUrl + "orders/get/min", {params:{pageSize:pageSize, currentPage:currentPage, archive:archive}});
+    return this.clinet.get<MinMenu[] | ExceptionMessage>(this.baseUrl + "menus/get/min", {params:{pageSize:pageSize, currentPage:currentPage, archive:archive}});
   }
 
   searchOrders(name: string, date: string): Observable<MinMenu[] | ExceptionMessage> {
-    return this.clinet.get<MinMenu[] | ExceptionMessage>(this.baseUrl + "orders/search", {
+    return this.clinet.get<MinMenu[] | ExceptionMessage>(this.baseUrl + "menus/search", {
       params: {
         name,
         date
@@ -93,6 +93,10 @@ export class HttpService{
 
   getAllPositionsByCategoryId(categoryId: number) {
     return this.clinet.get<Position[] | ExceptionMessage>(this.baseUrl + "positions/get/category/" + categoryId);
+  }
+
+  getOrderPositionsByCategoryId(categoryId: number) {
+    return this.clinet.get<Position[] | ExceptionMessage>(this.baseUrl + "orders/positions/" + categoryId);
   }
 
   getAllCategories(userId:number) {
@@ -147,7 +151,7 @@ export class HttpService{
   addOrder(data: any, positions:MinPosAmount[], additionalData:AdditionalMenuData[]) {
     console.log(additionalData);
 
-    return this.clinet.post<Menu | ExceptionMessage>(this.baseUrl + "orders/create",{
+    return this.clinet.post<Menu | ExceptionMessage>(this.baseUrl + "menus/create",{
       ...data,
       positions: positions,
       additionalInfo:additionalData
@@ -156,11 +160,11 @@ export class HttpService{
   }
 
   getOrderById(id:number) {
-    return this.clinet.get<Menu | ExceptionMessage>(this.baseUrl + `orders/get/${id}`);
+    return this.clinet.get<Menu | ExceptionMessage>(this.baseUrl + `menus/get/${id}`);
   }
 
   editOrder(id: number, value: any, items: MinPosAmount[],additionalInfo:AdditionalMenuData[]) {
-    return this.clinet.post<Menu | ExceptionMessage>(this.baseUrl + "orders/edit",{
+    return this.clinet.post<Menu | ExceptionMessage>(this.baseUrl + "menus/edit",{
       id:id,
       ...value,
       positions:items,
@@ -169,23 +173,23 @@ export class HttpService{
   }
 
   addCommonOrderInfo(res: any) {
-    return this.clinet.post<CommonMenuInfo | ExceptionMessage>(this.baseUrl + "orders/info/common/add",res);
+    return this.clinet.post<CommonMenuInfo | ExceptionMessage>(this.baseUrl + "menus/info/common/add",res);
   }
 
   addAllCommonInfo() {
-    return this.clinet.get<CommonMenuInfo[] | ExceptionMessage>(this.baseUrl + "orders/info/common");
+    return this.clinet.get<CommonMenuInfo[] | ExceptionMessage>(this.baseUrl + "menus/info/common");
   }
 
   deleteOrder(id: number) {
-    return this.clinet.delete<number | ExceptionMessage>(this.baseUrl + "orders/delete/"+id);
+    return this.clinet.delete<number | ExceptionMessage>(this.baseUrl + "menus/delete/"+id);
   }
 
   toggleStatus(id:number,status:boolean):Observable<boolean> {
-    return this.clinet.post<boolean>(this.baseUrl + "orders/edit/status", {status:status, id:id});
+    return this.clinet.post<boolean>(this.baseUrl + "menus/edit/status", {status:status, id:id});
   }
 
   getOrdersAmount(archive:boolean) {
-    return this.clinet.get<number>(this.baseUrl + "orders/amount",{params:{archive:archive}});
+    return this.clinet.get<number>(this.baseUrl + "menus/amount",{params:{archive:archive}});
   }
 
   // getArchiveOrdersAmount() {
@@ -196,44 +200,44 @@ export class HttpService{
   //   return this.clinet.get<MinMenu[] | ExceptionMessage>(this.baseUrl + "orders/get/min/archive", {params:{pageSize:perPage, currentPage:currentPage}});
   // }
   download(id: number) {
-    return this.clinet.get(this.baseUrl + "orders/generate/"+id,{responseType: "blob"});
+    return this.clinet.get(this.baseUrl + "menus/generate/"+id,{responseType: "blob"});
   }
 
   deleteMenuInfo(id: number) {
-    return this.clinet.post<number>(this.baseUrl + "orders/info/delete",{id:id});
+    return this.clinet.post<number>(this.baseUrl + "menus/info/delete",{id:id});
   }
 
   getShoppingList(orderId: number) {
-    return this.clinet.get<ShoppingList>(this.baseUrl + "orders/shopping/get/"+orderId);
+    return this.clinet.get<ShoppingList>(this.baseUrl + "menus/shopping/get/"+orderId);
 
   }
 
   toggleShoppingStatus(id: number, status: boolean) {
-    return this.clinet.post<boolean>(this.baseUrl + "orders/shopping/toggle", {status:status, id:id});
+    return this.clinet.post<boolean>(this.baseUrl + "menus/shopping/toggle", {status:status, id:id});
   }
 
   addShoppingComment(shoppingItemId: number, comment: string) {
-    return this.clinet.post(this.baseUrl + "orders/shopping/comment/add", {shoppingItemId:shoppingItemId, comment:comment}, {responseType: "text"});
+    return this.clinet.post(this.baseUrl + "menus/shopping/comment/add", {shoppingItemId:shoppingItemId, comment:comment}, {responseType: "text"});
   }
 
   removeShoppingComment(id: number) {
-    return this.clinet.delete(this.baseUrl + "orders/shopping/comment/remove/" + id, {responseType: "text"});
+    return this.clinet.delete(this.baseUrl + "menus/shopping/comment/remove/" + id, {responseType: "text"});
   }
 
   addShoppingItem(data: any) {
-    return this.clinet.post<ShoppingListItem>(this.baseUrl + "orders/shopping/item/add", data);
+    return this.clinet.post<ShoppingListItem>(this.baseUrl + "menus/shopping/item/add", data);
   }
 
   removeShoppingItem(id: number) {
-    return this.clinet.delete(this.baseUrl + "orders/shopping/item/remove/" + id, {responseType: "text"});
+    return this.clinet.delete(this.baseUrl + "menus/shopping/item/remove/" + id, {responseType: "text"});
   }
 
   joinOrders(ordersIds: any) {
-    return this.clinet.post<MinMenu>(this.baseUrl + "orders/shopping/join",{ordersIds:ordersIds})
+    return this.clinet.post<MinMenu>(this.baseUrl + "menus/shopping/join",{ordersIds:ordersIds})
 
   }
 
   copyOrder(orderId: number) {
-    return this.clinet.post<MinMenu | ExceptionMessage>(this.baseUrl + `orders/copy/${orderId}`, {});
+    return this.clinet.post<MinMenu | ExceptionMessage>(this.baseUrl + `menus/copy/${orderId}`, {});
   }
 }

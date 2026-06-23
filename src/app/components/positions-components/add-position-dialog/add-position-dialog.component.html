@@ -45,6 +45,11 @@
             </div>
 
             <mat-form-field>
+              <mat-label>Мінімальна кількість</mat-label>
+              <input matInput formControlName="minimumAmount" type="number"/>
+            </mat-form-field>
+
+            <mat-form-field>
               <mat-label>Категорія</mat-label>
               <mat-select formControlName="category">
                 @for (category of categories(); track category.id) {

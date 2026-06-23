@@ -89,6 +89,7 @@ export class AddPositionDialogComponent implements OnInit,AfterViewInit {
     name: new FormControl('', [Validators.required]),
     weight: new FormControl('', [Validators.required]),
     price: new FormControl('', [Validators.required]),
+    minimumAmount: new FormControl('10', [Validators.required]),
     image: new FormControl(''),
     category: new FormControl(0, [Validators.required]),
   });
@@ -131,6 +132,7 @@ export class AddPositionDialogComponent implements OnInit,AfterViewInit {
       this.positionInfoGroup.controls.category.setValue(this.editPositionModel().category.id);
       this.positionInfoGroup.controls.weight.setValue(String(this.editPositionModel().weight));
       this.positionInfoGroup.controls.price.setValue(String(this.editPositionModel().price));
+      this.positionInfoGroup.controls.minimumAmount.setValue(String(this.editPositionModel().minimumAmount ?? 10));
       this.selectedIngredients = this.editPositionModel().ingredients;
       if(this.imageRef && this.editPositionModel().image!="")
         this.imageRef.nativeElement.src="data:image/*;base64,"+this.editPositionModel().image;
@@ -263,6 +265,7 @@ export class AddPositionDialogComponent implements OnInit,AfterViewInit {
       name:this.positionInfoGroup.get("name")!.value!,
       weight:this.positionInfoGroup.get("weight")!.value!,
       price:this.positionInfoGroup.get("price")!.value!,
+      minimumAmount:this.positionInfoGroup.get("minimumAmount")!.value!,
       categoryId:this.positionInfoGroup.get("category")!.value!,
       ingredients:this.selectedIngredients,
     }));

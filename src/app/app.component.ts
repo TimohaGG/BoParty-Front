@@ -1,4 +1,4 @@
-import {Component, inject, ViewChild} from '@angular/core';
+import {Component, inject, OnInit, ViewChild} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { StorageService } from './_services/storage.service';
 import { AuthService } from './_services/auth.service';
@@ -13,6 +13,7 @@ import {
 } from "@angular/material/sidenav";
 import {MatListItem, MatNavList} from "@angular/material/list";
 import {entityStorage} from "./_helpers/storage/entityStorage";
+import {SelectedOrderPosition} from "./models/Orders/SelectedOrderPosition";
 
 @Component({
     selector: 'app-root',
@@ -29,11 +30,12 @@ import {entityStorage} from "./_helpers/storage/entityStorage";
     MatNavList,
     MatListItem,
     RouterLink,
-    RouterLinkActive
+    RouterLinkActive,
+    MatIconButton
   ],
   standalone:true
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
   @ViewChild('sidenav') sidenav?: MatSidenav;
 
@@ -45,9 +47,11 @@ export class AppComponent {
   brandLogoSrc = '/assets/img/logo.png';
 
   opened=false;
+  binOpened = false;
 
   private store = inject(entityStorage);
   private authStateSubscription?: Subscription;
+  selectedOrderPositions = this.store.selectedOrderPositionsEntities;
 
 
   constructor(
@@ -87,6 +91,26 @@ export class AppComponent {
 
   onLogoError(): void {
     this.brandLogoSrc = '/assets/img/logo.png';
+  }
+
+  toggleBin(): void {
+    this.binOpened = !this.binOpened;
+  }
+
+  closeBin(): void {
+    this.binOpened = false;
+  }
+
+  clearBin(): void {
+    this.store.clearSelectedOrderPositions();
+  }
+
+  removeBinItem(id: number): void {
+    this.store.removeSelectedOrderPosition(id);
+  }
+
+  getBinTotal(): number {
+    return this.selectedOrderPositions().reduce((sum, item) => sum + item.position.price * item.amount, 0);
   }
 
   logout(): void {

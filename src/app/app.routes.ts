@@ -5,7 +5,7 @@ import { RegisterComponent } from './components/user-components/register/registe
 import { LoginComponent } from './components/user-components/login/login.component';
 import { ProfileComponent } from './profile/profile.component';
 import {MenusListComponent} from "./components/menu-components/menus-list/menus-list.component";
-import {authGuard} from "./secutiry/auth.guard";
+import {adminGuard, authGuard} from "./secutiry/auth.guard";
 import {PositionsListComponent} from "./components/positions-components/positions-list/positions-list.component";
 import {
   IngredientsListComponent
@@ -13,21 +13,23 @@ import {
 import {AddMenuComponent} from "./components/menu-components/add-menu/add-menu.component";
 import {
   OrderListComponent
-} from "./components/orders-components/order-list-component/order-list.component";
+} from "./components/expences-components/expenses-list-component/order-list.component";
 import {ShoppingComponent} from "./components/menu-components/shopping/shopping.component";
 import {WaitersListComponent} from "./components/waiters-components/waiters-list/waiters-list.component";
+import {OrderSelectionComponent} from "./components/menu-components/order-selection/order-selection.component";
 
 export const routes: Routes = [
-  { path: 'service/orders', component: MenusListComponent,canActivate:[authGuard] },
+  {path:'menu',component:OrderSelectionComponent},
+  { path: 'service/orders', component: MenusListComponent,canActivate:[authGuard, adminGuard] },
   { path: 'service/login', component: LoginComponent,  },
   { path: 'service/register', component: RegisterComponent },
   { path: 'service/profile', component: ProfileComponent,canActivate:[authGuard] },
-  {path: 'service/positions', component: PositionsListComponent,canActivate:[authGuard]},
-  {path: 'service/ingredients', component: IngredientsListComponent,canActivate:[authGuard]},
-  {path: 'service/waiters', component: WaitersListComponent,canActivate:[authGuard]},
-  {path: 'service/orders/new', component: AddMenuComponent,canActivate:[authGuard]},
-  {path: 'service/reports/orders', component: OrderListComponent,canActivate:[authGuard]},
-  {path: 'service/orders/:orderId/shopping', component: ShoppingComponent,canActivate:[authGuard]},
+  {path: 'service/positions', component: PositionsListComponent,canActivate:[authGuard,adminGuard]},
+  {path: 'service/ingredients', component: IngredientsListComponent,canActivate:[authGuard,adminGuard]},
+  {path: 'service/waiters', component: WaitersListComponent,canActivate:[authGuard,adminGuard]},
+  {path: 'service/orders/new', component: AddMenuComponent,canActivate:[authGuard,adminGuard]},
+  {path: 'service/reports/orders', component: OrderListComponent,canActivate:[authGuard,adminGuard]},
+  {path: 'service/orders/:orderId/shopping', component: ShoppingComponent,canActivate:[authGuard,adminGuard]},
   { path: 'home', redirectTo: 'service/orders', pathMatch: 'full' },
   { path: 'order/create', redirectTo: 'service/orders/new', pathMatch: 'full' },
   { path: 'order/data', redirectTo: 'service/reports/orders', pathMatch: 'full' },

@@ -19,6 +19,7 @@ import {CommonMenuInfo} from "../../models/Menu/CommonMenuInfo";
 import {ShoppingList} from "../../models/Menu/ShoppingList";
 import {ShoppingListItem} from "../../models/Menu/ShoppingListItem";
 import {Expences} from "../../models/Expences/Expences";
+import {SelectedOrderPosition} from "../../models/Orders/SelectedOrderPosition";
 
 
 
@@ -98,6 +99,20 @@ const shoppingListConfig = entityConfig({
   selectId:(data)=>data.id
 })
 
+const orderPositionsConfig = entityConfig({
+  entity:type<Position>(),
+  collection:"orderPositions",
+  selectId:(position)=>position.id
+});
+
+const selectedOrderPositionsConfig = entityConfig({
+  entity:type<SelectedOrderPosition>(),
+  collection:"selectedOrderPositions",
+  selectId:(item)=>item.id
+});
+
+const ORDER_SELECTION_SESSION_KEY = "selected-order-positions";
+
 export const entityStorage = signalStore(
   {providedIn:"root"},
   withState(initState),
@@ -110,6 +125,8 @@ export const entityStorage = signalStore(
   withEntities(orderInfoConfig),
   withEntities(commonOrderInfoConfig),
   withEntities(expencesConfig),
+  withEntities(orderPositionsConfig),
+  withEntities(selectedOrderPositionsConfig),
 
 
   withMethods((store)=>({
@@ -128,6 +145,9 @@ export const entityStorage = signalStore(
     },
     setAllPositions(positions:Position[]){
       patchState(store, setAllEntities(positions, positionConfig));
+    },
+    setAllOrderPositions(positions:Position[]){
+      patchState(store, setAllEntities(positions, orderPositionsConfig));
     },
     setAllPositionCategories(categories:Category[]){
       patchState(store, setAllEntities(categories,positionCategoryConfig));
@@ -188,6 +208,9 @@ export const entityStorage = signalStore(
     addPositions(pos:Position[]){
       patchState(store,addEntities(pos,positionConfig));
     },
+    addOrderPositions(pos:Position[]){
+      patchState(store,addEntities(pos,orderPositionsConfig));
+    },
     addOrder(order:Menu){
       patchState(store,setEntity(order,menuConfig));
     },
@@ -214,6 +237,62 @@ export const entityStorage = signalStore(
     },
     removeMinOrder(id:number){
       patchState(store, removeEntity(id,menusMinConfig));
+    },
+    hydrateSelectedOrderPositions(){
+      if(typeof window === "undefined"){
+        return;
+      }
+
+      const raw = window.sessionStorage.getItem(ORDER_SELECTION_SESSION_KEY);
+      if(!raw){
+        return;
+      }
+
+      try{
+        const items = JSON.parse(raw) as SelectedOrderPosition[];
+        patchState(store, setAllEntities(items, selectedOrderPositionsConfig));
+      }
+      catch {
+        window.sessionStorage.removeItem(ORDER_SELECTION_SESSION_KEY);
+      }
+    },
+    replaceSelectedOrderPositions(items:SelectedOrderPosition[]){
+      patchState(store, setAllEntities(items, selectedOrderPositionsConfig));
+
+      if(typeof window !== "undefined"){
+        window.sessionStorage.setItem(ORDER_SELECTION_SESSION_KEY, JSON.stringify(items));
+      }
+    },
+    setSelectedOrderPosition(item:SelectedOrderPosition){
+      patchState(store, setEntity(item, selectedOrderPositionsConfig));
+
+      if(typeof window !== "undefined"){
+        window.sessionStorage.setItem(
+          ORDER_SELECTION_SESSION_KEY,
+          JSON.stringify(store.selectedOrderPositionsEntities())
+        );
+      }
+    },
+    removeSelectedOrderPosition(id:number){
+      patchState(store, removeEntity(id, selectedOrderPositionsConfig));
+
+      if(typeof window !== "undefined"){
+        const items = store.selectedOrderPositionsEntities();
+
+        if(items.length === 0){
+          window.sessionStorage.removeItem(ORDER_SELECTION_SESSION_KEY);
+        }
+        else{
+          window.sessionStorage.setItem(ORDER_SELECTION_SESSION_KEY, JSON.stringify(items));
+        }
+      }
+    },
+    clearSelectedOrderPositions(){
+      patchState(store, removeAllEntities(selectedOrderPositionsConfig));
+
+      if(typeof window !== "undefined"){
+        window.sessionStorage.removeItem(ORDER_SELECTION_SESSION_KEY);
+      }
     }
   }))
 );

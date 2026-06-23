@@ -1,0 +1,64 @@
+<div class="bo-dialog bo-dialog-wide order-checkout-dialog">
+  <header class="bo-dialog-header">
+    <h2>Оформити замовлення</h2>
+    <p>Заповніть контактні дані та параметри доставки.</p>
+  </header>
+
+  <mat-dialog-content class="bo-dialog-content">
+    <form class="order-checkout-form" [formGroup]="form">
+      <div class="order-checkout-grid">
+        <mat-form-field>
+          <mat-label>Ім’я та прізвище</mat-label>
+          <input matInput formControlName="fullName" />
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Номер телефону</mat-label>
+          <input matInput formControlName="phoneNumber" />
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Дата доставки</mat-label>
+          <input matInput type="date" [min]="minDeliveryDate" formControlName="deliveryDate" />
+          @if(form.controls.deliveryDate.touched && form.controls.deliveryDate.hasError('minDeliveryDate')){
+            <mat-hint class="field-error">Дата має бути не раніше ніж через 2 дні.</mat-hint>
+          }
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Час доставки</mat-label>
+          <input matInput type="time" formControlName="deliveryTime" />
+        </mat-form-field>
+      </div>
+
+      <div class="delivery-panel">
+        <div class="delivery-title">Спосіб отримання</div>
+        <mat-radio-group formControlName="deliveryType" class="delivery-type-group">
+          <mat-radio-button value="pickup">Самовивіз</mat-radio-button>
+          <mat-radio-button value="shipping">Доставка за адресою</mat-radio-button>
+        </mat-radio-group>
+
+        @if(!addressRequired){
+          <div class="pickup-hint">{{pickupHint}}</div>
+        }
+
+        @if(addressRequired){
+          <mat-form-field class="address-field">
+            <mat-label>Адреса доставки</mat-label>
+            <textarea matInput rows="3" formControlName="address"></textarea>
+          </mat-form-field>
+        }
+      </div>
+
+      <div class="extras-panel">
+        <mat-checkbox formControlName="needsDecorations">Потрібні декорації (за додаткову оплату)</mat-checkbox>
+        <mat-checkbox formControlName="boxesOnly">Потрібні лише бокси</mat-checkbox>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="bo-dialog-actions">
+    <button mat-button type="button" (click)="close()">Скасувати</button>
+    <button mat-flat-button color="accent" type="button" (click)="submit()">Підтвердити</button>
+  </mat-dialog-actions>
+</div>
