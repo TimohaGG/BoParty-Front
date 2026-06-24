@@ -253,8 +253,9 @@ export class AddMenuComponent implements OnInit {
           );
           this.additionalInfo.set(this.normalizeAdditionalInfo((res as Menu).additionalInfo));
         }
+
         this.loading = false;
-        console.log(this.posAmounts());
+       console.log("Loading " + this.loading);
       }
     );
   }

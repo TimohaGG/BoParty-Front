@@ -113,6 +113,42 @@ const selectedOrderPositionsConfig = entityConfig({
 
 const ORDER_SELECTION_SESSION_KEY = "selected-order-positions";
 
+function serializeSelectedOrderPositions(items: SelectedOrderPosition[]): string {
+  return JSON.stringify(items.map(item => ({
+    id: item.id,
+    amount: item.amount,
+    position: {
+      id: item.position.id,
+      name: item.position.name,
+      weight: item.position.weight,
+      price: item.position.price,
+      minimumAmount: item.position.minimumAmount,
+      category: item.position.category,
+      image: "",
+      isAccessible: item.position.isAccessible,
+      ingredients: []
+    }
+  })));
+}
+
+function persistSelectedOrderPositions(items: SelectedOrderPosition[]): void {
+  if(typeof window === "undefined"){
+    return;
+  }
+
+  try {
+    if(items.length === 0){
+      window.sessionStorage.removeItem(ORDER_SELECTION_SESSION_KEY);
+      return;
+    }
+
+    window.sessionStorage.setItem(ORDER_SELECTION_SESSION_KEY, serializeSelectedOrderPositions(items));
+  }
+  catch {
+    window.sessionStorage.removeItem(ORDER_SELECTION_SESSION_KEY);
+  }
+}
+
 export const entityStorage = signalStore(
   {providedIn:"root"},
   withState(initState),
@@ -258,34 +294,15 @@ export const entityStorage = signalStore(
     },
     replaceSelectedOrderPositions(items:SelectedOrderPosition[]){
       patchState(store, setAllEntities(items, selectedOrderPositionsConfig));
-
-      if(typeof window !== "undefined"){
-        window.sessionStorage.setItem(ORDER_SELECTION_SESSION_KEY, JSON.stringify(items));
-      }
+      persistSelectedOrderPositions(items);
     },
     setSelectedOrderPosition(item:SelectedOrderPosition){
       patchState(store, setEntity(item, selectedOrderPositionsConfig));
-
-      if(typeof window !== "undefined"){
-        window.sessionStorage.setItem(
-          ORDER_SELECTION_SESSION_KEY,
-          JSON.stringify(store.selectedOrderPositionsEntities())
-        );
-      }
+      persistSelectedOrderPositions(store.selectedOrderPositionsEntities());
     },
     removeSelectedOrderPosition(id:number){
       patchState(store, removeEntity(id, selectedOrderPositionsConfig));
-
-      if(typeof window !== "undefined"){
-        const items = store.selectedOrderPositionsEntities();
-
-        if(items.length === 0){
-          window.sessionStorage.removeItem(ORDER_SELECTION_SESSION_KEY);
-        }
-        else{
-          window.sessionStorage.setItem(ORDER_SELECTION_SESSION_KEY, JSON.stringify(items));
-        }
-      }
+      persistSelectedOrderPositions(store.selectedOrderPositionsEntities());
     },
     clearSelectedOrderPositions(){
       patchState(store, removeAllEntities(selectedOrderPositionsConfig));
