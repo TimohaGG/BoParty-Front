@@ -18,6 +18,7 @@ import {ShoppingComponent} from "./components/menu-components/shopping/shopping.
 import {WaitersListComponent} from "./components/waiters-components/waiters-list/waiters-list.component";
 import {OrderSelectionComponent} from "./components/menu-components/order-selection/order-selection.component";
 import {WelcomePageComponent} from "./components/public-components/welcome-page/welcome-page.component";
+import {BoxesListComponent} from "./components/boxes-components/boxes-list/boxes-list.component";
 
 export const routes: Routes = [
   {path:'home',component:WelcomePageComponent},
@@ -27,6 +28,7 @@ export const routes: Routes = [
   { path: 'service/register', component: RegisterComponent },
   { path: 'service/profile', component: ProfileComponent,canActivate:[authGuard] },
   {path: 'service/positions', component: PositionsListComponent,canActivate:[authGuard,adminGuard]},
+  {path: 'service/boxes', component: BoxesListComponent,canActivate:[authGuard,adminGuard]},
   {path: 'service/ingredients', component: IngredientsListComponent,canActivate:[authGuard,adminGuard]},
   {path: 'service/waiters', component: WaitersListComponent,canActivate:[authGuard,adminGuard]},
   {path: 'service/orders/new', component: AddMenuComponent,canActivate:[authGuard,adminGuard]},
@@ -39,6 +41,7 @@ export const routes: Routes = [
   { path: 'register', redirectTo: 'service/register', pathMatch: 'full' },
   { path: 'profile', redirectTo: 'service/profile', pathMatch: 'full' },
   { path: 'positions', redirectTo: 'service/positions', pathMatch: 'full' },
+  { path: 'boxes', redirectTo: 'service/boxes', pathMatch: 'full' },
   { path: 'ingredients', redirectTo: 'service/ingredients', pathMatch: 'full' },
   { path: 'waiters', redirectTo: 'service/waiters', pathMatch: 'full' },
   { path: 'reports/orders', redirectTo: 'service/reports/orders', pathMatch: 'full' },

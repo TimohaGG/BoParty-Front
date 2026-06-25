@@ -1,0 +1,62 @@
+<section class="page-shell boxes-page">
+  <header class="page-header boxes-header">
+    <div>
+      <h1 class="page-title">Бокси</h1>
+      <p class="page-subtitle">Керуйте готовими боксами та їхнім складом для замовлень.</p>
+    </div>
+
+    <button mat-flat-button color="accent" type="button" [disabled]="saving" (click)="openCreateDialog()">
+      @if(saving){
+        <mat-spinner diameter="20"></mat-spinner>
+      }
+      @else{
+        <mat-icon>add</mat-icon>
+      }
+      Додати
+    </button>
+  </header>
+
+  @if(loading){
+    <div class="content-panel boxes-state">
+      <mat-spinner diameter="42"></mat-spinner>
+    </div>
+  }
+  @else if(boxes.length === 0){
+    <div class="content-panel boxes-state">
+      <mat-icon>inventory_2</mat-icon>
+      <span>Боксів ще немає.</span>
+    </div>
+  }
+  @else{
+    <div class="content-panel boxes-list">
+      @for(box of boxes; track box.id) {
+        <article class="box-row">
+          <div class="box-summary">
+            <div class="box-badge">#{{box.id}}</div>
+            <div class="box-main">
+              <h2>{{box.name}}</h2>
+              @if(box.description.trim()){
+                <p>{{box.description}}</p>
+              }
+              <span>{{box.positions.length}} позицій · {{box.additionalServices.length}} послуг · {{box.totalPrice}} грн</span>
+            </div>
+          </div>
+
+          <div class="box-actions">
+            <button mat-icon-button type="button" [disabled]="saving || isDeleting(box)" (click)="openEditDialog(box)" aria-label="Редагувати бокс">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button type="button" class="danger-button" [disabled]="saving || isDeleting(box)" (click)="deleteBox(box)" aria-label="Видалити бокс">
+              @if(isDeleting(box)){
+                <mat-spinner diameter="20"></mat-spinner>
+              }
+              @else{
+                <mat-icon>delete_outline</mat-icon>
+              }
+            </button>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>

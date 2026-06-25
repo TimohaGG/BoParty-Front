@@ -17,6 +17,7 @@ import {ShoppingList} from "../models/Menu/ShoppingList";
 import {ShoppingListItem} from "../models/Menu/ShoppingListItem";
 import {Expences, ExpencesRequest} from "../models/Expences/Expences";
 import {Waiter, WaiterRequest} from "../models/Waiters/Waiter";
+import {Box, BoxRequest} from "../models/Boxes/Box";
 
 @Injectable({providedIn:"root"})
 export class HttpService{
@@ -85,6 +86,22 @@ export class HttpService{
 
   deleteWaiter(id: number): Observable<number | ExceptionMessage> {
     return this.clinet.delete<number | ExceptionMessage>(this.baseUrl + "waiters/delete/" + id);
+  }
+
+  getBoxes(): Observable<Box[] | ExceptionMessage> {
+    return this.clinet.get<Box[] | ExceptionMessage>(this.baseUrl + "boxes/get");
+  }
+
+  createBox(data: BoxRequest): Observable<Box | ExceptionMessage> {
+    return this.clinet.post<Box | ExceptionMessage>(this.baseUrl + "boxes/create", data);
+  }
+
+  editBox(data: BoxRequest): Observable<Box | ExceptionMessage> {
+    return this.clinet.post<Box | ExceptionMessage>(this.baseUrl + "boxes/edit", data);
+  }
+
+  deleteBox(id: number): Observable<number | ExceptionMessage> {
+    return this.clinet.delete<number | ExceptionMessage>(this.baseUrl + "boxes/delete/" + id);
   }
 
   getAllPositions() {

@@ -1,0 +1,147 @@
+<header class="bo-dialog-header">
+  <div>
+    <h2>{{data.box ? 'Редагувати бокс' : 'Новий бокс'}}</h2>
+    <p>Спочатку задайте назву боксу, а потім додайте позиції та кількість.</p>
+  </div>
+</header>
+
+<mat-dialog-content class="box-dialog-content">
+  <form [formGroup]="form" class="box-dialog-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Назва боксу</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Опис</mat-label>
+      <textarea matInput rows="3" formControlName="description"></textarea>
+    </mat-form-field>
+  </form>
+
+  <section class="content-panel selected-positions">
+    <div class="box-section-header">
+      <div>
+        <h3>Обрані позиції</h3>
+        <p>Додавайте позиції через окремий список та редагуйте кількість тут.</p>
+      </div>
+      <button mat-flat-button color="accent" type="button" (click)="openPositionPicker()">
+        <mat-icon>add</mat-icon>
+        Додати позиції
+      </button>
+    </div>
+
+    @if(selectedPositions.length === 0){
+      <div class="box-dialog-state compact-state">
+        <mat-icon>inventory_2</mat-icon>
+        <p>Ще не додано жодної позиції.</p>
+      </div>
+    }
+    @else{
+      <div class="selected-positions-list">
+        @for(item of selectedPositions; track item.position.id) {
+          <article class="selected-position-row">
+            <div class="selected-position-main">
+              <strong>{{item.position.name}}</strong>
+              <span>{{item.position.price}} грн · мін. {{item.position.minimumAmount}}</span>
+            </div>
+
+            <div class="selected-position-controls">
+              <div class="amount-stepper">
+                <button mat-icon-button type="button" (click)="decrease(item.position.id)" aria-label="Зменшити кількість">
+                  <mat-icon>remove</mat-icon>
+                </button>
+                <input
+                  type="number"
+                  min="0"
+                  [value]="item.amount"
+                  (change)="updateAmount(item.position, $event)"
+                  aria-label="Кількість позиції"
+                />
+                <button mat-icon-button type="button" (click)="increase(item.position.id)" aria-label="Збільшити кількість">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+
+              <div class="selected-position-actions">
+                <strong>{{item.position.price * item.amount}} грн</strong>
+                <button mat-icon-button type="button" (click)="remove(item.position.id)" aria-label="Видалити позицію">
+                  <mat-icon>delete_outline</mat-icon>
+                </button>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    }
+
+    <footer class="box-total-row">
+      <span>Загальна вартість</span>
+      <strong>{{totalPrice}} грн</strong>
+    </footer>
+  </section>
+
+  <section class="content-panel additional-services-panel">
+    <div class="box-section-header">
+      <div>
+        <h3>Додаткові послуги</h3>
+        <p>Додавайте окремі сервіси для боксу з власною вартістю.</p>
+      </div>
+    </div>
+
+    <div class="additional-service-form">
+      <mat-form-field appearance="outline">
+        <mat-label>Назва послуги</mat-label>
+        <input matInput [formControl]="form.controls.serviceText" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Вартість</mat-label>
+        <input matInput type="number" min="0" [formControl]="form.controls.servicePrice" />
+      </mat-form-field>
+
+      <button mat-flat-button color="accent" type="button" (click)="addAdditionalService()">
+        <mat-icon>add</mat-icon>
+        Додати послугу
+      </button>
+    </div>
+
+    @if(additionalServices.length === 0){
+      <div class="box-dialog-state compact-state">
+        <mat-icon>room_service</mat-icon>
+        <p>Ще не додано жодної додаткової послуги.</p>
+      </div>
+    }
+    @else{
+      <div class="selected-positions-list">
+        @for(item of additionalServices; track $index) {
+          <article class="selected-position-row service-row">
+            <div class="selected-position-main">
+              <strong>{{item.text}}</strong>
+              <span>Додаткова послуга</span>
+            </div>
+
+            <div class="selected-position-actions">
+              <strong>{{item.price}} грн</strong>
+              <button mat-icon-button type="button" (click)="removeAdditionalService($index)" aria-label="Видалити послугу">
+                <mat-icon>delete_outline</mat-icon>
+              </button>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </section>
+</mat-dialog-content>
+
+<footer class="bo-dialog-actions">
+  <button mat-stroked-button type="button" mat-dialog-close [disabled]="saving">Скасувати</button>
+  <button mat-flat-button color="accent" type="button" [disabled]="saving" (click)="save()">
+    @if(saving){
+      <mat-spinner diameter="18"></mat-spinner>
+    }
+    @else{
+      <mat-icon>save</mat-icon>
+    }
+    Зберегти
+  </button>
+</footer>
