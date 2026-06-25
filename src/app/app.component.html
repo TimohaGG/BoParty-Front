@@ -4,6 +4,10 @@
     <mat-nav-list>
 
       @if(!showAdminBoard){
+        <a mat-list-item class="side-nav-item" routerLink="/home" routerLinkActive="active-link" (click)="sidenav!.close()" [routerLinkActiveOptions]="{exact:true}">
+          <mat-icon class="side-nav-icon" matListItemIcon>home</mat-icon>
+          <span class="side-nav-label">На головну</span>
+        </a>
         <a mat-list-item class="side-nav-item" routerLink="/menu" routerLinkActive="active-link" (click)="sidenav!.close()">
           <mat-icon class="side-nav-icon" matListItemIcon>event_note</mat-icon>
           <span class="side-nav-label">Меню</span>
@@ -83,6 +87,7 @@
 
 
         @if(!showAdminBoard){
+          <a mat-button routerLink="/home" routerLinkActive="active-top-link" [routerLinkActiveOptions]="{exact:true}">На головну</a>
           <a mat-button routerLink="/menu" routerLinkActive="active-top-link" [routerLinkActiveOptions]="{exact:true}">Меню</a>
         }
 

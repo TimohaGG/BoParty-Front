@@ -144,5 +144,27 @@
         }
       </div>
     </section>
+
+    <section class="content-panel faq-section">
+      <div class="section-heading-block">
+        <span class="section-kicker">FAQ</span>
+        <h2>Поширені запитання перед оформленням замовлення</h2>
+      </div>
+
+      <div class="faq-list">
+        @for (item of faqItems; track item.question) {
+          <details class="faq-card">
+            <summary class="faq-question">
+              <div class="faq-question-main">
+                <mat-icon>help_outline</mat-icon>
+                <h3>{{item.question}}</h3>
+              </div>
+              <mat-icon class="faq-expand-icon">expand_more</mat-icon>
+            </summary>
+            <p>{{item.answer}}</p>
+          </details>
+        }
+      </div>
+    </section>
   </div>
 </section>
