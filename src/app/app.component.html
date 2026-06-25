@@ -96,17 +96,22 @@
 
       </nav>
 
+
       <button mat-icon-button class="mobile-menu-button" aria-label="Відкрити меню" (click)="sidenav.toggle()" >
         <mat-icon>menu</mat-icon>
       </button>
 
 
-        <button mat-icon-button class="bin-button mobile-bin-button" aria-label="Відкрити кошик" (click)="toggleBin()">
-          <mat-icon>shopping_bag</mat-icon>
-          @if(selectedOrderPositions().length > 0){
-            <span class="bin-badge">{{selectedOrderPositions().length}}</span>
-          }
-        </button>
+
+
+        @if(!showAdminBoard){
+          <button mat-icon-button class="bin-button mobile-bin-button" aria-label="Відкрити кошик" (click)="toggleBin()">
+            <mat-icon>shopping_bag</mat-icon>
+            @if(selectedOrderPositions().length > 0){
+              <span class="bin-badge">{{selectedOrderPositions().length}}</span>
+            }
+          </button>
+        }
 
 
 

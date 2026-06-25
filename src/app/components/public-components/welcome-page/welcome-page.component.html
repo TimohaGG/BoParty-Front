@@ -1,0 +1,148 @@
+<section class="welcome-page">
+  <div class="page-shell welcome-stack">
+    <section class="hero-copy content-panel hero-panel">
+      <span class="hero-eyebrow">Catering Bo, Party</span>
+      <h1>Кейтеринг для подій, офісів і бокс-форматів без зайвої складності.</h1>
+      <p>
+        Оберіть формат замовлення, додайте потрібні позиції та узгодьте фінальні деталі з менеджером.
+      </p>
+
+      <div class="hero-actions">
+        <a mat-flat-button color="accent" routerLink="/menu">
+          <mat-icon>restaurant_menu</mat-icon>
+          Перейти до меню
+        </a>
+      </div>
+    </section>
+
+    <section class="hero-note content-panel">
+      <strong>Мінімальна вартість декору та сервісу: 850 грн</strong>
+      <span>Підсумок залежить від обраних позицій, декору, доставки та додаткових послуг.</span>
+    </section>
+
+    <section class="hero-highlight content-panel">
+      <div class="highlight-label">Формати замовлення</div>
+      <div class="highlight-grid">
+        @for (offer of offers; track offer.title) {
+          <article class="offer-card">
+            <div class="offer-price">{{offer.price}}</div>
+            <h2>{{offer.title}}</h2>
+            <p>{{offer.description}}</p>
+          </article>
+        }
+      </div>
+    </section>
+
+    <section class="content-panel media-section">
+      <div class="section-heading-block">
+        <span class="section-kicker">Фото та відео</span>
+        <h2>Як виглядають бокси, сервірування та декор у реальних замовленнях</h2>
+      </div>
+
+      <div class="media-showcase">
+        <section class="photo-carousel" aria-label="Галерея кейтерингу">
+          <figure class="photo-stage">
+            <img
+              [src]="media.photos[activePhotoIndex]"
+              alt="Приклад кейтерингу та оформлення"
+              loading="lazy"
+            />
+
+            <div class="photo-stage-controls">
+              <button type="button" class="carousel-arrow" (click)="showPreviousPhoto()" aria-label="Попереднє фото">
+                <mat-icon>west</mat-icon>
+              </button>
+              <button type="button" class="carousel-arrow" (click)="showNextPhoto()" aria-label="Наступне фото">
+                <mat-icon>east</mat-icon>
+              </button>
+            </div>
+          </figure>
+
+          <div class="photo-thumbs" aria-label="Мініатюри фото">
+            @for (photo of media.photos; track photo; let index = $index) {
+              <button
+                type="button"
+                class="photo-thumb"
+                [class.photo-thumb-active]="index === activePhotoIndex"
+                (click)="selectPhoto(index)"
+                [attr.aria-label]="'Показати фото ' + (index + 1)"
+              >
+                <img [src]="photo" alt="" loading="lazy" />
+              </button>
+            }
+          </div>
+        </section>
+
+        <article class="video-card">
+          <div class="video-card-copy">
+            <span class="section-kicker">Відео</span>
+            <strong>Короткий перегляд оформлення та подачі</strong>
+          </div>
+          <div class="video-stage">
+            <video
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata"
+              [src]="media.videos[activeVideoIndex]"
+              poster="/assets/welcome-media/IMG_3704.jpg"
+            ></video>
+
+            <div class="video-stage-controls">
+              <button type="button" class="carousel-arrow" (click)="showPreviousVideo()" aria-label="Попереднє відео">
+                <mat-icon>west</mat-icon>
+              </button>
+              <button type="button" class="carousel-arrow" (click)="showNextVideo()" aria-label="Наступне відео">
+                <mat-icon>east</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <div class="video-switcher" aria-label="Вибір відео">
+            @for (video of media.videos; track video; let index = $index) {
+              <button
+                type="button"
+                class="video-switcher-button"
+                [class.video-switcher-button-active]="index === activeVideoIndex"
+                (click)="selectVideo(index)"
+                [attr.aria-label]="'Показати відео ' + (index + 1)"
+              >
+                {{ index + 1 }}
+              </button>
+            }
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="content-panel detail-section">
+      <div class="section-heading-block">
+        <span class="section-kicker">Декор</span>
+        <h2>Що доступно для оформлення</h2>
+      </div>
+
+      <div class="chip-grid">
+        @for (item of decorations; track item) {
+          <span class="detail-chip">{{item}}</span>
+        }
+      </div>
+    </section>
+
+    <section class="content-panel detail-section">
+      <div class="section-heading-block">
+        <span class="section-kicker">Сервіси</span>
+        <h2>Що можна додати до замовлення</h2>
+      </div>
+
+      <div class="service-list">
+        @for (item of services; track item) {
+          <div class="service-item">
+            <mat-icon>check_circle</mat-icon>
+            <span>{{item}}</span>
+          </div>
+        }
+      </div>
+    </section>
+  </div>
+</section>
