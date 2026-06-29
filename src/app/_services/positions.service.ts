@@ -1,12 +1,10 @@
 import {inject, Injectable} from "@angular/core";
 import {entityStorage} from "../_helpers/storage/entityStorage";
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
+import {HttpErrorResponse} from "@angular/common/http";
 import {HttpService} from "./httpService";
 import {catchError, map, Observable, of} from "rxjs";
 import {Position} from "../models/Positions/Position";
 import {ExceptionMessage, isMessage} from "../models/Exceptions/ExceptionMessage";
-import {IngredientAmount} from "../models/Positions/IngredientAmount";
-import {getXHRResponse} from "rxjs/internal/ajax/getXHRResponse";
 
 @Injectable({
   providedIn: 'root'
@@ -44,6 +42,21 @@ export class PositionsService {
       }),
       catchError((error:HttpErrorResponse)=>{
         let msg = new ExceptionMessage(error.error.message, error.error.status);
+        return of(msg);
+      })
+    );
+  }
+
+  public getById(id:number):Observable<Position | ExceptionMessage> {
+    return this.http.getPositionById(id).pipe(
+      map((response:Position | ExceptionMessage) => {
+        if(!isMessage(response)){
+          this.store.addPosition(response as Position);
+        }
+        return response as Position;
+      }),
+      catchError((error:HttpErrorResponse)=>{
+        const msg = new ExceptionMessage(error.error.message, error.error.status);
         return of(msg);
       })
     );

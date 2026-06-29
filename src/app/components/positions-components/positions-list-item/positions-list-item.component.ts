@@ -5,6 +5,9 @@ import {Position} from "../../../models/Positions/Position";
 import {MatDialog} from "@angular/material/dialog";
 import {AddPositionDialogComponent} from "../add-position-dialog/add-position-dialog.component";
 import {DeletePositionsDialogComponent} from "../delete-positions-dialog/delete-positions-dialog.component";
+import {PositionsService} from "../../../_services/positions.service";
+import {HotToastService} from "@ngxpert/hot-toast";
+import {isMessage} from "../../../models/Exceptions/ExceptionMessage";
 
 @Component({
   selector: 'app-positions-list-item',
@@ -26,13 +29,30 @@ export class PositionsListItemComponent {
   @Output() onDeselect = new EventEmitter<number>();
 
   private dialog = inject(MatDialog);
+  private positionsService = inject(PositionsService);
+  private toast = inject(HotToastService);
 
 
   openModal(){
+    if(!this.position){
+      return;
+    }
+
+    this.positionsService.getById(this.position.id).subscribe(result => {
+      if(isMessage(result)){
+        this.toast.error((result as any).message);
+        return;
+      }
+
+      this.openEditDialog(result as Position);
+    });
+  }
+
+  private openEditDialog(position: Position){
     const isMobile = window.matchMedia('(max-width: 720px)').matches;
     const ref = this.dialog.open(AddPositionDialogComponent, {
       data: {
-        position: this.position
+        position
       },
       ...(isMobile ? {
         width: "100vw",
@@ -51,7 +71,7 @@ export class PositionsListItemComponent {
 
     ref.afterClosed().subscribe(result => {
       this.updateEdited.emit(result);
-    })
+    });
   }
 
   openDeleteModal(){

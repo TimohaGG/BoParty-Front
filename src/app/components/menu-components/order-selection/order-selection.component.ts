@@ -59,21 +59,22 @@ export class OrderSelectionComponent implements OnInit {
   private loadedCategoryIds = new Set<number>();
 
   get userCategories():Category[]{
-    return this.categories().sort((a,b)=>(a.sortingOrder ?? Number.MAX_SAFE_INTEGER) - (b.sortingOrder ?? Number.MAX_SAFE_INTEGER));
+    return this.categories()
+      .slice()
+      .sort((a,b)=>(a.sortingOrder ?? Number.MAX_SAFE_INTEGER) - (b.sortingOrder ?? Number.MAX_SAFE_INTEGER));
   }
 
   ngOnInit(): void {
     this.store.hydrateSelectedOrderPositions();
+    if(this.userCategories.length > 0){
+      this.initWithCategories();
+      return;
+    }
+
     this.categoriesService.getAllForUsers().subscribe({
       next: data => {
         if(!isMessage(data)) {
-          this.selectedCategory.setValue((data as Category[]).at(0)?.id);
-          if(this.orderPositions().filter(position => position.category.id == this.selectedCategory.value).length == 0){
-            this.loadPositions((data as Category[]).at(0)!.id);
-          }
-          else{
-            this.filterCategories();
-          }
+          this.initWithCategories();
         }
       },
       error: error => {
@@ -236,6 +237,26 @@ export class OrderSelectionComponent implements OnInit {
 
   private handleMessage(message:ExceptionMessage): void {
     this.toast.error(message.message, {duration:3000, position:"bottom-center", autoClose:true});
+    this.isLoading = false;
+  }
+
+  private initWithCategories(): void {
+    const firstCategory = this.userCategories.at(0);
+    if(!firstCategory){
+      this.filteredPositions.set([]);
+      this.isLoading = false;
+      return;
+    }
+
+    this.selectedCategory.setValue(firstCategory.id);
+    const existingPositions = this.orderPositions().filter(position => position.category.id === firstCategory.id);
+    if(existingPositions.length === 0){
+      this.loadPositions(firstCategory.id);
+      return;
+    }
+
+    this.loadedCategoryIds.add(firstCategory.id);
+    this.filteredPositions.set(existingPositions);
     this.isLoading = false;
   }
 }

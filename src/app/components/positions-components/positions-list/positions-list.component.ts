@@ -1,16 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  computed,
-  EventEmitter,
-  inject,
-  Input,
-  OnInit,
-  Output,
-  signal,
-  Signal,
-  WritableSignal
-} from '@angular/core';
+import {Component, computed, EventEmitter, inject, Input, OnInit, Output, signal, Signal, WritableSignal} from '@angular/core';
 import {PositionsListItemComponent} from "../positions-list-item/positions-list-item.component";
 import {PositionsService} from "../../../_services/positions.service";
 import {Position} from "../../../models/Positions/Position";
@@ -28,9 +16,6 @@ import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
 import {MatDialog} from "@angular/material/dialog";
 import {AddPositionDialogComponent} from "../add-position-dialog/add-position-dialog.component";
 import {StorageService} from "../../../_services/storage.service";
-import {
-  AddCategoryDialogueComponent
-} from "../../ingredients-components/add-category-dialogue/add-category-dialogue.component";
 import {
   AddPositionCategoryDialogComponent
 } from "../add-position-category-dialog/add-position-category-dialog.component";
@@ -69,8 +54,6 @@ export class PositionsListComponent implements OnInit {
 
   public categories:Signal<Category[]> = computed(this.store.positionCategoriesEntities);
   get userCategories():Category[]{
-
-    console.log(this.categories());
     return this.categories()
       .filter(x=>x.userId==this.userStorate.getUser().id)
       .slice()
@@ -92,17 +75,15 @@ export class PositionsListComponent implements OnInit {
 
 
   ngOnInit(): void {
-    console.log("Init");
+    if(this.userCategories.length > 0){
+      this.initWithCategories();
+      return;
+    }
+
     this.categoriesService.getAll().subscribe({
         next: data => {
           if(!isMessage(data)) {
-            this.selectedCategory.setValue(this.userCategories.at(0)?.id);
-            if(this.positions().filter(x=>x.category.id==this.selectedCategory.value).length==0){
-              this.loadPositions(this.userCategories.at(0)!.id);
-            }
-            else{
-              this.filterCategories();
-            }
+            this.initWithCategories();
           }
         },
         error: (error)=>{
@@ -141,18 +122,14 @@ export class PositionsListComponent implements OnInit {
   }
 
   filterCategories() {
-
     this.isLoading = true;
-    console.log(this.isLoading);
     let categoryId = this.selectedCategory.value;
-    console.log("Filtering " + categoryId);
     const categoryPositions = this.positions().filter(x=>x.category.id==categoryId);
     if(categoryPositions.length > 0){
       this.loadedCategoryIds.add(categoryId);
     }
 
     if(!this.loadedCategoryIds.has(categoryId)){
-      console.log("Havent found")
       this.loadPositions(categoryId);
       return;
     }
@@ -193,7 +170,6 @@ export class PositionsListComponent implements OnInit {
       }
     });
     dialogRef.afterClosed().subscribe((result:string) => {
-      console.log(result)
       this.categoriesService.addCategory(result).subscribe();
     })
   }
@@ -214,6 +190,26 @@ export class PositionsListComponent implements OnInit {
     if(this.selectedPositions)
       return this.selectedPositions.findIndex(pos=>pos.id==id)!=-1;
     return false;
+  }
+
+  private initWithCategories(): void {
+    const firstCategory = this.userCategories.at(0);
+    if(!firstCategory){
+      this.isLoading = false;
+      this.filteredPositions.set([]);
+      return;
+    }
+
+    this.selectedCategory.setValue(firstCategory.id);
+    const existingPositions = this.positions().filter(x=>x.category.id==firstCategory.id);
+    if(existingPositions.length === 0){
+      this.loadPositions(firstCategory.id);
+      return;
+    }
+
+    this.loadedCategoryIds.add(firstCategory.id);
+    this.filteredPositions.set(existingPositions);
+    this.isLoading = false;
   }
 
 
