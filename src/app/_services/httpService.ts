@@ -27,6 +27,8 @@ export class HttpService{
   // private baseUrl:string = "http://localhost:8085/api/"
  private baseUrl:string = "api/";
 
+
+
   constructor(private clinet:HttpClient) {
   }
 
@@ -106,6 +108,10 @@ export class HttpService{
 
   getAllPositions() {
     return this.clinet.get<Position[] | ExceptionMessage>(this.baseUrl + "positions/get");
+  }
+
+  getPositionById(id: number) {
+    return this.clinet.get<Position | ExceptionMessage>(this.baseUrl + "positions/get/" + id);
   }
 
   getAllPositionsByCategoryId(categoryId: number) {
@@ -255,6 +261,8 @@ export class HttpService{
   }
 
   copyOrder(orderId: number) {
-    return this.clinet.post<MinMenu | ExceptionMessage>(this.baseUrl + `menus/copy/${orderId}`, {});
+    return this.clinet.post<MinMenu | ExceptionMessage>(`menus/copy/${orderId}`, {});
   }
+
+
 }
