@@ -2,7 +2,7 @@
   @if(categories().length != 0){
     <div class="categories-list">
       <mat-button-toggle-group [formControl]="selectedCategory" (change)="filterCategories()" aria-label="Категорії позицій">
-        @for (category of categories(); track category.id) {
+        @for (category of userCategories; track category.id) {
           <mat-button-toggle [value]="category.id">{{category.name}}</mat-button-toggle>
         }
       </mat-button-toggle-group>
@@ -20,6 +20,9 @@
 
             <div class="position-info">
               <h2>{{position.name}}</h2>
+              @if(position.description){
+                <p class="position-description">{{position.description}}</p>
+              }
               <div class="position-meta">
                 <span>{{position.price}} грн</span>
                 <span>{{position.weight}} г</span>

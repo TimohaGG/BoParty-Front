@@ -6,6 +6,9 @@
 
     <div class="position-info">
       <h2>{{position.name}}</h2>
+      @if(position.description){
+        <p class="position-description">{{position.description}}</p>
+      }
       <div class="position-meta">
         <span>{{position.price}} грн</span>
         <span>{{position.weight}} г</span>

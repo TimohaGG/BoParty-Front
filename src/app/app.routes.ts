@@ -28,7 +28,7 @@ export const routes: Routes = [
   { path: 'service/register', component: RegisterComponent },
   { path: 'service/profile', component: ProfileComponent,canActivate:[authGuard] },
   {path: 'service/positions', component: PositionsListComponent,canActivate:[authGuard,adminGuard]},
-  {path: 'service/boxes', component: BoxesListComponent,canActivate:[authGuard,adminGuard]},
+  // {path: 'service/boxes', component: BoxesListComponent,canActivate:[authGuard,adminGuard]},
   {path: 'service/ingredients', component: IngredientsListComponent,canActivate:[authGuard,adminGuard]},
   {path: 'service/waiters', component: WaitersListComponent,canActivate:[authGuard,adminGuard]},
   {path: 'service/orders/new', component: AddMenuComponent,canActivate:[authGuard,adminGuard]},

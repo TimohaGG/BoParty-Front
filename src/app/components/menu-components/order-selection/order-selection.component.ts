@@ -59,7 +59,7 @@ export class OrderSelectionComponent implements OnInit {
   private loadedCategoryIds = new Set<number>();
 
   get userCategories():Category[]{
-    return this.categories().filter(category => category.userId == this.userStorage.getUser().id);
+    return this.categories().sort((a,b)=>(a.sortingOrder ?? Number.MAX_SAFE_INTEGER) - (b.sortingOrder ?? Number.MAX_SAFE_INTEGER));
   }
 
   ngOnInit(): void {

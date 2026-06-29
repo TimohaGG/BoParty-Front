@@ -26,6 +26,12 @@
   font-weight: 700;
 }
 
+.position-description {
+  margin: 0 0 10px;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
 .position-meta {
   display: flex;
   flex-wrap: wrap;

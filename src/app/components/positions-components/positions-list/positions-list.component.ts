@@ -69,7 +69,12 @@ export class PositionsListComponent implements OnInit {
 
   public categories:Signal<Category[]> = computed(this.store.positionCategoriesEntities);
   get userCategories():Category[]{
-    return this.categories().filter(x=>x.userId==this.userStorate.getUser().id);
+
+    console.log(this.categories());
+    return this.categories()
+      .filter(x=>x.userId==this.userStorate.getUser().id)
+      .slice()
+      .sort((a, b) => (a.sortingOrder ?? Number.MAX_SAFE_INTEGER) - (b.sortingOrder ?? Number.MAX_SAFE_INTEGER));
   }
 
   public isLoading:boolean = true;
@@ -91,9 +96,9 @@ export class PositionsListComponent implements OnInit {
     this.categoriesService.getAll().subscribe({
         next: data => {
           if(!isMessage(data)) {
-            this.selectedCategory.setValue((data as Category[]).at(0)?.id);
+            this.selectedCategory.setValue(this.userCategories.at(0)?.id);
             if(this.positions().filter(x=>x.category.id==this.selectedCategory.value).length==0){
-              this.loadPositions((data as Category[]).at(0)!.id);
+              this.loadPositions(this.userCategories.at(0)!.id);
             }
             else{
               this.filterCategories();

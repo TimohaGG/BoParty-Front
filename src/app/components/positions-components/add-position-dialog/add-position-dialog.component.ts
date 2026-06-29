@@ -87,6 +87,7 @@ export class AddPositionDialogComponent implements OnInit,AfterViewInit {
     positionInfoCtrl: new FormControl(null),
     id: new FormControl(0),
     name: new FormControl('', [Validators.required]),
+    description: new FormControl(''),
     weight: new FormControl('', [Validators.required]),
     price: new FormControl('', [Validators.required]),
     minimumAmount: new FormControl('10', [Validators.required]),
@@ -129,6 +130,7 @@ export class AddPositionDialogComponent implements OnInit,AfterViewInit {
     if(this.editPositionModel()){
       this.positionInfoGroup.controls.id.setValue(this.editPositionModel().id);
       this.positionInfoGroup.controls.name.setValue(this.editPositionModel().name);
+      this.positionInfoGroup.controls.description.setValue(this.editPositionModel().description ?? '');
       this.positionInfoGroup.controls.category.setValue(this.editPositionModel().category.id);
       this.positionInfoGroup.controls.weight.setValue(String(this.editPositionModel().weight));
       this.positionInfoGroup.controls.price.setValue(String(this.editPositionModel().price));
@@ -263,6 +265,7 @@ export class AddPositionDialogComponent implements OnInit,AfterViewInit {
     formData.set("position", JSON.stringify({
       id:this.positionInfoGroup.get("id")!.value!,
       name:this.positionInfoGroup.get("name")!.value!,
+      description:this.positionInfoGroup.get("description")!.value || null,
       weight:this.positionInfoGroup.get("weight")!.value!,
       price:this.positionInfoGroup.get("price")!.value!,
       minimumAmount:this.positionInfoGroup.get("minimumAmount")!.value!,
