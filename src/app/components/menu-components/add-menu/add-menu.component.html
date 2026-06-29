@@ -104,8 +104,8 @@
       <ng-container matColumnDef="image">
         <mat-header-cell *matHeaderCellDef>Фото</mat-header-cell>
         <mat-cell *matCellDef="let element">
-          @if(element.image!=""){
-            <img src="data:image;base64,{{element.image}}" alt="" class="table-image"/>
+          @if(element.imgUrl!=""){
+            <img [src]="element.imgUrl" alt="" class="table-image"/>
           }
         </mat-cell>
       </ng-container>

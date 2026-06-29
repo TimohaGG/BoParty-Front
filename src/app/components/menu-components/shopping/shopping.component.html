@@ -105,7 +105,7 @@
                 <button class="position-nav-button" type="button" (click)="toggleShoppingPosition(pos)">
                   <div class="position-nav-image">
                     @if(getShoppingPositionImage(pos)){
-                      <img src="data:image/*;base64,{{getShoppingPositionImage(pos)}}" alt="" />
+                      <img [src]="getShoppingPositionImage(pos)" alt="" />
                     }
                     @else{
                       <mat-icon>restaurant_menu</mat-icon>

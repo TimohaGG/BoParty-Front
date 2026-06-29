@@ -75,6 +75,7 @@ export class PositionsListComponent implements OnInit {
 
 
   ngOnInit(): void {
+
     if(this.userCategories.length > 0){
       this.initWithCategories();
       return;

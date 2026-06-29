@@ -19,7 +19,6 @@ export class TableRow{
     this.unitedRow = unitedRow;
     this._id = id;
 
-    console.log()
   }
 
 
@@ -27,8 +26,8 @@ export class TableRow{
     return this.position==null ? this._title : this.position.name;
   }
 
-  get image(){
-    return this.position==null ? "" : this.position.image;
+  get imgUrl(){
+    return this.position==null ? "" : this.position.imgUrl;
   }
 
   get weight(){

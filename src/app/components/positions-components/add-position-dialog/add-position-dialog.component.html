@@ -13,14 +13,14 @@
           <section class="image-panel">
             <div class="image-frame">
               @if (imagePreview) {
-                <img [src]="imagePreview" #image class="image-preview" alt="Попередній перегляд">
+                <img [src]="imagePreview" class="image-preview" alt="Попередній перегляд">
               } @else {
-                <img src="assets/img/logo.png" #image class="image-preview placeholder-image" alt="Bo Party">
+                <img src="assets/img/logo.png" class="image-preview placeholder-image" alt="Bo Party">
               }
             </div>
 
-            <input id="uplFile" type="file" #uplFile formControlName="image" accept="image/*" (change)="onFileUpload($event)" hidden />
-            <button mat-stroked-button type="button" (click)="uploadImage($event)">
+            <input id="uplFile" type="file" #uplFile accept="image/*" (change)="onFileUpload($event)" hidden />
+            <button mat-stroked-button type="button" (click)="uploadImage()">
               <mat-icon>add_photo_alternate</mat-icon>
               Обрати фото
             </button>

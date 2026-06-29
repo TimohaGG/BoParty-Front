@@ -15,7 +15,7 @@
         @for (position of filteredPositions(); track trackByPosition($index, position)) {
           <article class="position-row" [class.is-selected]="isSelected(position.id)">
             <div class="position-image">
-              <div class="position-img" [style.background-image]="'url(data:image/*;base64,' + position.image + ')'"></div>
+              <div class="position-img" [style.background-image]="'url(' + (position.imgUrl || '/assets/img/logo.png') + ')'"></div>
             </div>
 
             <div class="position-info">

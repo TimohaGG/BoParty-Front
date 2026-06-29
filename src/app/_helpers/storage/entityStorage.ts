@@ -120,11 +120,12 @@ function serializeSelectedOrderPositions(items: SelectedOrderPosition[]): string
     position: {
       id: item.position.id,
       name: item.position.name,
+      description: item.position.description,
       weight: item.position.weight,
       price: item.position.price,
       minimumAmount: item.position.minimumAmount,
       category: item.position.category,
-      image: "",
+      imgUrl: item.position.imgUrl,
       isAccessible: item.position.isAccessible,
       ingredients: []
     }

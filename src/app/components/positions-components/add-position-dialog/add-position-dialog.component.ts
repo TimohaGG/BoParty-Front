@@ -78,10 +78,9 @@ export class AddPositionDialogComponent implements OnInit,AfterViewInit {
 
   private store = inject(entityStorage);
 
-  private selectedImage:File | null = null;
-  public imagePreview: string | ArrayBuffer | null = null;
+  private selectedImage: File | null = null;
+  public imagePreview = '';
   @ViewChild("uplFile") private uplFile!:ElementRef<HTMLInputElement>;
-  @ViewChild("image") imageRef?: ElementRef<HTMLInputElement>;
 
   public positionInfoGroup = new FormGroup({
     positionInfoCtrl: new FormControl(null),
@@ -91,7 +90,7 @@ export class AddPositionDialogComponent implements OnInit,AfterViewInit {
     weight: new FormControl('', [Validators.required]),
     price: new FormControl('', [Validators.required]),
     minimumAmount: new FormControl('10', [Validators.required]),
-    image: new FormControl(''),
+    imgUrl: new FormControl(''),
     category: new FormControl(0, [Validators.required]),
   });
   public ingredientsInfoGroup = new FormGroup({
@@ -135,9 +134,9 @@ export class AddPositionDialogComponent implements OnInit,AfterViewInit {
       this.positionInfoGroup.controls.weight.setValue(String(this.editPositionModel().weight));
       this.positionInfoGroup.controls.price.setValue(String(this.editPositionModel().price));
       this.positionInfoGroup.controls.minimumAmount.setValue(String(this.editPositionModel().minimumAmount ?? 10));
+      this.positionInfoGroup.controls.imgUrl.setValue(this.editPositionModel().imgUrl ?? '');
       this.selectedIngredients = this.editPositionModel().ingredients;
-      if(this.imageRef && this.editPositionModel().image!="")
-        this.imageRef.nativeElement.src="data:image/*;base64,"+this.editPositionModel().image;
+      this.imagePreview = this.editPositionModel().imgUrl ?? '';
     }
   }
 
@@ -163,23 +162,21 @@ export class AddPositionDialogComponent implements OnInit,AfterViewInit {
     return ingredient?.name ?? '';
   }
 
-  //File upload bock
+  onFileUpload(event:any): void {
+    this.selectedImage = event.target.files?.[0] ?? null;
+    if(!this.selectedImage){
+      this.imagePreview = this.positionInfoGroup.controls.imgUrl.value?.trim() ?? '';
+      return;
+    }
 
-  onFileUpload(event:any) {
-    console.log("1");
-    this.selectedImage = event.target.files[0];
     const reader = new FileReader();
-    reader.onload = ()=>{
-      this.imagePreview = reader.result;
-    }
-    if(this.selectedImage){
-      reader.readAsDataURL(this.selectedImage);
-    }
+    reader.onload = () => {
+      this.imagePreview = typeof reader.result === "string" ? reader.result : "";
+    };
+    reader.readAsDataURL(this.selectedImage);
   }
 
-  uploadImage(event:any) {
-    // event.stopPropagation();
-    // event.preventDefault();
+  uploadImage(): void {
     this.uplFile?.nativeElement.click();
   }
 
@@ -255,28 +252,27 @@ export class AddPositionDialogComponent implements OnInit,AfterViewInit {
       return;
     }
 
-    console.log(this.selectedImage);
-
-    let formData:FormData = new FormData();
-    if(this.selectedImage)
-      formData.set("image", this.selectedImage,this.selectedImage.name);
-
-
-    formData.set("position", JSON.stringify({
+    const payload = {
       id:this.positionInfoGroup.get("id")!.value!,
       name:this.positionInfoGroup.get("name")!.value!,
       description:this.positionInfoGroup.get("description")!.value || null,
       weight:this.positionInfoGroup.get("weight")!.value!,
       price:this.positionInfoGroup.get("price")!.value!,
       minimumAmount:this.positionInfoGroup.get("minimumAmount")!.value!,
+      imgUrl:this.positionInfoGroup.get("imgUrl")!.value || null,
       categoryId:this.positionInfoGroup.get("category")!.value!,
       ingredients:this.selectedIngredients,
-    }));
+    };
+
+    const formData = new FormData();
+    formData.set("position", JSON.stringify(payload));
+    if(this.selectedImage){
+      formData.set("image", this.selectedImage, this.selectedImage.name);
+    }
 
     this.posService.addPosition(formData).subscribe({
       next:data=>{
         this.toast.show("Додано!",{duration:2000,position:"bottom-center",autoClose:true});
-        console.log("data",data);
         this.dialogRef.close(data);
       },
       error:error=>{

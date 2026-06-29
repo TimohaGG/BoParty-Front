@@ -94,7 +94,7 @@ export class ShoppingComponent implements OnInit {
   }
 
   getShoppingPositionImage(item: any): string {
-    return this.getShoppingPositionData(item)?.image ?? '';
+    return this.getShoppingPositionData(item)?.imgUrl ?? '';
   }
 
   getShoppingPositionMeta(item: any): string {
