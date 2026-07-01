@@ -1,0 +1,90 @@
+<section class="page-shell">
+  @if(categories().length != 0){
+    <div class="categories-list">
+      <mat-button-toggle-group [formControl]="selectedCategory" (change)="filterCategories()" aria-label="Категорії позицій">
+        @for (category of userCategories; track category.id) {
+          <mat-button-toggle [value]="category.id">{{category.name}}</mat-button-toggle>
+        }
+      </mat-button-toggle-group>
+    </div>
+  }
+
+  @if(!isLoading){
+    @if(filteredPositions()?.length){
+      <div class="category-actions content-panel">
+        <div>
+          <h2>Доступність категорії</h2>
+          <p>Швидко змініть видимість усіх позицій у поточній категорії.</p>
+        </div>
+
+        <div class="category-actions-buttons">
+          <button mat-stroked-button type="button" [disabled]="bulkUpdating() || !canEnableAll" (click)="toggleCategoryAccessibility(true)">
+            Показати всі
+          </button>
+          <button mat-flat-button color="accent" type="button" [disabled]="bulkUpdating() || !canDisableAll" (click)="toggleCategoryAccessibility(false)">
+            Приховати всі
+          </button>
+        </div>
+      </div>
+
+      <div class="positions-list content-panel">
+        @for (position of filteredPositions(); track trackByPosition($index, position)) {
+          <article class="position-row" [class.is-unavailable]="!position.accessible">
+            <div class="position-image">
+              <div class="position-img" [style.background-image]="'url(' + (position.imgUrl || '/assets/img/logo.png') + ')'"></div>
+            </div>
+
+            <div class="position-info">
+              <div class="position-heading">
+                <h2>{{position.name}}</h2>
+                <span class="status-pill" [class.is-on]="position.accessible" [class.is-off]="!position.accessible">
+                  {{ position.accessible ? 'Доступна' : 'Прихована' }}
+                </span>
+              </div>
+
+              @if(position.description){
+                <p class="position-description">{{position.description}}</p>
+              }
+
+              <div class="position-meta">
+                <span>{{position.price}} грн</span>
+                <span>{{position.weight}} г</span>
+                <span>Мін. {{position.minimumAmount}}</span>
+              </div>
+            </div>
+
+            <div class="position-actions">
+              <label class="availability-card" [class.is-disabled]="isUpdating(position.id) || bulkUpdating()">
+                <div>
+                  <strong>{{position.accessible ? 'Показувати на сайті' : 'Приховано з сайту'}}</strong>
+                  <span>{{position.accessible ? 'Клієнти бачать цю позицію в меню' : 'Клієнти тимчасово не бачать цю позицію'}}</span>
+                </div>
+
+                <mat-slide-toggle
+                  color="accent"
+                  [checked]="position.accessible"
+                  [disabled]="isUpdating(position.id) || bulkUpdating()"
+                  (change)="toggleAccessibility(position, $event.checked)"
+                  aria-label="Змінити доступність позиції"
+                ></mat-slide-toggle>
+              </label>
+            </div>
+          </article>
+        }
+      </div>
+    }
+    @else{
+      <div class="empty-state content-panel">
+        <div>
+          <mat-icon>restaurant</mat-icon>
+          <p>У цій категорії ще немає позицій</p>
+        </div>
+      </div>
+    }
+  }
+  @else{
+    <div class="loading-state content-panel">
+      <mat-spinner color="accent"></mat-spinner>
+    </div>
+  }
+</section>

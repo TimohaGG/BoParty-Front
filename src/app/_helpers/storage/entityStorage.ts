@@ -126,7 +126,7 @@ function serializeSelectedOrderPositions(items: SelectedOrderPosition[]): string
       minimumAmount: item.position.minimumAmount,
       category: item.position.category,
       imgUrl: item.position.imgUrl,
-      isAccessible: item.position.isAccessible,
+      accessible: item.position.accessible,
       ingredients: []
     }
   })));

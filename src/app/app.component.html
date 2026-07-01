@@ -34,10 +34,10 @@
           <mat-icon class="side-nav-icon" matListItemIcon>restaurant_menu</mat-icon>
           <span class="side-nav-label">Позиції</span>
         </a>
-<!--        <a mat-list-item class="side-nav-item" routerLink="/service/boxes" routerLinkActive="active-link" (click)="sidenav!.close()">-->
-<!--          <mat-icon class="side-nav-icon" matListItemIcon>inventory</mat-icon>-->
-<!--          <span class="side-nav-label">Бокси</span>-->
-<!--        </a>-->
+        <a mat-list-item class="side-nav-item" routerLink="/service/positions/availability" routerLinkActive="active-link" (click)="sidenav!.close()">
+          <mat-icon class="side-nav-icon" matListItemIcon>inventory</mat-icon>
+          <span class="side-nav-label">Доступ</span>
+        </a>
         <a mat-list-item class="side-nav-item" routerLink="/service/ingredients" routerLinkActive="active-link" (click)="sidenav!.close()">
           <mat-icon class="side-nav-icon" matListItemIcon>inventory_2</mat-icon>
           <span class="side-nav-label">Інгредієнти</span>
@@ -83,6 +83,7 @@
           <a mat-button routerLink="/service/orders" routerLinkActive="active-top-link" [routerLinkActiveOptions]="{exact:true}">Замовлення</a>
           <a mat-button routerLink="/service/orders" routerLinkActive="active-top-link" [queryParams]="{showArchive:true}">Архів</a>
           <a mat-button routerLink="/service/positions" routerLinkActive="active-top-link">Позиції</a>
+          <a mat-button routerLink="/service/positions/availability" routerLinkActive="active-top-link">Доступ</a>
 <!--          <a mat-button routerLink="/service/boxes" routerLinkActive="active-top-link">Бокси</a>-->
           <a mat-button routerLink="/service/ingredients" routerLinkActive="active-top-link">Інгредієнти</a>
           <a mat-button routerLink="/service/waiters" routerLinkActive="active-top-link">Офіціанти</a>

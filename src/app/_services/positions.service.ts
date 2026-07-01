@@ -75,6 +75,21 @@ export class PositionsService {
     )
   }
 
+  public updateAccessibility(id:number, accessible:boolean):Observable<Position | ExceptionMessage>{
+    return this.http.updatePositionAccessibility(id, accessible).pipe(
+      map((response:Position | ExceptionMessage)=>{
+        if(!isMessage(response)){
+          this.store.addPosition(response as Position);
+        }
+        return response as Position;
+      }),
+      catchError((error:HttpErrorResponse)=>{
+        let msg = new ExceptionMessage(error.error.message, error.error.status);
+        return of(msg);
+      })
+    )
+  }
+
   removePosition(id: number) {
     return this.http.removePosition(id).pipe(
       map((response:number | ExceptionMessage) => {

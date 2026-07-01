@@ -167,6 +167,13 @@ export class HttpService{
     return this.clinet.post<Position | ExceptionMessage>(this.baseUrl + "positions/add",formData);
   }
 
+  updatePositionAccessibility(id:number, accessible:boolean) {
+    return this.clinet.post<Position | ExceptionMessage>(this.baseUrl + "positions/accessibility", {
+      id,
+      accessible
+    });
+  }
+
   removePosition(id: number) {
     return this.clinet.delete<number | ExceptionMessage>(this.baseUrl + "positions/remove?id="+id);
   }
