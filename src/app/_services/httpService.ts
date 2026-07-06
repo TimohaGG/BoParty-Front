@@ -268,7 +268,7 @@ export class HttpService{
   }
 
   copyOrder(orderId: number) {
-    return this.clinet.post<MinMenu | ExceptionMessage>(`menus/copy/${orderId}`, {});
+    return this.clinet.post<MinMenu | ExceptionMessage>(this.baseUrl + `menus/copy/${orderId}`, {});
   }
 
 
