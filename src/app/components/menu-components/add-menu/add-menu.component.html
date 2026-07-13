@@ -33,6 +33,25 @@
       <mat-label>Телефон менеджера</mat-label>
       <input type="text" matInput formControlName="phoneNumber"/>
     </mat-form-field>
+    <mat-form-field>
+      <mat-label>Тип доставки</mat-label>
+      <mat-select formControlName="deliveryType">
+        <mat-option value="самовивіз">Самовивіз</mat-option>
+        <mat-option value="доставка">Доставка</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Адреса доставки</mat-label>
+      <textarea matInput rows="2" formControlName="deliveryAddress"></textarea>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Тип замовлення</mat-label>
+      <mat-select formControlName="orderType">
+        <mat-option value="бокси">Бокси</mat-option>
+        <mat-option value="оформлення">Оформлення</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-checkbox formControlName="needsWaiter">Потрібен офіціант</mat-checkbox>
     <div class="tax-controls">
       <mat-checkbox formControlName="serving">Обслуговування</mat-checkbox>
       <mat-form-field>

@@ -34,8 +34,8 @@
       <div class="delivery-panel">
         <div class="delivery-title">Спосіб отримання</div>
         <mat-radio-group formControlName="deliveryType" class="delivery-type-group">
-          <mat-radio-button value="pickup">Самовивіз</mat-radio-button>
-          <mat-radio-button value="shipping">Доставка за адресою</mat-radio-button>
+          <mat-radio-button value="самовивіз">Самовивіз</mat-radio-button>
+          <mat-radio-button value="доставка">Доставка за адресою</mat-radio-button>
         </mat-radio-group>
 
         @if(!addressRequired){
@@ -51,8 +51,15 @@
       </div>
 
       <div class="extras-panel">
-        <mat-checkbox formControlName="needsDecorations">Потрібні декорації (за додаткову оплату)</mat-checkbox>
-        <mat-checkbox formControlName="boxesOnly">Потрібні лише бокси</mat-checkbox>
+        <div class="delivery-title">Тип замовлення</div>
+        <mat-radio-group formControlName="orderType" class="delivery-type-group">
+          <mat-radio-button value="бокси">Бокси</mat-radio-button>
+          <mat-radio-button value="оформлення">Оформлення столу з декором</mat-radio-button>
+        </mat-radio-group>
+
+        @if(canSelectWaiter){
+          <mat-checkbox formControlName="needsWaiter">Потрібен офіціант</mat-checkbox>
+        }
       </div>
     </form>
   </mat-dialog-content>

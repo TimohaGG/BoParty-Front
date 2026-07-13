@@ -13,6 +13,10 @@ export interface Menu {
   date:string;
   duration:number;
   totalPrice:number;
+  deliveryType: string;
+  deliveryAddress: string;
+  orderType: string;
+  needsWaiter: boolean;
   positions:PositionAmountFull[];
   additionalInfo:AdditionalMenuData[];
   payed:boolean;

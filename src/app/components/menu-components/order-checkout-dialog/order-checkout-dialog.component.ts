@@ -18,10 +18,10 @@ export interface OrderCheckoutData {
   phoneNumber: string;
   deliveryDate: string;
   deliveryTime: string;
-  deliveryType: 'pickup' | 'shipping';
+  deliveryType: 'самовивіз' | 'доставка';
   address: string;
-  needsDecorations: boolean;
-  boxesOnly: boolean;
+  orderType: 'бокси' | 'оформлення';
+  needsWaiter: boolean;
 }
 
 export interface OrderCheckoutDialogResult {
@@ -63,21 +63,27 @@ export class OrderCheckoutDialogComponent {
     phoneNumber: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
     deliveryDate: new FormControl(this.minDeliveryDate, {nonNullable: true, validators: [Validators.required]}),
     deliveryTime: new FormControl('', {nonNullable: true, validators: [Validators.required]}),
-    deliveryType: new FormControl<'pickup' | 'shipping'>('pickup', {nonNullable: true, validators: [Validators.required]}),
+    deliveryType: new FormControl<'самовивіз' | 'доставка'>('самовивіз', {nonNullable: true, validators: [Validators.required]}),
     address: new FormControl('', {nonNullable: true}),
-    needsDecorations: new FormControl(false, {nonNullable: true}),
-    boxesOnly: new FormControl(false, {nonNullable: true}),
+    orderType: new FormControl<'бокси' | 'оформлення'>('бокси', {nonNullable: true, validators: [Validators.required]}),
+    needsWaiter: new FormControl(false, {nonNullable: true}),
   });
 
   constructor() {
     this.form.controls.deliveryType.valueChanges.subscribe(type => {
-      if (type === 'shipping') {
+      if (type === 'доставка') {
         this.form.controls.address.addValidators([Validators.required]);
       } else {
         this.form.controls.address.removeValidators([Validators.required]);
         this.form.controls.address.setValue('', {emitEvent: false});
       }
       this.form.controls.address.updateValueAndValidity({emitEvent: false});
+    });
+
+    this.form.controls.orderType.valueChanges.subscribe(type => {
+      if (type !== 'оформлення') {
+        this.form.controls.needsWaiter.setValue(false, {emitEvent: false});
+      }
     });
   }
 
@@ -100,7 +106,11 @@ export class OrderCheckoutDialogComponent {
   }
 
   get addressRequired(): boolean {
-    return this.form.controls.deliveryType.value === 'shipping';
+    return this.form.controls.deliveryType.value === 'доставка';
+  }
+
+  get canSelectWaiter(): boolean {
+    return this.form.controls.orderType.value === 'оформлення';
   }
 
   private isDeliveryDateValid(): boolean {

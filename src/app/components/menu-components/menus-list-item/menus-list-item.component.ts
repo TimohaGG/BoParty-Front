@@ -70,6 +70,7 @@ export class MenusListItemComponent {
         this.toast.show("Замовлення скопійовано", {duration: 2000, position: "bottom-center", autoClose: true});
       },
       error: error => {
+        console.log(error);
         this.toast.show(error.message, {duration: 3000, position: "bottom-center", autoClose: true});
       }
     });
