@@ -265,6 +265,20 @@ export class OrdersService{
 
   }
 
+  downloadShoppingListPdf(id: number) {
+    return this.http.downloadShoppingListPdf(id).pipe(
+      map(res => {
+        if (!isMessage(res)) {
+          const url = window.URL.createObjectURL(res);
+          window.open(url);
+        }
+      }),
+      catchError((err: HttpErrorResponse) => {
+        throw new Error(err.error.message);
+      })
+    );
+  }
+
   deleteOrderInfo(id: number) {
     return this.http.deleteMenuInfo(id).pipe(
       map(res=>{

@@ -65,6 +65,78 @@ h2 {
   margin-right: 6px;
 }
 
+.pdf-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.pdf-button-content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: auto;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.pdf-button-content mat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  font-size: 18px;
+  line-height: 18px;
+  vertical-align: middle;
+  transform: translateY(0);
+}
+
+.pdf-button-content > span:not(.button-spinner) {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.pdf-button mat-icon:last-child {
+  margin: 0;
+}
+
+.button-spinner,
+.menu-spinner {
+  display: inline-block;
+  border: 2px solid rgba(255, 255, 255, 0.22);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: pdf-spin 0.75s linear infinite;
+}
+
+.button-spinner {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+}
+
+.pdf-loading-text {
+  white-space: nowrap;
+}
+
+.menu-spinner {
+  width: 18px;
+  height: 18px;
+  margin-right: 16px;
+  color: currentColor;
+}
+
+@keyframes pdf-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .shopping-button {
   color: var(--button-shopping);
 }
@@ -110,6 +182,10 @@ h2 {
     padding-inline: 8px;
   }
 
+  .pdf-button {
+    justify-content: center;
+  }
+
   .control-button span {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -141,6 +217,30 @@ h2 {
 
   .control-button {
     padding-inline: 4px;
+  }
+
+  .pdf-button {
+    gap: 4px;
+  }
+
+  .pdf-button-content {
+    gap: 4px;
+  }
+
+  .pdf-loading-text {
+    display: none;
+  }
+
+  .button-spinner {
+    margin-right: 0;
+  }
+
+  .pdf-button mat-icon:first-child {
+    display: none;
+  }
+
+  .pdf-button mat-icon:last-child {
+    margin-left: 0;
   }
 
   .shopping-button,

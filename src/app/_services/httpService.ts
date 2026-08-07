@@ -24,8 +24,8 @@ export class HttpService{
 
 
   // private baseUrl:string = "https://72.60.88.151:8085/"
-  // private baseUrl:string = "http://localhost:8085/api/"
- private baseUrl:string = "api/";
+  private baseUrl:string = "http://localhost:8085/api/"
+ // private baseUrl:string = "api/";
 
 
 
@@ -231,6 +231,10 @@ export class HttpService{
   // }
   download(id: number) {
     return this.clinet.get(this.baseUrl + "menus/generate/"+id,{responseType: "blob"});
+  }
+
+  downloadShoppingListPdf(id: number) {
+    return this.clinet.get(this.baseUrl + "menus/generate/shopping/" + id, {responseType: "blob"});
   }
 
   deleteMenuInfo(id: number) {

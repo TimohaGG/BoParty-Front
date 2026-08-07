@@ -33,10 +33,42 @@
     </div>
 
     <div class="control-buttons" aria-label="Дії із замовленням">
-      <button mat-stroked-button class="control-button" (click)="downloadMenu(menu.id)">
-        <mat-icon>download</mat-icon>
-        <span>PDF</span>
+      <button
+        mat-stroked-button
+        class="control-button pdf-button"
+        [disabled]="loadingPdfType !== null"
+        [matMenuTriggerFor]="pdfMenu">
+        @if (loadingPdfType === null) {
+          <span class="pdf-button-content">
+            <mat-icon>download</mat-icon>
+            <span>PDF</span>
+            <mat-icon>expand_more</mat-icon>
+          </span>
+        } @else {
+          <span class="pdf-button-content">
+            <span class="button-spinner" aria-hidden="true"></span>
+            <span class="pdf-loading-text">Генерується...</span>
+          </span>
+        }
       </button>
+      <mat-menu #pdfMenu="matMenu">
+        <button mat-menu-item [disabled]="loadingPdfType !== null" (click)="downloadMenu(menu.id)">
+          @if (loadingPdfType === 'menu') {
+            <span class="menu-spinner" aria-hidden="true"></span>
+          } @else {
+            <mat-icon>description</mat-icon>
+          }
+          <span>{{ loadingPdfType === 'menu' ? 'Генерується PDF меню...' : 'PDF меню' }}</span>
+        </button>
+        <button mat-menu-item [disabled]="loadingPdfType !== null" (click)="downloadShoppingList(menu.id)">
+          @if (loadingPdfType === 'shopping') {
+            <span class="menu-spinner" aria-hidden="true"></span>
+          } @else {
+            <mat-icon>shopping_bag</mat-icon>
+          }
+          <span>{{ loadingPdfType === 'shopping' ? 'Генерується список закупівлі...' : 'Список закупівлі' }}</span>
+        </button>
+      </mat-menu>
       <button mat-stroked-button class="control-button" routerLinkActive [routerLink]="['/service/orders/new']" [queryParams]="{orderId:menu.id}">
         <mat-icon>edit</mat-icon>
         <span>Редагувати</span>

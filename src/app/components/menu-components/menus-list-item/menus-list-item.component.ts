@@ -6,8 +6,10 @@ import {NgClass} from "@angular/common";
 import {RouterLink, RouterLinkActive} from "@angular/router";
 import {DeleteMenuDialogComponent} from "../delete-menu-dialog/delete-menu-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
+import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
 import {OrdersService} from "../../../_services/orders.service";
 import {HotToastService} from "@ngxpert/hot-toast";
+import {finalize} from "rxjs";
 
 
 
@@ -19,7 +21,10 @@ import {HotToastService} from "@ngxpert/hot-toast";
     RouterLinkActive,
     MatButton,
     MatIconButton,
-    NgClass
+    NgClass,
+    MatMenuTrigger,
+    MatMenu,
+    MatMenuItem
   ],
   templateUrl: './menus-list-item.component.html',
   styleUrl: './menus-list-item.component.css'
@@ -27,6 +32,7 @@ import {HotToastService} from "@ngxpert/hot-toast";
 export class MenusListItemComponent {
 
   @Input() menu?:MinMenu;
+  loadingPdfType: 'menu' | 'shopping' | null = null;
 
   private dialog = inject(MatDialog);
 
@@ -61,7 +67,29 @@ export class MenusListItemComponent {
 
 
   downloadMenu(id:number){
-    this.orderService.download(id).subscribe();
+    this.loadingPdfType = 'menu';
+    this.orderService.download(id).pipe(
+      finalize(() => {
+        this.loadingPdfType = null;
+      })
+    ).subscribe({
+      error: error => {
+        this.toast.show(error.message, {duration: 3000, position: "bottom-center", autoClose: true});
+      }
+    });
+  }
+
+  downloadShoppingList(id: number) {
+    this.loadingPdfType = 'shopping';
+    this.orderService.downloadShoppingListPdf(id).pipe(
+      finalize(() => {
+        this.loadingPdfType = null;
+      })
+    ).subscribe({
+      error: error => {
+        this.toast.show(error.message, {duration: 3000, position: "bottom-center", autoClose: true});
+      }
+    });
   }
 
   copyMenu(id: number) {
@@ -70,7 +98,6 @@ export class MenusListItemComponent {
         this.toast.show("Замовлення скопійовано", {duration: 2000, position: "bottom-center", autoClose: true});
       },
       error: error => {
-        console.log(error);
         this.toast.show(error.message, {duration: 3000, position: "bottom-center", autoClose: true});
       }
     });
