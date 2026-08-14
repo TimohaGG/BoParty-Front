@@ -3,47 +3,47 @@ import {HttpService} from "./httpService";
 import {catchError, map} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
 import {isMessage} from "../models/Exceptions/ExceptionMessage";
-import {Waiter, WaiterRequest} from "../models/Waiters/Waiter";
+import {Staff, StaffRequest} from "../models/Waiters/Waiter";
 
 @Injectable({
   providedIn: "root"
 })
-export class WaitersService {
+export class StaffService {
   constructor(private http: HttpService) {
   }
 
   getAll() {
-    return this.http.getWaiters().pipe(
-      map(res => isMessage(res) ? [] : res as Waiter[]),
+    return this.http.getStaff().pipe(
+      map(res => isMessage(res) ? [] : res as Staff[]),
       catchError((error: HttpErrorResponse) => {
-        throw new Error(error.error?.message ?? "Can't load waiters");
+        throw new Error(error.error?.message ?? "Can't load staff");
       })
     );
   }
 
-  create(name: string) {
-    return this.http.createWaiter({name}).pipe(
-      map(res => res as Waiter),
+  create(data: StaffRequest) {
+    return this.http.createStaff(data).pipe(
+      map(res => res as Staff),
       catchError((error: HttpErrorResponse) => {
-        throw new Error(error.error?.message ?? "Can't create waiter");
+        throw new Error(error.error?.message ?? "Can't create staff");
       })
     );
   }
 
-  edit(data: WaiterRequest) {
-    return this.http.editWaiter(data).pipe(
-      map(res => res as Waiter),
+  edit(data: StaffRequest) {
+    return this.http.editStaff(data).pipe(
+      map(res => res as Staff),
       catchError((error: HttpErrorResponse) => {
-        throw new Error(error.error?.message ?? "Can't edit waiter");
+        throw new Error(error.error?.message ?? "Can't edit staff");
       })
     );
   }
 
   delete(id: number) {
-    return this.http.deleteWaiter(id).pipe(
+    return this.http.deleteStaff(id).pipe(
       map(res => res as number),
       catchError((error: HttpErrorResponse) => {
-        throw new Error(error.error?.message ?? "Can't delete waiter");
+        throw new Error(error.error?.message ?? "Can't delete staff");
       })
     );
   }

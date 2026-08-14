@@ -1,8 +1,8 @@
 <section class="page-shell waiters-page">
   <header class="page-header waiters-header">
     <div>
-      <h1 class="page-title">Офіціанти</h1>
-      <p class="page-subtitle">Список офіціантів, яких можна додавати до витрат.</p>
+      <h1 class="page-title">Персонал</h1>
+      <p class="page-subtitle">Список працівників, яких можна додавати до витрат і статистики.</p>
     </div>
 
     <button mat-flat-button color="accent" type="button" [disabled]="saving" (click)="openCreateDialog()">
@@ -21,32 +21,32 @@
       <mat-spinner diameter="42"></mat-spinner>
     </div>
   }
-  @else if(waiters.length === 0){
+  @else if(staff.length === 0){
     <div class="content-panel waiters-state">
       <mat-icon>group</mat-icon>
-      <span>Офіціантів ще немає.</span>
+      <span>Працівників ще немає.</span>
     </div>
   }
   @else{
     <div class="content-panel waiters-list">
-      @for(waiter of waiters; track waiter.id){
+      @for(staffItem of staff; track staffItem.id){
         <article class="waiter-row">
           <div class="waiter-avatar">
             <mat-icon>person</mat-icon>
           </div>
 
           <div class="waiter-main">
-            <h2>{{waiter.name}}</h2>
-            <span>ID {{waiter.id}}</span>
+            <h2>{{staffItem.name}}</h2>
+            <span>{{getStaffTypeLabel(staffItem.type)}} · ID {{staffItem.id}}</span>
           </div>
 
           <div class="waiter-actions">
-            <button mat-icon-button type="button" [disabled]="saving || isDeleting(waiter)" (click)="openEditDialog(waiter)" aria-label="Редагувати офіціанта">
+            <button mat-icon-button type="button" [disabled]="saving || isDeleting(staffItem)" (click)="openEditDialog(staffItem)" aria-label="Редагувати працівника">
               <mat-icon>edit</mat-icon>
             </button>
 
-            <button mat-icon-button type="button" class="danger-button" [disabled]="saving || isDeleting(waiter)" (click)="deleteWaiter(waiter)" aria-label="Видалити офіціанта">
-              @if(isDeleting(waiter)){
+            <button mat-icon-button type="button" class="danger-button" [disabled]="saving || isDeleting(staffItem)" (click)="deleteWaiter(staffItem)" aria-label="Видалити працівника">
+              @if(isDeleting(staffItem)){
                 <mat-spinner diameter="20"></mat-spinner>
               }
               @else{

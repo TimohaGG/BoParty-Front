@@ -16,7 +16,7 @@ import {CategoryCreateResp} from "../models/Positions/DTOs/CategoryCreateResp";
 import {ShoppingList} from "../models/Menu/ShoppingList";
 import {ShoppingListItem} from "../models/Menu/ShoppingListItem";
 import {Expences, ExpencesRequest} from "../models/Expences/Expences";
-import {Waiter, WaiterRequest} from "../models/Waiters/Waiter";
+import {Staff, StaffRequest} from "../models/Waiters/Waiter";
 import {Box, BoxRequest} from "../models/Boxes/Box";
 
 @Injectable({providedIn:"root"})
@@ -24,8 +24,8 @@ export class HttpService{
 
 
   // private baseUrl:string = "https://72.60.88.151:8085/"
-  // private baseUrl:string = "http://localhost:8085/api/"
- private baseUrl:string = "api/";
+  private baseUrl:string = "http://localhost:8085/api/"
+ // private baseUrl:string = "api/";
 
 
 
@@ -74,20 +74,20 @@ export class HttpService{
     return this.clinet.delete<number | ExceptionMessage>(this.baseUrl + "expences/delete/" + id);
   }
 
-  getWaiters(): Observable<Waiter[] | ExceptionMessage> {
-    return this.clinet.get<Waiter[] | ExceptionMessage>(this.baseUrl + "waiters/get");
+  getStaff(): Observable<Staff[] | ExceptionMessage> {
+    return this.clinet.get<Staff[] | ExceptionMessage>(this.baseUrl + "staff/get");
   }
 
-  createWaiter(data: WaiterRequest): Observable<Waiter | ExceptionMessage> {
-    return this.clinet.post<Waiter | ExceptionMessage>(this.baseUrl + "waiters/create", data);
+  createStaff(data: StaffRequest): Observable<Staff | ExceptionMessage> {
+    return this.clinet.post<Staff | ExceptionMessage>(this.baseUrl + "staff/create", data);
   }
 
-  editWaiter(data: WaiterRequest): Observable<Waiter | ExceptionMessage> {
-    return this.clinet.post<Waiter | ExceptionMessage>(this.baseUrl + "waiters/edit", data);
+  editStaff(data: StaffRequest): Observable<Staff | ExceptionMessage> {
+    return this.clinet.post<Staff | ExceptionMessage>(this.baseUrl + "staff/edit", data);
   }
 
-  deleteWaiter(id: number): Observable<number | ExceptionMessage> {
-    return this.clinet.delete<number | ExceptionMessage>(this.baseUrl + "waiters/delete/" + id);
+  deleteStaff(id: number): Observable<number | ExceptionMessage> {
+    return this.clinet.delete<number | ExceptionMessage>(this.baseUrl + "staff/delete/" + id);
   }
 
   getBoxes(): Observable<Box[] | ExceptionMessage> {

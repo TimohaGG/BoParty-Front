@@ -1,8 +1,12 @@
-export interface ExpencesWaiter {
+import {StaffType} from "../Waiters/Waiter";
+
+export interface ExpencesStaff {
   id: number;
-  waiterId: number | null;
+  staffId: number | null;
   name: string | null;
+  type: StaffType | null;
   price: number;
+  payed: boolean;
 }
 
 export interface OtherExpences {
@@ -23,15 +27,15 @@ export interface Expences {
   menuId: number | null;
   client: string | null;
   date: string | null;
-  cook: number;
-  waiters: ExpencesWaiter[];
+  staff: ExpencesStaff[];
   otherExpences: OtherExpences[];
   shoppingSums: ShoppingSum[];
 }
 
-export interface ExpencesWaiterRequest {
-  waiterId: number;
+export interface ExpencesStaffRequest {
+  staffId: number;
   price: number;
+  payed: boolean;
 }
 
 export interface OtherExpencesRequest {
@@ -50,8 +54,7 @@ export interface ShoppingSumRequest {
 export interface ExpencesRequest {
   id?: number;
   menuId: number;
-  cook: number;
-  waiters: ExpencesWaiterRequest[];
+  staff: ExpencesStaffRequest[];
   otherExpences: OtherExpencesRequest[];
   shoppingSums: ShoppingSumRequest[];
 }

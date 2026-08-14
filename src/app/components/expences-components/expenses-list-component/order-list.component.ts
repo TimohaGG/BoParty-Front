@@ -50,16 +50,12 @@ export class OrderListComponent implements OnInit {
     this.expences().reduce((sum, item) => sum + this.getIncome(item), 0)
   );
 
-  public totalCook = computed(() =>
-    this.expences().reduce((sum, item) => sum + (item.cook ?? 0), 0)
-  );
-
   public totalShopping = computed(() =>
     this.expences().reduce((sum, item) => sum + this.getShoppingTotal(item), 0)
   );
 
-  public totalWaiters = computed(() =>
-    this.expences().reduce((sum, item) => sum + this.getWaitersTotal(item), 0)
+  public totalStaff = computed(() =>
+    this.expences().reduce((sum, item) => sum + this.getStaffTotal(item), 0)
   );
 
   public totalOther = computed(() =>
@@ -67,7 +63,7 @@ export class OrderListComponent implements OnInit {
   );
 
   public totalExpences = computed(() =>
-    this.totalShopping() + this.totalCook() + this.totalWaiters() + this.totalOther()
+    this.totalShopping() + this.totalStaff() + this.totalOther()
   );
 
   constructor(private ordersService: OrdersService, private toast: HotToastService) {
@@ -224,8 +220,8 @@ export class OrderListComponent implements OnInit {
     return (this.menus().find(menu => menu.id === item.menuId)?.totalPrice ?? 0);
   }
 
-  getWaitersTotal(item: Expences): number {
-    return (item.waiters ?? []).reduce((sum, waiter) => sum + (waiter.price ?? 0), 0);
+  getStaffTotal(item: Expences): number {
+    return (item.staff ?? []).reduce((sum, staff) => sum + (staff.price ?? 0), 0);
   }
 
   getShoppingTotal(item: Expences): number {
@@ -237,7 +233,19 @@ export class OrderListComponent implements OnInit {
   }
 
   getExpenceTotal(item: Expences): number {
-    return this.getShoppingTotal(item) + (item.cook ?? 0) + this.getWaitersTotal(item) + this.getOtherTotal(item);
+    return this.getShoppingTotal(item) + this.getStaffTotal(item) + this.getOtherTotal(item);
+  }
+
+  getStaffTypeLabel(type: string | null): string {
+    if (type === 'COOK') {
+      return 'Кухар';
+    }
+
+    if (type === 'WAITER') {
+      return 'Офіціант';
+    }
+
+    return 'Персонал';
   }
 
   formatDate(date: string | null): string {

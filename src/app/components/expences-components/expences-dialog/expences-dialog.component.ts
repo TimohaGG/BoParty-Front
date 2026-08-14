@@ -5,15 +5,16 @@ import {MatFormField, MatLabel} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {MatButton, MatIconButton} from "@angular/material/button";
 import {MatIcon} from "@angular/material/icon";
+import {MatCheckbox} from "@angular/material/checkbox";
 import {MatOption, MatSelect} from "@angular/material/select";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {forkJoin} from "rxjs";
+import {DatePipe, DecimalPipe} from "@angular/common";
 import {MinMenu} from "../../../models/Menu/MinMenu";
 import {Expences, ExpencesRequest} from "../../../models/Expences/Expences";
-import {Waiter} from "../../../models/Waiters/Waiter";
+import {Staff, StaffType} from "../../../models/Waiters/Waiter";
 import {OrdersService} from "../../../_services/orders.service";
-import {WaitersService} from "../../../_services/waiters.service";
-import {DatePipe, DecimalPipe} from "@angular/common";
+import {StaffService} from "../../../_services/waiters.service";
 
 export interface ExpencesDialogData {
   expences?: Expences;
@@ -22,9 +23,10 @@ export interface ExpencesDialogData {
   usedMenuIds?: number[];
 }
 
-type WaiterForm = FormGroup<{
-  waiterId: FormControl<number | null>;
+type StaffForm = FormGroup<{
+  staffId: FormControl<number | null>;
   price: FormControl<number | null>;
+  payed: FormControl<boolean>;
 }>;
 
 type OtherExpenceForm = FormGroup<{
@@ -53,6 +55,7 @@ type ShoppingSumForm = FormGroup<{
     MatButton,
     MatIconButton,
     MatIcon,
+    MatCheckbox,
     MatSelect,
     MatOption,
     MatProgressSpinner,
@@ -69,28 +72,31 @@ export class ExpencesDialogComponent implements OnInit {
   isEditMode = !!this.data?.expences;
   loadingOptions = false;
   menus: MinMenu[] = [];
-  waitersList: Waiter[] = [];
+  staffList: Staff[] = [];
+  readonly staffTypes: {value: StaffType; label: string}[] = [
+    {value: 'WAITER', label: 'Офіціант'},
+    {value: 'COOK', label: 'Кухар'},
+  ];
 
   form = new FormGroup({
     menuId: new FormControl<number | null>(this.data?.expences?.menuId ?? null, [Validators.required]),
-    cook: new FormControl<number>(this.data?.expences?.cook ?? 0, {nonNullable: true, validators: [Validators.required, Validators.min(0)]}),
     shoppingSums: new FormArray<ShoppingSumForm>([]),
-    waiters: new FormArray<WaiterForm>([]),
+    staff: new FormArray<StaffForm>([]),
     otherExpences: new FormArray<OtherExpenceForm>([]),
   });
 
-  constructor(private ordersService: OrdersService, private waitersService: WaitersService) {
+  constructor(private ordersService: OrdersService, private staffService: StaffService) {
   }
 
   ngOnInit(): void {
     this.loadingOptions = true;
     forkJoin({
       menus: this.ordersService.getCurrentUserOrderOptions(),
-      waiters: this.waitersService.getAll(),
+      staff: this.staffService.getAll(),
     }).subscribe({
-      next: ({menus, waiters}) => {
+      next: ({menus, staff}) => {
         this.menus = this.filterMenus(menus);
-        this.waitersList = waiters;
+        this.staffList = staff;
         this.patchRows();
         this.loadingOptions = false;
       },
@@ -101,8 +107,8 @@ export class ExpencesDialogComponent implements OnInit {
     });
   }
 
-  get waiters(): FormArray<WaiterForm> {
-    return this.form.controls.waiters;
+  get staff(): FormArray<StaffForm> {
+    return this.form.controls.staff;
   }
 
   get shoppingSums(): FormArray<ShoppingSumForm> {
@@ -126,15 +132,16 @@ export class ExpencesDialogComponent implements OnInit {
     this.shoppingSums.removeAt(index);
   }
 
-  addWaiter(waiterId: number | null = null, price: number | null = null): void {
-    this.waiters.push(new FormGroup({
-      waiterId: new FormControl<number | null>(waiterId, [Validators.required]),
+  addStaff(staffId: number | null = null, price: number | null = null, payed = false): void {
+    this.staff.push(new FormGroup({
+      staffId: new FormControl<number | null>(staffId, [Validators.required]),
       price: new FormControl<number | null>(price, [Validators.required, Validators.min(0)]),
+      payed: new FormControl<boolean>(payed, {nonNullable: true}),
     }));
   }
 
-  removeWaiter(index: number): void {
-    this.waiters.removeAt(index);
+  removeStaff(index: number): void {
+    this.staff.removeAt(index);
   }
 
   addOtherExpence(id: number | null = null, name = '', amount: number | null = null): void {
@@ -159,10 +166,10 @@ export class ExpencesDialogComponent implements OnInit {
     const payload: ExpencesRequest = {
       id: this.data?.expences?.id,
       menuId: rawValue.menuId!,
-      cook: Number(rawValue.cook),
-      waiters: rawValue.waiters.map(item => ({
-        waiterId: item.waiterId!,
+      staff: rawValue.staff.map(item => ({
+        staffId: item.staffId!,
         price: Number(item.price),
+        payed: item.payed,
       })),
       shoppingSums: rawValue.shoppingSums.map(item => ({
         id: item.id ?? undefined,
@@ -180,6 +187,10 @@ export class ExpencesDialogComponent implements OnInit {
     this.dialogRef.close(payload);
   }
 
+  getStaffTypeLabel(type: StaffType | null): string {
+    return this.staffTypes.find(item => item.value === type)?.label ?? 'Персонал';
+  }
+
   private patchRows(): void {
     const expences = this.data?.expences;
 
@@ -188,7 +199,7 @@ export class ExpencesDialogComponent implements OnInit {
     }
 
     expences.shoppingSums?.forEach(item => this.addShoppingSum(item.id, item.name, item.date, item.sum));
-    expences.waiters.forEach(waiter => this.addWaiter(waiter.waiterId, waiter.price));
+    expences.staff.forEach(item => this.addStaff(item.staffId, item.price, item.payed));
     expences.otherExpences.forEach(item => this.addOtherExpence(item.id, item.name, item.amount));
   }
 

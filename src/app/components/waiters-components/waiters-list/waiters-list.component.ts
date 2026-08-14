@@ -5,8 +5,8 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {MatDialog} from "@angular/material/dialog";
 import {HotToastService} from "@ngxpert/hot-toast";
 import {finalize} from "rxjs";
-import {Waiter} from "../../../models/Waiters/Waiter";
-import {WaitersService} from "../../../_services/waiters.service";
+import {Staff, StaffRequest, StaffType} from "../../../models/Waiters/Waiter";
+import {StaffService} from "../../../_services/waiters.service";
 import {WaiterDialogComponent} from "../waiter-dialog/waiter-dialog.component";
 
 @Component({
@@ -21,33 +21,33 @@ import {WaiterDialogComponent} from "../waiter-dialog/waiter-dialog.component";
   styleUrl: './waiters-list.component.css'
 })
 export class WaitersListComponent implements OnInit {
-  waiters: Waiter[] = [];
+  staff: Staff[] = [];
   loading = false;
   saving = false;
   deletingId: number | null = null;
 
   constructor(
-    private waitersService: WaitersService,
+    private staffService: StaffService,
     private dialog: MatDialog,
     private toast: HotToastService
   ) {
   }
 
   ngOnInit(): void {
-    this.loadWaiters();
+    this.loadStaff();
   }
 
-  loadWaiters(): void {
+  loadStaff(): void {
     this.loading = true;
 
-    this.waitersService.getAll().pipe(
+    this.staffService.getAll().pipe(
       finalize(() => this.loading = false)
     ).subscribe({
       next: data => {
-        this.waiters = data;
+        this.staff = data;
       },
       error: err => {
-        this.toast.error(err.message ?? 'Не вдалося завантажити офіціантів');
+        this.toast.error(err.message ?? 'Не вдалося завантажити персонал');
       }
     });
   }
@@ -55,73 +55,77 @@ export class WaitersListComponent implements OnInit {
   openCreateDialog(): void {
     const ref = this.dialog.open(WaiterDialogComponent);
 
-    ref.afterClosed().subscribe((name?: string) => {
-      if(!name){
+    ref.afterClosed().subscribe((payload?: StaffRequest) => {
+      if(!payload){
         return;
       }
 
       this.saving = true;
-      this.waitersService.create(name).pipe(
+      this.staffService.create(payload).pipe(
         finalize(() => this.saving = false)
       ).subscribe({
-        next: waiter => {
-          this.waiters = [...this.waiters, waiter];
-          this.toast.success('Офіціанта додано');
+        next: staffItem => {
+          this.staff = [...this.staff, staffItem];
+          this.toast.success('Працівника додано');
         },
         error: err => {
-          this.toast.error(err.message ?? 'Не вдалося додати офіціанта');
+          this.toast.error(err.message ?? 'Не вдалося додати працівника');
         }
       });
     });
   }
 
-  openEditDialog(waiter: Waiter): void {
+  openEditDialog(staffItem: Staff): void {
     const ref = this.dialog.open(WaiterDialogComponent, {
       data: {
-        waiter,
+        waiter: staffItem,
       },
     });
 
-    ref.afterClosed().subscribe((name?: string) => {
-      if(!name || name === waiter.name){
+    ref.afterClosed().subscribe((payload?: StaffRequest) => {
+      if(!payload || (payload.name === staffItem.name && payload.type === staffItem.type)){
         return;
       }
 
       this.saving = true;
-      this.waitersService.edit({id: waiter.id, name}).pipe(
+      this.staffService.edit({id: staffItem.id, ...payload}).pipe(
         finalize(() => this.saving = false)
       ).subscribe({
         next: updated => {
-          this.waiters = this.waiters.map(item => item.id === updated.id ? updated : item);
-          this.toast.success('Офіціанта оновлено');
+          this.staff = this.staff.map(item => item.id === updated.id ? updated : item);
+          this.toast.success('Працівника оновлено');
         },
         error: err => {
-          this.toast.error(err.message ?? 'Не вдалося оновити офіціанта');
+          this.toast.error(err.message ?? 'Не вдалося оновити працівника');
         }
       });
     });
   }
 
-  deleteWaiter(waiter: Waiter): void {
-    if(!confirm(`Видалити офіціанта "${waiter.name}"?`)){
+  deleteWaiter(staffItem: Staff): void {
+    if(!confirm(`Видалити працівника "${staffItem.name}"?`)){
       return;
     }
 
-    this.deletingId = waiter.id;
-    this.waitersService.delete(waiter.id).pipe(
+    this.deletingId = staffItem.id;
+    this.staffService.delete(staffItem.id).pipe(
       finalize(() => this.deletingId = null)
     ).subscribe({
       next: id => {
-        this.waiters = this.waiters.filter(item => item.id !== id);
-        this.toast.success('Офіціанта видалено');
+        this.staff = this.staff.filter(item => item.id !== id);
+        this.toast.success('Працівника видалено');
       },
       error: err => {
-        this.toast.error(err.message ?? 'Не вдалося видалити офіціанта');
+        this.toast.error(err.message ?? 'Не вдалося видалити працівника');
       }
     });
   }
 
-  isDeleting(waiter: Waiter): boolean {
-    return this.deletingId === waiter.id;
+  isDeleting(staffItem: Staff): boolean {
+    return this.deletingId === staffItem.id;
+  }
+
+  getStaffTypeLabel(type: StaffType): string {
+    return type === 'COOK' ? 'Кухар' : 'Офіціант';
   }
 }

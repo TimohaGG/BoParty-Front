@@ -66,12 +66,8 @@
       <strong>{{totalShopping()}} грн</strong>
     </article>
     <article class="summary-card content-panel">
-      <span>Кухня</span>
-      <strong>{{totalCook()}} грн</strong>
-    </article>
-    <article class="summary-card content-panel">
-      <span>Офіціанти</span>
-      <strong>{{totalWaiters()}} грн</strong>
+      <span>Персонал</span>
+      <strong>{{totalStaff()}} грн</strong>
     </article>
     <article class="summary-card content-panel">
       <span>Інше</span>
@@ -151,12 +147,8 @@
               <strong>{{getShoppingTotal(item)}} грн</strong>
             </div>
             <div class="breakdown-row">
-              <span>Кухня</span>
-              <strong>{{item.cook}} грн</strong>
-            </div>
-            <div class="breakdown-row">
-              <span>Офіціанти</span>
-              <strong>{{getWaitersTotal(item)}} грн</strong>
+              <span>Персонал</span>
+              <strong>{{getStaffTotal(item)}} грн</strong>
             </div>
             <div class="breakdown-row">
               <span>Інше</span>
@@ -168,7 +160,7 @@
               </div>
           </div>
 
-          @if(item.shoppingSums.length > 0 || item.waiters.length > 0 || item.otherExpences.length > 0){
+          @if(item.shoppingSums.length > 0 || item.staff.length > 0 || item.otherExpences.length > 0){
             <div class="expence-details">
               @if(item.shoppingSums.length > 0){
                 <section class="detail-section">
@@ -182,13 +174,13 @@
                 </section>
               }
 
-              @if(item.waiters.length > 0){
+              @if(item.staff.length > 0){
                 <section class="detail-section">
-                  <h3>Офіціанти</h3>
-                  @for(waiter of item.waiters; track waiter.id){
+                  <h3>Персонал</h3>
+                  @for(staffItem of item.staff; track staffItem.id){
                     <div class="detail-row">
-                      <span>{{waiter.name || 'Офіціант #' + waiter.waiterId}}</span>
-                      <strong>{{waiter.price}} грн</strong>
+                      <span>{{staffItem.name || 'Працівник #' + staffItem.staffId}} · {{getStaffTypeLabel(staffItem.type)}} · {{staffItem.payed ? '✅' : '❌'}}</span>
+                      <strong>{{staffItem.price}} грн</strong>
                     </div>
                   }
                 </section>

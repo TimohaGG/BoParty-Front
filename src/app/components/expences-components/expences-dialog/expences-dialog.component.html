@@ -1,7 +1,7 @@
 <div class="bo-dialog expences-dialog">
   <header class="bo-dialog-header">
     <h2>{{isEditMode ? 'Редагувати витрати' : 'Додати витрати'}}</h2>
-    <p>Вкажіть меню, закупівлі, оплату кухні, офіціантів та інші витрати.</p>
+    <p>Вкажіть меню, закупівлі, персонал та інші витрати.</p>
   </header>
 
   <mat-dialog-content class="bo-dialog-content">
@@ -20,11 +20,6 @@
               <mat-option [value]="menu.id">{{menu.client}} · {{menu.date | date}} · {{menu.totalPrice | number}} грн </mat-option>
             }
           </mat-select>
-        </mat-form-field>
-
-        <mat-form-field>
-          <mat-label>Кухня</mat-label>
-          <input matInput type="number" formControlName="cook" />
         </mat-form-field>
       </div>
 
@@ -65,21 +60,21 @@
 
       <section class="form-section">
         <div class="section-title">
-          <h3>Офіціанти</h3>
-          <button mat-stroked-button type="button" (click)="addWaiter()">
+          <h3>Персонал</h3>
+          <button mat-stroked-button type="button" (click)="addStaff()">
             <mat-icon>add</mat-icon>
             Додати
           </button>
         </div>
 
-        <div formArrayName="waiters" class="rows-list">
-          @for(row of waiters.controls; track $index){
+        <div formArrayName="staff" class="rows-list">
+          @for(row of staff.controls; track $index){
             <div [formGroupName]="$index" class="expense-row waiter-row">
               <mat-form-field>
-                <mat-label>Офіціант</mat-label>
-                <mat-select formControlName="waiterId">
-                  @for(waiter of waitersList; track waiter.id){
-                    <mat-option [value]="waiter.id">{{waiter.name}}</mat-option>
+                <mat-label>Працівник</mat-label>
+                <mat-select formControlName="staffId">
+                  @for(item of staffList; track item.id){
+                    <mat-option [value]="item.id">{{item.name}} · {{getStaffTypeLabel(item.type)}}</mat-option>
                   }
                 </mat-select>
               </mat-form-field>
@@ -89,7 +84,9 @@
                 <input matInput type="number" formControlName="price" />
               </mat-form-field>
 
-              <button mat-icon-button type="button" class="remove-row" (click)="removeWaiter($index)" aria-label="Видалити офіціанта">
+              <mat-checkbox formControlName="payed">Оплачено</mat-checkbox>
+
+              <button mat-icon-button type="button" class="remove-row" (click)="removeStaff($index)" aria-label="Видалити працівника">
                 <mat-icon>delete_outline</mat-icon>
               </button>
             </div>

@@ -14,6 +14,7 @@ import {AddMenuComponent} from "./components/menu-components/add-menu/add-menu.c
 import {
   OrderListComponent
 } from "./components/expences-components/expenses-list-component/order-list.component";
+import {PaymentsStatusComponent} from "./components/expences-components/payments-status/payments-status.component";
 import {ShoppingComponent} from "./components/menu-components/shopping/shopping.component";
 import {WaitersListComponent} from "./components/waiters-components/waiters-list/waiters-list.component";
 import {OrderSelectionComponent} from "./components/menu-components/order-selection/order-selection.component";
@@ -34,9 +35,11 @@ export const routes: Routes = [
   {path: 'service/positions/availability', component: PositionsAccessibilityComponent,canActivate:[authGuard,adminGuard]},
   // {path: 'service/boxes', component: BoxesListComponent,canActivate:[authGuard,adminGuard]},
   {path: 'service/ingredients', component: IngredientsListComponent,canActivate:[authGuard,adminGuard]},
-  {path: 'service/waiters', component: WaitersListComponent,canActivate:[authGuard,adminGuard]},
+  {path: 'service/staff', component: WaitersListComponent,canActivate:[authGuard,adminGuard]},
+  {path: 'service/waiters', redirectTo: 'service/staff', pathMatch: 'full'},
   {path: 'service/orders/new', component: AddMenuComponent,canActivate:[authGuard,adminGuard]},
   {path: 'service/reports/orders', component: OrderListComponent,canActivate:[authGuard,adminGuard]},
+  {path: 'service/reports/payments', component: PaymentsStatusComponent,canActivate:[authGuard,adminGuard]},
   {path: 'service/orders/:orderId/shopping', component: ShoppingComponent,canActivate:[authGuard,adminGuard]},
   { path: 'order/create', redirectTo: 'service/orders/new', pathMatch: 'full' },
   { path: 'order/data', redirectTo: 'service/reports/orders', pathMatch: 'full' },
@@ -48,8 +51,10 @@ export const routes: Routes = [
   { path: 'positions/availability', redirectTo: 'service/positions/availability', pathMatch: 'full' },
   { path: 'boxes', redirectTo: 'service/boxes', pathMatch: 'full' },
   { path: 'ingredients', redirectTo: 'service/ingredients', pathMatch: 'full' },
-  { path: 'waiters', redirectTo: 'service/waiters', pathMatch: 'full' },
+  { path: 'waiters', redirectTo: 'service/staff', pathMatch: 'full' },
+  { path: 'staff', redirectTo: 'service/staff', pathMatch: 'full' },
   { path: 'reports/orders', redirectTo: 'service/reports/orders', pathMatch: 'full' },
+  { path: 'reports/payments', redirectTo: 'service/reports/payments', pathMatch: 'full' },
 
   { path: '', component: WelcomePageComponent, pathMatch: 'full' },
 ];

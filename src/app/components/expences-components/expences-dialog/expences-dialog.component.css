@@ -17,7 +17,7 @@
 
 .main-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 160px;
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
 }
 
@@ -61,6 +61,10 @@
 .waiter-row,
 .other-row {
   grid-template-columns: minmax(0, 1fr) 140px 40px;
+}
+
+.waiter-row {
+  grid-template-columns: minmax(0, 1fr) 140px auto 40px;
 }
 
 .remove-row {

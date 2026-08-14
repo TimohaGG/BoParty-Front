@@ -4,10 +4,11 @@ import {FormControl, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatFormField, MatLabel} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {MatButton} from "@angular/material/button";
-import {Waiter} from "../../../models/Waiters/Waiter";
+import {MatOption, MatSelect} from "@angular/material/select";
+import {Staff, StaffType} from "../../../models/Waiters/Waiter";
 
 export interface WaiterDialogData {
-  waiter?: Waiter;
+  waiter?: Staff;
 }
 
 @Component({
@@ -20,7 +21,9 @@ export interface WaiterDialogData {
     MatFormField,
     MatLabel,
     MatInput,
-    MatButton
+    MatButton,
+    MatSelect,
+    MatOption
   ],
   templateUrl: './waiter-dialog.component.html',
   styleUrl: './waiter-dialog.component.css'
@@ -30,16 +33,24 @@ export class WaiterDialogComponent {
   readonly data = inject<WaiterDialogData | null>(MAT_DIALOG_DATA, {optional: true});
 
   isEditMode = !!this.data?.waiter;
+  readonly staffTypes: {value: StaffType; label: string}[] = [
+    {value: 'WAITER', label: 'Офіціант'},
+    {value: 'COOK', label: 'Кухар'},
+  ];
   name = new FormControl(this.data?.waiter?.name ?? '', [Validators.required]);
+  type = new FormControl<StaffType>(this.data?.waiter?.type ?? 'WAITER', {nonNullable: true, validators: [Validators.required]});
 
   save(): void {
     const value = this.name.value?.trim();
 
-    if(!value){
+    if(!value || !this.type.value){
       this.name.markAsTouched();
       return;
     }
 
-    this.dialogRef.close(value);
+    this.dialogRef.close({
+      name: value,
+      type: this.type.value,
+    });
   }
 }
