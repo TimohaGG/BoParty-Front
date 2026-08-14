@@ -1,0 +1,107 @@
+<section class="page-shell payments-page">
+  <header class="page-header payments-header">
+    <div>
+      <h1 class="page-title">Статуси оплат</h1>
+      <p class="page-subtitle">Перегляд оплат персоналу за вибраний період.</p>
+    </div>
+  </header>
+
+  <form class="payments-filters content-panel" (ngSubmit)="loadStatuses()">
+    <mat-form-field>
+      <mat-label>Початкова дата</mat-label>
+      <input matInput type="date" [(ngModel)]="startDate" name="startDate">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Кінцева дата</mat-label>
+      <input matInput type="date" [(ngModel)]="endDate" name="endDate">
+    </mat-form-field>
+
+    <button mat-flat-button color="accent" type="submit" [disabled]="loading">
+      @if(loading){
+        <mat-spinner diameter="20"></mat-spinner>
+      }
+      @else{
+        <mat-icon>search</mat-icon>
+      }
+      Показати
+    </button>
+  </form>
+
+  @if(error){
+    <div class="content-panel payments-message error-message">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{error}}</span>
+    </div>
+  }
+
+  <div class="payments-summary">
+    <article class="summary-card content-panel">
+      <span>Оплачено</span>
+      <strong>{{paidCount()}}</strong>
+      <small>{{paidTotal()}} грн</small>
+    </article>
+    <article class="summary-card content-panel unpaid-card">
+      <span>Не оплачено</span>
+      <strong>{{unpaidCount()}}</strong>
+      <small>{{unpaidTotal()}} грн</small>
+    </article>
+  </div>
+
+  @if(loading && expences().length === 0){
+    <div class="content-panel loading-state">
+      <mat-spinner diameter="42"></mat-spinner>
+    </div>
+  }
+  @else if(expences().length === 0){
+    <div class="content-panel payments-message">
+      <mat-icon>payments</mat-icon>
+      <span>За вибраний період статусів оплат не знайдено.</span>
+    </div>
+  }
+  @else{
+    <div class="payments-list">
+      @for(item of expences(); track item.id){
+        <article class="payment-card content-panel">
+          <header class="payment-card-header">
+            <div>
+              <h2>{{item.client || 'Без клієнта'}}</h2>
+              <p>{{formatDate(item.date)}} · Меню #{{item.menuId || '-'}}</p>
+            </div>
+
+            <div class="payment-card-side">
+              <div class="payment-card-totals">
+                <span class="paid-pill">✅ {{getPaidTotal(item)}} грн</span>
+                <span class="unpaid-pill">❌ {{getUnpaidTotal(item)}} грн</span>
+              </div>
+
+              <button mat-icon-button type="button" (click)="togglePaymentDetails(item)" [attr.aria-expanded]="isPaymentExpanded(item)" aria-label="Показати деталі оплат">
+                <mat-icon>{{isPaymentExpanded(item) ? 'expand_less' : 'expand_more'}}</mat-icon>
+              </button>
+            </div>
+          </header>
+
+          @if(isPaymentExpanded(item)){
+            <div class="payment-status-list">
+              @for(staffItem of item.staff; track staffItem.id ?? $index){
+                <div class="payment-status-row">
+                  <span>{{staffItem.name || 'Працівник #' + staffItem.staffId}}</span>
+                  <span>{{getStaffTypeLabel(staffItem.type)}}</span>
+                  <strong>{{staffItem.price}} грн</strong>
+                  <label class="status-toggle">
+                    <mat-checkbox
+                      [checked]="staffItem.payed"
+                      [disabled]="isSaving(item)"
+                      (change)="requestPaymentStatusChange($event, item, $index)">
+                    </mat-checkbox>
+                    <span class="status-symbol">{{staffItem.payed ? '✅' : '❌'}}</span>
+                  </label>
+                </div>
+              }
+            </div>
+          }
+        </article>
+      }
+    </div>
+  }
+</section>

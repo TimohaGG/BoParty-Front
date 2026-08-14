@@ -1,0 +1,16 @@
+<div class="bo-dialog">
+  <header class="bo-dialog-header">
+    <h2>Підтвердити зміну</h2>
+    <p>
+      {{data.nextStatus ? 'Позначити як оплачено' : 'Позначити як не оплачено'}} для
+      "{{data.name}}"?
+    </p>
+  </header>
+
+  <mat-dialog-content class="bo-dialog-content"></mat-dialog-content>
+
+  <mat-dialog-actions class="bo-dialog-actions">
+    <button mat-button mat-dialog-close>Скасувати</button>
+    <button mat-flat-button color="accent" (click)="confirm()">Підтвердити</button>
+  </mat-dialog-actions>
+</div>
