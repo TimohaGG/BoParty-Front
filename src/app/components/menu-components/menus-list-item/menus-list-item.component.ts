@@ -68,7 +68,7 @@ export class MenusListItemComponent {
 
   downloadMenu(id:number){
     this.loadingPdfType = 'menu';
-    this.orderService.download(id).pipe(
+    this.orderService.download(id, this.menu?.date).pipe(
       finalize(() => {
         this.loadingPdfType = null;
       })

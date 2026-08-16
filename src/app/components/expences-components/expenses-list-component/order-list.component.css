@@ -215,6 +215,10 @@
   color: var(--accent-color);
 }
 
+.expence-actions .pdf-button {
+  color: var(--accent-color);
+}
+
 .expence-actions .danger-button {
   color: #f2b1b1;
 }

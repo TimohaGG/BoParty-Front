@@ -36,15 +36,62 @@
   }
 
   <div class="payments-summary">
-    <article class="summary-card content-panel">
-      <span>Оплачено</span>
-      <strong>{{paidCount()}}</strong>
-      <small>{{paidTotal()}} грн</small>
+    <article class="summary-card content-panel summary-dropdown-card">
+      <button
+        class="summary-dropdown-toggle"
+        type="button"
+        (click)="togglePaidTotals()"
+        [attr.aria-expanded]="paidTotalsExpanded">
+        <span>Оплачено</span>
+        <strong>{{paidCount()}}</strong>
+        <small>{{paidTotal()}} грн</small>
+        <mat-icon>{{paidTotalsExpanded ? 'expand_less' : 'expand_more'}}</mat-icon>
+      </button>
+
+      @if(paidTotalsExpanded){
+        <div class="summary-dropdown-list">
+          @for(staffItem of staffTotals(); track staffItem.key){
+            @if(staffItem.paidTotal > 0){
+              <article class="summary-dropdown-row">
+                <div class="staff-total-head">
+                  <strong>{{staffItem.name}}</strong>
+                  <span>{{getStaffTypeLabel(staffItem.type)}}</span>
+                </div>
+                <span class="paid-pill">✅ {{staffItem.paidTotal}} грн</span>
+              </article>
+            }
+          }
+        </div>
+      }
     </article>
-    <article class="summary-card content-panel unpaid-card">
-      <span>Не оплачено</span>
-      <strong>{{unpaidCount()}}</strong>
-      <small>{{unpaidTotal()}} грн</small>
+
+    <article class="summary-card content-panel unpaid-card summary-dropdown-card">
+      <button
+        class="summary-dropdown-toggle"
+        type="button"
+        (click)="toggleUnpaidTotals()"
+        [attr.aria-expanded]="unpaidTotalsExpanded">
+        <span>Не оплачено</span>
+        <strong>{{unpaidCount()}}</strong>
+        <small>{{unpaidTotal()}} грн</small>
+        <mat-icon>{{unpaidTotalsExpanded ? 'expand_less' : 'expand_more'}}</mat-icon>
+      </button>
+
+      @if(unpaidTotalsExpanded){
+        <div class="summary-dropdown-list">
+          @for(staffItem of staffTotals(); track staffItem.key){
+            @if(staffItem.unpaidTotal > 0){
+              <article class="summary-dropdown-row">
+                <div class="staff-total-head">
+                  <strong>{{staffItem.name}}</strong>
+                  <span>{{getStaffTypeLabel(staffItem.type)}}</span>
+                </div>
+                <span class="unpaid-pill">❌ {{staffItem.unpaidTotal}} грн</span>
+              </article>
+            }
+          }
+        </div>
+      }
     </article>
   </div>
 
@@ -67,6 +114,12 @@
             <div>
               <h2>{{item.client || 'Без клієнта'}}</h2>
               <p>{{formatDate(item.date)}} · Меню #{{item.menuId || '-'}}</p>
+              <div class="payment-card-meta">
+                @if(getGuestsAmount(item) !== null){
+                  <span>Гостей: {{getGuestsAmount(item)}}</span>
+                }
+                <span>Сума меню: {{getMenuPrice(item)}} грн</span>
+              </div>
             </div>
 
             <div class="payment-card-side">

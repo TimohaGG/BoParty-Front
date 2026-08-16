@@ -118,6 +118,20 @@
               </div>
               <strong>{{getExpenceTotal(item)}} грн</strong>
               <div class="expence-actions">
+                <button
+                  mat-icon-button
+                  type="button"
+                  [disabled]="isPdfLoading(item)"
+                  (click)="downloadMenuPdf(item)"
+                  aria-label="Згенерувати PDF меню"
+                  title="PDF меню">
+                  @if(isPdfLoading(item)){
+                    <mat-spinner diameter="20"></mat-spinner>
+                  }
+                  @else{
+                    <mat-icon>download</mat-icon>
+                  }
+                </button>
                 <button mat-icon-button type="button" (click)="toggleExpenceDetails(item)" [attr.aria-expanded]="isExpenceExpanded(item)" aria-label="Показати деталі витрат">
                   <mat-icon>{{isExpenceExpanded(item) ? 'expand_less' : 'expand_more'}}</mat-icon>
                 </button>

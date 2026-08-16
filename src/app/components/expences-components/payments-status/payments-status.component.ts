@@ -1,4 +1,4 @@
-import {Component, computed, inject, OnInit, Signal} from '@angular/core';
+import {Component, computed, inject, OnInit, signal, Signal} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {MatFormField, MatLabel} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
@@ -12,6 +12,8 @@ import {Expences, ExpencesRequest} from "../../../models/Expences/Expences";
 import {OrdersService} from "../../../_services/orders.service";
 import {HotToastService} from "@ngxpert/hot-toast";
 import {finalize} from "rxjs";
+import {isMessage} from "../../../models/Exceptions/ExceptionMessage";
+import {Menu} from "../../../models/Menu/Menu";
 import {
   PaymentStatusConfirmDialogComponent
 } from "./payment-status-confirm-dialog.component";
@@ -38,8 +40,11 @@ export class PaymentsStatusComponent implements OnInit {
   public endDate = this.getMonthEnd();
   public loading = false;
   public error = '';
+  public paidTotalsExpanded = false;
+  public unpaidTotalsExpanded = false;
   private expandedPayments = new Set<number>();
   private savingExpences = new Set<number>();
+  private menuDetails = signal<Record<number, Menu>>({});
 
   private store = inject(entityStorage);
   private dialog = inject(MatDialog);
@@ -64,6 +69,44 @@ export class PaymentsStatusComponent implements OnInit {
     this.expences().reduce((sum, item) => sum + item.staff.filter(staff => !staff.payed).reduce((staffSum, staff) => staffSum + staff.price, 0), 0)
   );
 
+  public staffTotals = computed(() => {
+    const totals = new Map<string, {
+      key: string;
+      name: string;
+      type: string | null;
+      paidTotal: number;
+      unpaidTotal: number;
+    }>();
+
+    this.expences().forEach(item => {
+      item.staff.forEach(staffItem => {
+        const key = staffItem.staffId !== null && staffItem.staffId !== undefined
+          ? `staff-${staffItem.staffId}`
+          : `staff-${staffItem.name ?? 'unknown'}-${staffItem.type ?? 'unknown'}`;
+
+        const existing = totals.get(key) ?? {
+          key,
+          name: staffItem.name || `Працівник #${staffItem.staffId ?? '-'}`,
+          type: staffItem.type,
+          paidTotal: 0,
+          unpaidTotal: 0,
+        };
+
+        if (staffItem.payed) {
+          existing.paidTotal += staffItem.price;
+        } else {
+          existing.unpaidTotal += staffItem.price;
+        }
+
+        totals.set(key, existing);
+      });
+    });
+
+    return Array.from(totals.values())
+      .filter(item => item.paidTotal > 0 || item.unpaidTotal > 0)
+      .sort((a, b) => a.name.localeCompare(b.name, 'uk-UA'));
+  });
+
   constructor(private ordersService: OrdersService, private toast: HotToastService) {
   }
 
@@ -81,7 +124,8 @@ export class PaymentsStatusComponent implements OnInit {
     this.error = '';
 
     this.ordersService.getExpences(this.startDate, this.endDate).subscribe({
-      next: () => {
+      next: expences => {
+        this.loadMenuDetails(expences);
         this.loading = false;
       },
       error: err => {
@@ -97,6 +141,30 @@ export class PaymentsStatusComponent implements OnInit {
 
   getUnpaidTotal(item: Expences): number {
     return item.staff.filter(staff => !staff.payed).reduce((sum, staff) => sum + staff.price, 0);
+  }
+
+  getMenuPrice(item: Expences): number {
+    if (!item.menuId) {
+      return 0;
+    }
+
+    return this.menuDetails()[item.menuId]?.totalPrice ?? 0;
+  }
+
+  getGuestsAmount(item: Expences): number | null {
+    if (!item.menuId) {
+      return null;
+    }
+
+    return this.menuDetails()[item.menuId]?.guestsAmount ?? null;
+  }
+
+  togglePaidTotals(): void {
+    this.paidTotalsExpanded = !this.paidTotalsExpanded;
+  }
+
+  toggleUnpaidTotals(): void {
+    this.unpaidTotalsExpanded = !this.unpaidTotalsExpanded;
   }
 
   togglePaymentDetails(item: Expences): void {
@@ -233,5 +301,33 @@ export class PaymentsStatusComponent implements OnInit {
     this.store.setAllExpences(
       this.store.expencesEntities().map(expence => expence.id === item.id ? item : expence)
     );
+  }
+
+  private loadMenuDetails(expences: Expences[]): void {
+    const currentDetails = {...this.menuDetails()};
+    const menuIds = Array.from(
+      new Set(
+        expences
+          .map(item => item.menuId)
+          .filter((menuId): menuId is number => menuId !== null)
+      )
+    );
+
+    menuIds.forEach(menuId => {
+      if (currentDetails[menuId]) {
+        return;
+      }
+
+      this.ordersService.getById(menuId).subscribe(res => {
+        if (isMessage(res)) {
+          return;
+        }
+
+        this.menuDetails.update(details => ({
+          ...details,
+          [menuId]: res as Menu,
+        }));
+      });
+    });
   }
 }

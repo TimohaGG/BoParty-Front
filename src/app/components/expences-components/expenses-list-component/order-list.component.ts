@@ -39,6 +39,7 @@ export class OrderListComponent implements OnInit {
   public error = '';
   public summaryCollapsed = true;
   private expandedExpences = new Set<number>();
+  private pdfLoadingIds = new Set<number>();
 
   private dialog = inject(MatDialog);
   private store = inject(entityStorage);
@@ -187,6 +188,10 @@ export class OrderListComponent implements OnInit {
     return this.deletingId === expences.id;
   }
 
+  isPdfLoading(expences: Expences): boolean {
+    return this.pdfLoadingIds.has(expences.id);
+  }
+
   toggleSummary(): void {
     this.summaryCollapsed = !this.summaryCollapsed;
   }
@@ -202,6 +207,26 @@ export class OrderListComponent implements OnInit {
 
   isExpenceExpanded(expences: Expences): boolean {
     return this.expandedExpences.has(expences.id);
+  }
+
+  downloadMenuPdf(item: Expences): void {
+    if (!item.menuId) {
+      this.toast.error('Для цього запису меню не знайдено');
+      return;
+    }
+
+    if (this.isPdfLoading(item)) {
+      return;
+    }
+
+    this.pdfLoadingIds.add(item.id);
+    this.ordersService.download(item.menuId, item.date).pipe(
+      finalize(() => this.pdfLoadingIds.delete(item.id))
+    ).subscribe({
+      error: err => {
+        this.toast.error(err.message ?? 'Не вдалося згенерувати PDF меню');
+      }
+    });
   }
 
   getIncome(item: Expences): number {

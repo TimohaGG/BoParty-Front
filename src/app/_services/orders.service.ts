@@ -250,12 +250,11 @@ export class OrdersService{
   }
 
 
-  download(id: number) {
+  download(id: number, menuDate?: string | null) {
     return this.http.download(id).pipe(
       map(res=>{
         if(!isMessage(res)){
-          const url = window.URL.createObjectURL(res);
-          window.open(url);
+          this.downloadBlob(res, this.buildMenuPdfFilename(menuDate, id));
         }
       }),
       catchError((err:HttpErrorResponse)=>{
@@ -269,8 +268,7 @@ export class OrdersService{
     return this.http.downloadShoppingListPdf(id).pipe(
       map(res => {
         if (!isMessage(res)) {
-          const url = window.URL.createObjectURL(res);
-          window.open(url);
+          this.downloadBlob(res, `shopping-list-${id}.pdf`);
         }
       }),
       catchError((err: HttpErrorResponse) => {
@@ -435,5 +433,46 @@ export class OrdersService{
         throw new Error(err.error.message);
       })
     );
+  }
+
+  private downloadBlob(blob: Blob, fileName: string): void {
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    link.rel = 'noopener';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  }
+
+  private buildMenuPdfFilename(menuDate: string | null | undefined, id: number): string {
+    const normalizedDate = this.normalizeDateForFilename(menuDate);
+    return `${normalizedDate ?? `menu-${id}`}.pdf`;
+  }
+
+  private normalizeDateForFilename(menuDate: string | null | undefined): string | null {
+    if (!menuDate?.trim()) {
+      return null;
+    }
+
+    const trimmedDate = menuDate.trim();
+    const isoDateMatch = trimmedDate.match(/^\d{4}-\d{2}-\d{2}/);
+    if (isoDateMatch) {
+      const [year, month, day] = isoDateMatch[0].split('-');
+      return `${day}-${month}-${year}`;
+    }
+
+    const parsedDate = new Date(trimmedDate);
+    if (Number.isNaN(parsedDate.getTime())) {
+      return null;
+    }
+
+    const day = String(parsedDate.getDate()).padStart(2, '0');
+    const month = String(parsedDate.getMonth() + 1).padStart(2, '0');
+    const year = parsedDate.getFullYear();
+
+    return `${day}-${month}-${year}`;
   }
 }
