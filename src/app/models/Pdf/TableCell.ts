@@ -9,8 +9,9 @@ export class TableRow{
   private _amount:number;
 
   private _id:string;
+  public cookId:number | null;
 
-  constructor(position:Position | null,amount:number,title:string = "", unitedRow:boolean=false, id:string="") {
+  constructor(position:Position | null,amount:number,title:string = "", unitedRow:boolean=false, id:string="", cookId:number | null = null) {
     this.position = position;
     this._amount = amount;
     if(title!=""){
@@ -18,6 +19,7 @@ export class TableRow{
     }
     this.unitedRow = unitedRow;
     this._id = id;
+    this.cookId = cookId;
 
   }
 

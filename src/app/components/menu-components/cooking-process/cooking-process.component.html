@@ -1,0 +1,224 @@
+<section class="page-shell cooking-page">
+  <header class="page-header cooking-header">
+    <div>
+      <h1 class="page-title">Процес кухні</h1>
+      @if(menu(); as currentMenu){
+        <p class="page-subtitle">
+          {{currentMenu.client || 'Без клієнта'}} · {{formatDate(currentMenu.date)}}
+        </p>
+      }
+      @else{
+        <p class="page-subtitle">Призначення кухарів для позицій меню.</p>
+      }
+    </div>
+
+    <div class="header-actions">
+      <a mat-stroked-button routerLink="/service/orders">До замовлень</a>
+      <button mat-flat-button color="accent" type="button" [disabled]="saving || loading || !menu()" (click)="save()">
+        @if(saving){
+          <mat-spinner diameter="20"></mat-spinner>
+        }
+        @else{
+          <mat-icon>save</mat-icon>
+        }
+        Зберегти
+      </button>
+    </div>
+  </header>
+
+  @if(error){
+    <div class="content-panel cooking-message error-message">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{error}}</span>
+    </div>
+  }
+
+  @if(loading){
+    <div class="content-panel cooking-message">
+      <mat-spinner diameter="42"></mat-spinner>
+    </div>
+  }
+  @else {
+    @if(menu(); as currentMenu){
+      <section class="content-panel order-meta">
+        <div>
+          <span>Клієнт</span>
+          <strong>{{currentMenu.client || 'Без клієнта'}}</strong>
+        </div>
+        <div>
+          <span>Дата</span>
+          <strong>{{formatDate(currentMenu.date)}}</strong>
+        </div>
+        <div>
+          <span>Гостей</span>
+          <strong>{{currentMenu.guestsAmount}}</strong>
+        </div>
+        <div>
+          <span>Сума меню</span>
+          <strong>{{currentMenu.totalPrice}} грн</strong>
+        </div>
+      </section>
+
+      <section class="content-panel positions-table">
+        <div class="positions-table-title">Позиції</div>
+        <div class="positions-table-head">
+          <span>Найменування</span>
+          <span>Фото</span>
+          <span>К-сть</span>
+          <span>Ціна</span>
+          <span>Разом</span>
+          <span>Кухар</span>
+        </div>
+
+        <div class="positions-table-body">
+          @for(item of currentMenu.positions; track item.position.id + '-' + item.inMenuOrder){
+            <article class="cooking-row">
+              <div class="position-copy">
+                @if(item.title && item.title.trim()){
+                  <span class="position-title">{{item.title}}</span>
+                }
+                <h2>{{item.position.name}}</h2>
+                @if(item.position.description){
+                  <p>{{item.position.description}}</p>
+                }
+              </div>
+
+              <div class="position-thumb-cell">
+                @if(item.position.imgUrl){
+                  <div class="position-thumb">
+                    <img
+                      [ngSrc]="item.position.imgUrl"
+                      [alt]="item.position.name"
+                      width="72"
+                      height="72">
+                  </div>
+                }
+              </div>
+
+              <div class="position-value-cell">
+                <small>К-сть</small>
+                <strong>{{item.amount}}</strong>
+              </div>
+
+              <div class="position-value-cell">
+                <small>Ціна</small>
+                <strong>{{item.position.price}} грн</strong>
+              </div>
+
+              <div class="position-value-cell total-cell">
+                <small>Разом</small>
+                <strong>{{getPositionTotal(item)}} грн</strong>
+              </div>
+
+              <mat-form-field class="cook-select">
+                <mat-label>Кухар</mat-label>
+                <mat-select
+                  [ngModel]="item.cookId"
+                  (ngModelChange)="updateCook(item.inMenuOrder, $event)">
+                  <mat-option [value]="null">Не вибрано</mat-option>
+                  @for(cook of cooks(); track cook.id){
+                    <mat-option [value]="cook.id">{{cook.name}}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </article>
+          }
+        </div>
+      </section>
+
+      <section class="summary-grid">
+        <article class="content-panel summary-card">
+          <span>Загальна сума без обслуговування</span>
+          <strong>{{totalWithoutServing()}} грн</strong>
+        </article>
+
+        <article class="content-panel summary-card">
+          <span>Напої</span>
+          <strong>{{drinksTotal()}} грн</strong>
+        </article>
+      </section>
+
+      <section class="content-panel cooks-summary">
+        <div class="summary-section-head">
+          <div>
+            <h3>Суми по кухарях</h3>
+            <p>Вартість позицій, закріплених за кожним кухарем.</p>
+          </div>
+        </div>
+
+        @if(cookTotals().length === 0){
+          <div class="cooking-message compact-message">
+            <mat-icon>soup_kitchen</mat-icon>
+            <span>Ще немає позицій з призначеним кухарем.</span>
+          </div>
+        }
+        @else{
+          <div class="cook-total-list">
+            @for(item of cookTotals(); track item.cookId){
+              <div class="cook-total-row">
+                <span>{{item.cookName}}</span>
+                <strong>{{item.total}} грн</strong>
+              </div>
+            }
+          </div>
+        }
+      </section>
+
+      <section class="content-panel payout-section">
+        <div class="summary-section-head">
+          <div>
+            <h3>Розрахунок по відсотку</h3>
+            <p>Відсоток рахується від суми позицій кожного кухаря.</p>
+          </div>
+          <div class="payout-actions">
+            <mat-form-field class="percent-field">
+              <mat-label>Відсоток</mat-label>
+              <input
+                matInput
+                type="number"
+                min="0"
+                [ngModel]="payoutPercent()"
+                (ngModelChange)="updatePayoutPercent($event)">
+            </mat-form-field>
+
+            <button
+              mat-flat-button
+              color="accent"
+              type="button"
+              [disabled]="syncingStatistics || cookPayouts().length === 0"
+              (click)="openStatisticsDialog()">
+              @if(syncingStatistics){
+                <mat-spinner diameter="20"></mat-spinner>
+              }
+              @else{
+                <mat-icon>add_chart</mat-icon>
+              }
+              Додати в статистику
+            </button>
+
+            @if(hasStatisticsEntry()){
+              <a mat-stroked-button routerLink="/service/reports/orders">До статистики</a>
+            }
+          </div>
+        </div>
+
+        @if(cookPayouts().length === 0){
+          <div class="cooking-message compact-message">
+            <mat-icon>percent</mat-icon>
+            <span>Немає даних для розрахунку.</span>
+          </div>
+        }
+        @else{
+          <div class="cook-total-list">
+            @for(item of cookPayouts(); track item.cookId){
+              <div class="cook-total-row payout-row">
+                <span>{{item.cookName}}</span>
+                <strong>{{item.payout}} грн</strong>
+              </div>
+            }
+          </div>
+        }
+      </section>
+    }
+  }
+</section>

@@ -1,0 +1,377 @@
+.cooking-page {
+  padding-bottom: 72px;
+}
+
+.cooking-header {
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-actions a,
+.header-actions button {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.cooking-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 120px;
+  padding: 20px;
+  color: var(--text-muted);
+}
+
+.compact-message {
+  min-height: 88px;
+}
+
+.error-message {
+  min-height: auto;
+  margin-top: 12px;
+  color: #f2b1b1;
+  background: rgba(214, 106, 106, 0.1);
+}
+
+.order-meta,
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.order-meta {
+  padding: 12px 14px;
+}
+
+.order-meta span,
+.summary-card span,
+.summary-section-head p,
+.position-copy p,
+.position-stats small,
+.cook-total-row span {
+  color: var(--text-muted);
+}
+
+.order-meta strong,
+.summary-card strong,
+.position-stats strong,
+.cook-total-row strong {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-main);
+}
+
+.positions-section {
+  display: grid;
+  gap: 10px;
+}
+
+.positions-table {
+  padding: 0;
+  overflow: hidden;
+}
+
+.positions-table-title {
+  padding: 14px 16px;
+  background: rgba(255, 184, 77, 0.16);
+  color: var(--text-main);
+  font-size: 1rem;
+  font-weight: 700;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.positions-table-head,
+.cooking-row {
+  display: grid;
+  grid-template-columns: minmax(220px, 2.2fr) 92px 88px 110px 110px minmax(180px, 1.4fr);
+  gap: 10px;
+  align-items: center;
+  padding: 12px 16px;
+}
+
+.positions-table-head {
+  border-bottom: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.positions-table-head span {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.positions-table-head span:first-child {
+  text-align: left;
+}
+
+.positions-table-body {
+  display: grid;
+}
+
+.cooking-row:not(:last-child) {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.position-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.position-copy h2,
+.summary-section-head h3 {
+  margin: 0;
+  line-height: 1.15;
+}
+
+.position-copy h2 {
+  font-size: 1rem;
+}
+
+.position-copy {
+  min-width: 0;
+}
+
+.position-copy p {
+  margin: 6px 0 0;
+  line-height: 1.35;
+  font-size: 0.86rem;
+}
+
+.position-title {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--accent-color);
+  font-size: 0.74rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.position-thumb {
+  width: 72px;
+  height: 72px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.04);
+  margin-inline: auto;
+}
+
+.position-thumb-cell {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.position-value-cell {
+  display: grid;
+  gap: 2px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  text-align: center;
+}
+
+.total-cell strong {
+  color: var(--accent-color);
+}
+
+.cook-select {
+  width: 100%;
+}
+
+.summary-card,
+.cooks-summary,
+.payout-section {
+  padding: 12px 14px;
+}
+
+.summary-card strong {
+  font-size: 1.2rem;
+}
+
+.summary-section-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.summary-section-head p {
+  margin: 4px 0 0;
+  font-size: 0.92rem;
+}
+
+.percent-field {
+  width: min(148px, 100%);
+}
+
+.payout-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.payout-actions button {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.cook-total-list {
+  display: grid;
+  gap: 8px;
+}
+
+.cook-total-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.position-stats small,
+.cook-total-row span,
+.order-meta span,
+.summary-card span,
+.position-value-cell small {
+  font-size: 0.82rem;
+}
+
+.cook-total-row span {
+  font-size: 0.9rem;
+}
+
+.payout-row strong {
+  color: var(--accent-color);
+}
+
+@media (max-width: 900px) {
+  .order-meta,
+  .summary-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .positions-table-head {
+    display: none;
+  }
+
+  .cooking-row {
+    grid-template-columns: minmax(0, 1fr) 84px;
+    grid-template-areas:
+      "copy image"
+      "qty price"
+      "total cook";
+    align-items: start;
+  }
+
+  .position-copy {
+    grid-area: copy;
+  }
+
+  .position-thumb-cell {
+    grid-area: image;
+    min-height: 64px;
+  }
+
+  .position-value-cell:nth-of-type(1) {
+    grid-area: qty;
+  }
+
+  .position-value-cell:nth-of-type(2) {
+    grid-area: price;
+  }
+
+  .position-value-cell:nth-of-type(3) {
+    grid-area: total;
+  }
+
+  .cook-select {
+    grid-area: cook;
+  }
+}
+
+@media (max-width: 760px) {
+  .cooking-header {
+    align-items: stretch;
+  }
+
+  .header-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .summary-section-head {
+    flex-direction: column;
+  }
+
+  .payout-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .payout-actions button {
+    width: 100%;
+  }
+
+  .percent-field {
+    width: 100%;
+  }
+}
+
+@media (max-width: 560px) {
+  .order-meta,
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cooking-row {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "copy"
+      "image"
+      "qty"
+      "price"
+      "total"
+      "cook";
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .cook-total-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .position-thumb-cell {
+    justify-content: flex-start;
+  }
+}

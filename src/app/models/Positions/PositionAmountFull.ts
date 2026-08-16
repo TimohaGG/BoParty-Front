@@ -5,4 +5,5 @@ export interface PositionAmountFull {
   amount:number;
   title:string;
   inMenuOrder:number;
+  cookId: number | null;
 }

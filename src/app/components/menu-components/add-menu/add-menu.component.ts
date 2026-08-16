@@ -241,7 +241,7 @@ export class AddMenuComponent implements OnInit {
             if (el.title !== "" && el.title !== null) {
               list.push(new TableRow(null, 0, el.title, true, generateUUID()));
             }
-            list.push(new TableRow(el.position, el.amount));
+            list.push(new TableRow(el.position, el.amount, "", false, "", el.cookId ?? null));
             this.selectedPositions.push(el.position);
           });
           this.posAmounts.set(list);
@@ -388,6 +388,7 @@ export class AddMenuComponent implements OnInit {
 
         let tmp = new MinPosAmount(row.id as number, row.amount as number);
         tmp.inMenuOrder = i;
+        tmp.cookId = row.cookId ?? null;
         if (i > 0 && prev?.unitedRow) {
           tmp.title = prev.title as string;
         }
@@ -535,13 +536,17 @@ export class AddMenuComponent implements OnInit {
             item.position,
             Math.floor(item.amount / 2),
             item.title,
-            item.unitedRow
+            item.unitedRow,
+            "",
+            item.cookId ?? null
           ),
           new TableRow(
             item.position,
             Math.ceil(item.amount / 2),
             item.title,
-            item.unitedRow
+            item.unitedRow,
+            "",
+            item.cookId ?? null
           )
         ];
       })

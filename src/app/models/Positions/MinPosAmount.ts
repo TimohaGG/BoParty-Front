@@ -3,6 +3,7 @@ export class MinPosAmount{
   amount:number = 0;
   title:string = "";
   inMenuOrder:number = 0;
+  cookId:number | null = null;
   constructor(posId:number, amount:number, title:string = "") {
     this.posId = posId;
     this.amount = amount;

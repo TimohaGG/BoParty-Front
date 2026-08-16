@@ -1,0 +1,35 @@
+<div class="bo-dialog cooking-stats-dialog">
+  <header class="bo-dialog-header">
+    <h2>Додати в статистику</h2>
+    <p>Перевірте суми для кухарів перед додаванням. Значення округлюються до 100.</p>
+  </header>
+
+  <mat-dialog-content class="bo-dialog-content">
+    <form [formGroup]="form" class="stats-form">
+      <div formArrayName="rows" class="stats-rows">
+        @for(row of rows.controls; track row.controls.staffId.value; let index = $index){
+          <div [formGroupName]="index" class="stats-row">
+            <div class="staff-copy">
+              <strong>{{row.controls.name.value}}</strong>
+            </div>
+
+            <mat-form-field>
+              <mat-label>Сума</mat-label>
+              <input
+                matInput
+                type="number"
+                formControlName="amount"
+                step="100"
+                (blur)="roundRow(index)">
+            </mat-form-field>
+          </div>
+        }
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="bo-dialog-actions">
+    <button mat-button mat-dialog-close>Скасувати</button>
+    <button mat-flat-button color="accent" type="button" (click)="save()">Додати</button>
+  </mat-dialog-actions>
+</div>

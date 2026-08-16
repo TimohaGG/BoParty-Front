@@ -23,6 +23,9 @@ import {BoxesListComponent} from "./components/boxes-components/boxes-list/boxes
 import {
   PositionsAccessibilityComponent
 } from "./components/positions-components/positions-accessibility/positions-accessibility.component";
+import {
+  CookingProcessComponent
+} from "./components/menu-components/cooking-process/cooking-process.component";
 
 export const routes: Routes = [
   {path:'home',component:WelcomePageComponent},
@@ -38,6 +41,7 @@ export const routes: Routes = [
   {path: 'service/staff', component: WaitersListComponent,canActivate:[authGuard,adminGuard]},
   {path: 'service/waiters', redirectTo: 'service/staff', pathMatch: 'full'},
   {path: 'service/orders/new', component: AddMenuComponent,canActivate:[authGuard,adminGuard]},
+  {path: 'service/orders/:orderId/cooking', component: CookingProcessComponent,canActivate:[authGuard,adminGuard]},
   {path: 'service/reports/orders', component: OrderListComponent,canActivate:[authGuard,adminGuard]},
   {path: 'service/reports/payments', component: PaymentsStatusComponent,canActivate:[authGuard,adminGuard]},
   {path: 'service/orders/:orderId/shopping', component: ShoppingComponent,canActivate:[authGuard,adminGuard]},
