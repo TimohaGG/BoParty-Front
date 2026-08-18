@@ -1,10 +1,10 @@
 import {ShoppingListItem} from "./ShoppingListItem";
-import {Position} from "../Positions/Position";
+import {PositionAmountFull} from "../Positions/PositionAmountFull";
 
 export interface ShoppingList{
   id:number;
   items:ShoppingListItem[];
   needsUpdate:boolean;
-  positions:Position[];
+  positions:PositionAmountFull[];
 
 }

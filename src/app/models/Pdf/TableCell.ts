@@ -18,7 +18,7 @@ export class TableRow{
       this._title = title;
     }
     this.unitedRow = unitedRow;
-    this._id = id;
+    this._id = id || createRowId();
     this.cookId = cookId;
 
   }
@@ -52,7 +52,20 @@ export class TableRow{
     return this.position==null ? this._id : this.position.id;
   }
 
+  get rowId(){
+    return this._id;
+  }
+
   get posId(){
     return this.position==null ? 0 : this.position.id;
   }
+}
+
+function createRowId(): string {
+  return crypto.randomUUID
+    ? crypto.randomUUID()
+    : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      const r = crypto.getRandomValues(new Uint8Array(1))[0] % 16;
+      return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+    });
 }

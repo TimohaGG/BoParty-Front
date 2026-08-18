@@ -414,8 +414,8 @@ export class AddMenuComponent implements OnInit {
   }
 
 
-  changeAmount(id: number, event: any) {
-    let index = this.posAmounts().findIndex(x => x.position !== null && x.position.id == id);
+  changeAmount(rowId: string, event: any) {
+    let index = this.posAmounts().findIndex(x => x.rowId === rowId);
     if (index != -1) {
       const amount = Number(event.target.value);
       this.posAmounts().at(index)!.amount = amount;
@@ -463,18 +463,25 @@ export class AddMenuComponent implements OnInit {
     return true;
   };
 
-  removeFromList(id: number | string) {
-    let index: number;
+  removeFromList(rowId: string) {
+    const rowToRemove = this.posAmounts().find(item => item.rowId === rowId);
 
-    console.log(this.posAmounts());
+    if (!rowToRemove) {
+      return;
+    }
 
     this.posAmounts.update(items =>
-      items.filter(x => x.id !== id)
+      items.filter(x => x.rowId !== rowId)
     );
 
-    index = this.selectedPositions.findIndex(x => x.id == id);
-    if (index != -1) {
-      this.selectedPositions.splice(index, 1);
+    if (rowToRemove.posId) {
+      const hasSamePosition = this.posAmounts().some(item => !item.unitedRow && item.posId === rowToRemove.posId);
+      if (!hasSamePosition) {
+        const index = this.selectedPositions.findIndex(x => x.id === rowToRemove.posId);
+        if (index !== -1) {
+          this.selectedPositions.splice(index, 1);
+        }
+      }
     }
 
   }
@@ -483,13 +490,13 @@ export class AddMenuComponent implements OnInit {
     console.log(e);
   }
 
-  openHeaderDialog(positionId: number) {
+  openHeaderDialog(rowId: string) {
     const dialogRef = this.dialog.open(AddHeaderDialogComponent);
     dialogRef.afterClosed().subscribe({
       next: (data) => {
         console.log(data);
         if (data) {
-          let index = this.posAmounts().findIndex(x => x.id == positionId);
+          let index = this.posAmounts().findIndex(x => x.rowId === rowId);
           if (index == -1) {
             this.posAmounts.update(arr => [...arr, new TableRow(null, 0, data, true, generateUUID())]);
           } else {
@@ -524,10 +531,10 @@ export class AddMenuComponent implements OnInit {
   }
 
 
-  dividePosition(id: number) {
+  dividePosition(rowId: string) {
     this.posAmounts.update(items =>
       items.flatMap(item => {
-        if (item.posId !== id || item.amount <= 1) {
+        if (item.rowId !== rowId || item.amount <= 1) {
           return [item];
         }
 
@@ -575,13 +582,13 @@ export class AddMenuComponent implements OnInit {
   }
 
   moveUp(id: any) {
-    let prevIndex = this.posAmounts().findIndex(x => x.position?.id == id);
+    let prevIndex = this.posAmounts().findIndex(x => x.rowId === id);
     moveItemInArray(this.posAmounts(),prevIndex,0);
     this.table.renderRows();
   }
 
   moveDown(id: any) {
-    let prevIndex = this.posAmounts().findIndex(x => x.position?.id == id);
+    let prevIndex = this.posAmounts().findIndex(x => x.rowId === id);
     let lastIndex = this.posAmounts().length - 1;
     moveItemInArray(this.posAmounts(),prevIndex,lastIndex);
     this.table.renderRows();

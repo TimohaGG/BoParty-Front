@@ -7,7 +7,7 @@
     <div class="header-actions">
       <button mat-stroked-button class="search-toggle-button" (click)="toggleSearch()" aria-label="Пошук замовлень">
         <mat-icon>{{ showSearch ? 'close' : 'search' }}</mat-icon>
-        <span>{{ showSearch ? 'Сховати пошук' : 'Пошук' }}</span>
+        <span>{{ showSearch ? 'Сховати фільтри' : 'Фільтри' }}</span>
       </button>
 
       <button mat-flat-button class="new-order-button" [routerLink]="'/service/orders/new'" [queryParams]="{editable:true}">
@@ -21,8 +21,19 @@
   @if(showSearch){
     <section class="search-shell content-panel">
       <div class="search-copy">
-        <span class="search-eyebrow">Пошук замовлень</span>
-        <p class="search-summary">Шукайте за клієнтом, датою або використайте обидва фільтри разом.</p>
+        <span class="search-eyebrow">Фільтри замовлень</span>
+      </div>
+
+      <div class="status-filter-row">
+        <button type="button" class="status-filter-chip" [class.is-active]="statusFilter === 'payed'" (click)="setStatusFilter('payed')">
+          Оплачені
+        </button>
+        <button type="button" class="status-filter-chip" [class.is-active]="statusFilter === 'unpayed'" (click)="setStatusFilter('unpayed')">
+          Не оплачені
+        </button>
+        <button type="button" class="status-filter-chip" [class.is-active]="statusFilter === 'all'" (click)="setStatusFilter('all')">
+          Усі
+        </button>
       </div>
 
       <div class="search-form">
@@ -64,9 +75,9 @@
     </div>
   }
   @else{
-    @if(menus().length > 0){
+    @if(visibleMenus().length > 0){
       <div class="orders-list content-panel">
-        @for (item of menus(); track $index){
+        @for (item of visibleMenus(); track item.id){
           <app-orders-list-item [menu]="item"></app-orders-list-item>
         }
       </div>
@@ -82,11 +93,11 @@
 
     <section class="pagination-shell content-panel" aria-label="Навігація сторінками">
       <div class="pagination-copy">
-        <span class="pagination-eyebrow">{{ hasActiveSearch() ? 'Результати пошуку' : (needsArchive ? 'Архів' : 'Активні замовлення') }}</span>
+        <span class="pagination-eyebrow">{{ hasTextOrDateSearch() ? 'Результати пошуку' : (hasStatusFilter() ? 'Фільтр статусу' : (needsArchive ? 'Архів' : 'Активні замовлення')) }}</span>
         <p class="pagination-summary">{{ visibleRangeLabel() }}</p>
       </div>
 
-      @if(!hasActiveSearch()){
+      @if(!hasTextOrDateSearch()){
         <mat-paginator
           class="orders-paginator"
           [length]="totalPages()"

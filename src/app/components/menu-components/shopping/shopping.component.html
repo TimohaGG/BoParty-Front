@@ -129,7 +129,8 @@
                       @for(ing of getShoppingPositionIngredients(pos); track $index){
                         <article class="position-ingredient-slide">
                           <strong>{{ing.ingredient.name}}</strong>
-                          <span>{{ing.amount}} {{ing.unit}}</span>
+                          <span>{{getShoppingPositionIngredientAmountLabel(pos, ing)}}</span>
+                          <small>{{getShoppingPositionIngredientCalculationLabel(pos, ing)}}</small>
                         </article>
                       }
                     }
@@ -166,10 +167,10 @@
             </header>
 
             <div class="items-list">
-              @for(item of group.items; track item.id){
+              @for(item of group.items; track item.key){
                 <article class="shopping-item" [class.is-bought]="item.bought">
 
-                  @if(item.loading){
+                  @if(isGroupLoading(item)){
                     <button class="check-button" type="button" >
                       <mat-spinner color="accent" diameter="20"></mat-spinner>
                     </button>
@@ -182,15 +183,47 @@
                   }
 
 
-                  <button class="item-main item-toggle" type="button" (click)="toggleBought(item)" [disabled]="item.loading">
+                  <button class="item-main item-toggle" type="button" (click)="toggleBought(item)" [disabled]="isGroupLoading(item)">
                     <h3>{{item.ingredient.name}}</h3>
                   </button>
 
-                  <div class="comment-action">
+                  <div class="item-actions">
+                    <div class="details-action">
+                      <button
+                        class="details-button"
+                        type="button"
+                        [class.is-open]="openUsageGroupKey === item.key"
+                        (click)="toggleUsagePopup(item)"
+                        aria-label="Показати використання у позиціях">
+                        <mat-icon>info_outline</mat-icon>
+                      </button>
+
+                      @if(openUsageGroupKey === item.key){
+                        <div class="details-popover">
+                          <strong>Використання</strong>
+                          @if(item.usage.length === 0){
+                            <p class="details-empty">Інгредієнт не використовується у позиціях</p>
+                          }
+                          @else{
+                            <div class="details-list">
+                              @for(usage of item.usage; track usage.positionName + usage.totalAmountLabel){
+                                <article class="details-row">
+                                  <strong>{{usage.positionName}}</strong>
+                                  <span>{{usage.totalAmountLabel}}</span>
+                                  <small>{{usage.calculationLabel}}</small>
+                                </article>
+                              }
+                            </div>
+                          }
+                        </div>
+                      }
+                    </div>
+
+                    <div class="comment-action">
                     <button
                       class="comment-button"
-                      type="button"
-                      [class.has-comment]="hasComment(item)"
+                        type="button"
+                        [class.has-comment]="hasComment(item)"
                       [disabled]="isCommentLoading(item)"
                       (click)="toggleCommentPopup(item)"
                       [attr.aria-label]="hasComment(item) ? 'Показати коментар' : 'Додати коментар'">
@@ -202,11 +235,15 @@
                       }
                     </button>
 
-                    @if(openCommentItemId === item.id && hasComment(item)){
+                    @if(openCommentGroupKey === item.key && hasComment(item)){
                       <div class="comment-popover">
                         <strong>Коментар</strong>
                         <div class="comment-popover-body">
-                          <p>{{item.comment}}</p>
+                          <div class="comment-lines">
+                            @for(line of getCommentLines(item); track line){
+                              <p>{{line}}</p>
+                            }
+                          </div>
                           <button class="comment-edit" type="button" [disabled]="isCommentLoading(item)" (click)="openCommentDialog(item)" aria-label="Редагувати коментар">
                             <mat-icon>edit</mat-icon>
                           </button>
@@ -223,9 +260,10 @@
                       </div>
                     }
                   </div>
+                  </div>
 
                   <div class="item-amount">
-                    {{item.amount}} {{item.unitName}}
+                    {{item.amountDisplay}}
                   </div>
 
                   @if(deleteMode){

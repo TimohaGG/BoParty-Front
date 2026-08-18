@@ -144,7 +144,7 @@
         <mat-cell *matCellDef="let element">
           @if(!element.unitedRow){
             <mat-form-field class="amount-input">
-              <input matInput [disabled]="!editable" [value]="element.amount" class="text-center" (change)="changeAmount(element.position.id, $event)"/>
+              <input matInput [disabled]="!editable" [value]="element.amount" class="text-center" (change)="changeAmount(element.rowId, $event)"/>
             </mat-form-field>
           }
         </mat-cell>
@@ -281,11 +281,11 @@
 
 <ng-template #menu let-item="item">
   <div cdkMenu class="menu">
-    <button cdkMenuItem (click)="moveUp(item.position.id)">Перемістити вверх</button>
-    <button cdkMenuItem (click)="moveDown(item.position.id)">Перемістити вниз</button>
-    <button cdkMenuItem (click)="openHeaderDialog(item.position.id)">Додати заголовок</button>
-    <button cdkMenuItem (click)="dividePosition(item.position.id)">Розділити</button>
-    <button cdkMenuItem (click)="removeFromList(item.id)">Видалити</button>
+    <button cdkMenuItem (click)="moveUp(item.rowId)">Перемістити вверх</button>
+    <button cdkMenuItem (click)="moveDown(item.rowId)">Перемістити вниз</button>
+    <button cdkMenuItem (click)="openHeaderDialog(item.rowId)">Додати заголовок</button>
+    <button cdkMenuItem (click)="dividePosition(item.rowId)">Розділити</button>
+    <button cdkMenuItem (click)="removeFromList(item.rowId)">Видалити</button>
   </div>
 </ng-template>
 

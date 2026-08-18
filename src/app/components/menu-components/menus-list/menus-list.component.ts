@@ -82,11 +82,34 @@ export class MenusListComponent implements OnInit{
 
   public loadingFailure = false;
   public needsArchive:boolean;
-  public showSearch = false;
+  public showSearch = true;
   public searchName = '';
   public searchDate = '';
+  public statusFilter: 'all' | 'payed' | 'unpayed' = 'payed';
   readonly dialog = inject(MatDialog);
+  public visibleMenus = computed(() => this.applyStatusFilter(this.menus()));
   public visibleRangeLabel = computed(() => {
+    if (this.hasTextOrDateSearch()) {
+      const total = this.visibleMenus().length;
+
+      if (total === 0) {
+        return 'Немає замовлень';
+      }
+
+      return `Показано 1-${total} із ${total}`;
+    }
+
+    if (this.hasStatusFilter()) {
+      const filteredCount = this.visibleMenus().length;
+      const pageCount = this.menus().length;
+
+      if (pageCount === 0) {
+        return 'Немає замовлень';
+      }
+
+      return `Показано ${filteredCount} із ${pageCount} на сторінці`;
+    }
+
     const total = this.totalPages();
 
     if (total === 0) {
@@ -95,7 +118,6 @@ export class MenusListComponent implements OnInit{
 
     const start = this.currentPage() * this.perPage() + 1;
     const end = Math.min(start + this.perPage() - 1, total);
-
     return `Показано ${start}-${end} із ${total}`;
   });
 
@@ -154,7 +176,19 @@ export class MenusListComponent implements OnInit{
     const date = this.searchDate;
 
     if (!name && !date) {
-      this.clearSearch();
+      if (!this.hasStatusFilter()) {
+        this.clearSearch();
+      } else {
+        this.loadingFailure = false;
+        this.store.setCurrentPage(0);
+        this.getFutureAmount(this.needsArchive).subscribe({
+          next: () => this.loadFutureOrders(this.needsArchive),
+          error: error => {
+            this.loadingFailure = true;
+            this.toast.show(error.message, {duration: 3000, position: "bottom-center", autoClose: true});
+          }
+        });
+      }
       return;
     }
 
@@ -173,7 +207,8 @@ export class MenusListComponent implements OnInit{
     this.loadingFailure = false;
     this.searchName = '';
     this.searchDate = '';
-    this.showSearch = false;
+    this.statusFilter = 'payed';
+    this.showSearch = true;
     this.store.setCurrentPage(0);
     this.getFutureAmount(this.needsArchive).subscribe({
       next: () => this.loadFutureOrders(this.needsArchive),
@@ -187,13 +222,41 @@ export class MenusListComponent implements OnInit{
   toggleSearch() {
     this.showSearch = !this.showSearch;
 
-    if (!this.showSearch && !this.hasActiveSearch()) {
+    if (!this.showSearch && !this.hasAnyFilter()) {
       this.clearSearch();
     }
   }
 
   hasActiveSearch() {
+    return this.hasAnyFilter();
+  }
+
+  hasTextOrDateSearch() {
     return this.searchName.trim().length > 0 || this.searchDate.length > 0;
+  }
+
+  hasStatusFilter() {
+    return this.statusFilter !== 'all';
+  }
+
+  hasAnyFilter() {
+    return this.hasTextOrDateSearch() || this.hasStatusFilter();
+  }
+
+  setStatusFilter(status: 'all' | 'payed' | 'unpayed') {
+    this.statusFilter = status;
+
+    if (!this.hasTextOrDateSearch()) {
+      this.loadingFailure = false;
+      this.store.setCurrentPage(0);
+      this.getFutureAmount(this.needsArchive).subscribe({
+        next: () => this.loadFutureOrders(this.needsArchive),
+        error: error => {
+          this.loadingFailure = true;
+          this.toast.show(error.message, {duration: 3000, position: "bottom-center", autoClose: true});
+        }
+      });
+    }
   }
 
   getFutureAmount(archive:boolean) {
@@ -201,7 +264,7 @@ export class MenusListComponent implements OnInit{
   }
 
   onPageChange($event: PageEvent) {
-    if (this.hasActiveSearch()) {
+    if (this.hasTextOrDateSearch()) {
       return;
     }
 
@@ -220,5 +283,14 @@ export class MenusListComponent implements OnInit{
       console.log(result);
 
     })
+  }
+
+  private applyStatusFilter(items: MinMenu[]): MinMenu[] {
+    if (this.statusFilter === 'all') {
+      return items;
+    }
+
+    const shouldBePayed = this.statusFilter === 'payed';
+    return items.filter(item => item.payed === shouldBePayed);
   }
 }
