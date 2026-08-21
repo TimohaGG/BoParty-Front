@@ -61,6 +61,7 @@ export class PositionsListComponent implements OnInit {
   }
 
   public isLoading:boolean = true;
+  public exportLoading = false;
   private loadedCategoryIds = new Set<number>();
 
 
@@ -175,6 +176,19 @@ export class PositionsListComponent implements OnInit {
     })
   }
 
+  generateFullMenuDocument(): void {
+    this.exportLoading = true;
+    this.positionsService.downloadFullMenuPdf().subscribe({
+      next: () => {
+        this.exportLoading = false;
+      },
+      error: (error) => {
+        this.toast.show(error.message ?? "Не вдалося сформувати меню", {duration: 3000, position: "bottom-center", autoClose: true});
+        this.exportLoading = false;
+      }
+    });
+  }
+
   selectPosition(position:Position){
     this.selectedPositions.push(position);
   }
@@ -212,6 +226,4 @@ export class PositionsListComponent implements OnInit {
     this.filteredPositions.set(existingPositions);
     this.isLoading = false;
   }
-
-
 }

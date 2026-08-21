@@ -1,3 +1,28 @@
+.positions-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.menu-export-button {
+  min-height: 44px;
+  padding: 0 16px;
+  border-color: rgba(246, 196, 83, 0.24) !important;
+  border-radius: 14px !important;
+  color: var(--text-main) !important;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.menu-export-button .mat-icon {
+  margin-right: 8px;
+  color: var(--accent-color);
+}
+
+.menu-export-button .mat-mdc-progress-spinner {
+  margin-right: 8px;
+}
+
 .categories-list {
   width: 100%;
   margin-bottom: 16px;
@@ -43,6 +68,14 @@
 }
 
 @media (max-width: 576px) {
+  .positions-header-actions {
+    width: 100%;
+  }
+
+  .positions-header-actions .mat-mdc-button-base {
+    width: 100%;
+  }
+
   .categories-list {
     margin-inline: -12px;
     padding-inline: 12px;

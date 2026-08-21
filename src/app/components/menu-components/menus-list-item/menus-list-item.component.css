@@ -9,9 +9,27 @@
 
 .order-main {
   display: grid;
-  grid-template-columns: minmax(140px, 1fr) minmax(100px, auto) auto;
-  gap: 16px;
+  gap: 14px;
+}
+
+.order-head,
+.order-summary {
+  display: grid;
   align-items: center;
+}
+
+.order-head {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+}
+
+.order-summary {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+}
+
+.order-copy {
+  min-width: 0;
 }
 
 .eyebrow {
@@ -40,21 +58,87 @@ h2 {
   font-size: 1.15rem;
 }
 
+.payment-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.payment-state.is-paid {
+  color: #9ed2aa;
+  border-color: rgba(109, 167, 122, 0.28);
+  background: rgba(109, 167, 122, 0.12);
+}
+
+.payment-state.is-unpaid {
+  color: #f1c9a1;
+  border-color: rgba(241, 167, 97, 0.22);
+  background: rgba(241, 167, 97, 0.1);
+}
+
+.payment-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
 .paid-button.empty {
+  display: inline-grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 0;
+  flex: 0 0 auto;
   background-color: transparent;
   border: 1px solid var(--border-subtle);
 }
 
 .paid-button.full {
+  display: inline-grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 0;
+  flex: 0 0 auto;
   background-color: #2e7d32;
 }
 
+.paid-button mat-icon {
+  width: 24px;
+  height: 24px;
+  font-size: 24px;
+  line-height: 24px;
+}
+
 .control-buttons {
+  display: grid;
+  gap: 10px;
+}
+
+.primary-actions,
+.secondary-actions {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
   gap: 8px;
-  flex-wrap: wrap;
+}
+
+.primary-actions {
+  justify-content: flex-end;
+}
+
+.secondary-actions {
+  justify-content: flex-end;
 }
 
 .control-button {
@@ -63,6 +147,10 @@ h2 {
 
 .control-button mat-icon {
   margin-right: 6px;
+}
+
+.edit-label-short {
+  display: none;
 }
 
 .pdf-button {
@@ -156,33 +244,25 @@ h2 {
 @media (max-width: 760px) {
   .order-row {
     grid-template-columns: 1fr;
-    padding-top: 18px;
-  }
-
-  .order-main {
-    grid-template-columns: 1fr;
-    padding-right: 58px;
   }
 
   .paid-button.empty,
   .paid-button.full {
-    position: absolute;
-    top: 18px;
-    right: 18px;
+    position: static;
   }
 
   .control-buttons {
-    display: grid;
     grid-column: 1 / -1;
-    grid-template-columns: minmax(74px, 1fr) minmax(128px, 1.45fr) 44px 44px 44px 44px;
-    justify-content: initial;
-    gap: 8px;
     width: 100%;
+  }
+
+  .primary-actions,
+  .secondary-actions {
+    justify-content: flex-start;
   }
 
   .control-button {
     min-width: 0;
-    width: 100%;
     padding-inline: 8px;
   }
 
@@ -207,21 +287,58 @@ h2 {
 }
 
 @media (max-width: 480px) {
-  .order-main {
-    grid-template-columns: 1fr;
+  .order-row {
+    gap: 14px;
   }
 
-  .order-price {
-    grid-column: auto;
+  .order-head {
+    gap: 12px;
+    align-items: start;
+  }
+
+  .order-summary {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  h2 {
+    font-size: 1.08rem;
+    line-height: 1.15;
+  }
+
+  .client-name {
+    margin-top: 4px;
+    font-size: 0.9rem;
+  }
+
+  .payment-state {
+    justify-self: start;
+    min-height: 34px;
+    padding-inline: 12px;
+    font-size: 0.82rem;
   }
 
   .control-buttons {
-    grid-template-columns: minmax(68px, 1fr) minmax(116px, 1.35fr) 36px 36px 36px 36px;
-    gap: 6px;
+    gap: 8px;
+    padding-top: 2px;
   }
 
   .control-button {
-    padding-inline: 4px;
+    flex: 1 1 0;
+    min-height: 40px;
+    padding-inline: 10px;
+    border-radius: 12px !important;
+    min-width: 0;
+  }
+
+  .primary-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .control-button span {
+    font-size: 0.9rem;
   }
 
   .pdf-button {
@@ -240,20 +357,33 @@ h2 {
     margin-right: 0;
   }
 
-  .pdf-button mat-icon:first-child {
+  .edit-label-full {
     display: none;
   }
 
-  .pdf-button mat-icon:last-child {
-    margin-left: 0;
+  .edit-label-short {
+    display: inline;
+  }
+
+  .secondary-actions {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
   }
 
   .shopping-button,
   .cooking-button,
   .copy-button,
   .delete-button {
-    width: 36px;
-    min-width: 36px;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 40px;
+    min-width: 0;
+    min-height: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
   }
 
   .shopping-button mat-icon,
@@ -261,5 +391,57 @@ h2 {
   .copy-button mat-icon,
   .delete-button mat-icon {
     margin: 0;
+  }
+
+  .shopping-button mat-icon,
+  .cooking-button mat-icon,
+  .copy-button mat-icon,
+  .delete-button mat-icon,
+  .pdf-button-content mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+    line-height: 18px;
+  }
+
+  .paid-button.empty,
+  .paid-button.full {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@media (max-width: 360px) {
+  .order-row {
+    padding: 16px;
+  }
+
+  .order-main {
+    gap: 10px 12px;
+  }
+
+  .control-button {
+    font-size: 0.84rem;
+    padding-inline: 8px;
+  }
+
+  .primary-actions,
+  .secondary-actions,
+  .control-buttons {
+    gap: 5px;
+  }
+
+  .shopping-button,
+  .cooking-button,
+  .copy-button,
+  .delete-button {
+    height: 36px;
+    min-height: 36px;
+  }
+
+  .paid-button.empty,
+  .paid-button.full {
+    width: 40px;
+    height: 40px;
   }
 }

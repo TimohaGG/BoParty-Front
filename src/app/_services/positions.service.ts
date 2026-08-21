@@ -2,7 +2,7 @@ import {inject, Injectable} from "@angular/core";
 import {entityStorage} from "../_helpers/storage/entityStorage";
 import {HttpErrorResponse} from "@angular/common/http";
 import {HttpService} from "./httpService";
-import {catchError, map, Observable, of} from "rxjs";
+import {catchError, map, Observable, of, throwError} from "rxjs";
 import {Position} from "../models/Positions/Position";
 import {ExceptionMessage, isMessage} from "../models/Exceptions/ExceptionMessage";
 
@@ -101,6 +101,37 @@ export class PositionsService {
         return of(msg);
       })
     )
+  }
+
+  downloadFullMenuPdf(): Observable<void> {
+    return this.http.downloadFullMenuPdf().pipe(
+      map(blob => {
+        this.downloadBlob(blob, this.buildFullMenuFilename());
+      }),
+      catchError((error: HttpErrorResponse) => {
+        return throwError(() => new Error(error.error?.message ?? "Не вдалося завантажити повне меню"));
+      })
+    );
+  }
+
+  private downloadBlob(blob: Blob, fileName: string): void {
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    link.rel = 'noopener';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  }
+
+  private buildFullMenuFilename(): string {
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    return `full-menu-${day}-${month}-${year}.pdf`;
   }
 
 

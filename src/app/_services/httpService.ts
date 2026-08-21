@@ -118,6 +118,12 @@ export class HttpService{
     return this.clinet.get<Position[] | ExceptionMessage>(this.baseUrl + "positions/get/category/" + categoryId);
   }
 
+  downloadFullMenuPdf() {
+    return this.clinet.get(this.baseUrl + "positions/generate/full-menu", {
+      responseType: "blob"
+    });
+  }
+
   getOrderPositionsByCategoryId(categoryId: number) {
     return this.clinet.get<Position[] | ExceptionMessage>(this.baseUrl + "orders/positions/" + categoryId);
   }
@@ -179,8 +185,6 @@ export class HttpService{
   }
 
   addOrder(data: any, positions:MinPosAmount[], additionalData:AdditionalMenuData[]) {
-    console.log(additionalData);
-
     return this.clinet.post<Menu | ExceptionMessage>(this.baseUrl + "menus/create",{
       ...data,
       positions: positions,
