@@ -115,7 +115,11 @@ export class PositionsService {
   }
 
   private downloadBlob(blob: Blob, fileName: string): void {
-    const url = window.URL.createObjectURL(blob);
+    const fileBlob = this.isIosDevice()
+      ? new Blob([blob], {type: 'application/octet-stream'})
+      : blob;
+
+    const url = window.URL.createObjectURL(fileBlob);
     const link = document.createElement('a');
     link.href = url;
     link.download = fileName;
@@ -124,6 +128,12 @@ export class PositionsService {
     link.click();
     document.body.removeChild(link);
     window.URL.revokeObjectURL(url);
+  }
+
+  private isIosDevice(): boolean {
+    const userAgent = navigator.userAgent;
+    return /iPad|iPhone|iPod/.test(userAgent)
+      || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   }
 
   private buildFullMenuFilename(): string {
