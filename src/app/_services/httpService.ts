@@ -1,4 +1,4 @@
-import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {MinMenu} from "../models/Menu/MinMenu";
 import {catchError, Observable, throwError} from "rxjs";
 import {Injectable} from "@angular/core";
@@ -120,7 +120,8 @@ export class HttpService{
 
   downloadFullMenuPdf() {
     return this.clinet.get(this.baseUrl + "positions/generate/full-menu", {
-      responseType: "blob"
+      responseType: "blob",
+      observe: "response"
     });
   }
 
@@ -234,11 +235,11 @@ export class HttpService{
   //   return this.clinet.get<MinMenu[] | ExceptionMessage>(this.baseUrl + "orders/get/min/archive", {params:{pageSize:perPage, currentPage:currentPage}});
   // }
   download(id: number) {
-    return this.clinet.get(this.baseUrl + "menus/generate/"+id,{responseType: "blob"});
+    return this.clinet.get(this.baseUrl + "menus/generate/"+id,{responseType: "blob", observe: "response"});
   }
 
   downloadShoppingListPdf(id: number) {
-    return this.clinet.get(this.baseUrl + "menus/generate/shopping/" + id, {responseType: "blob"});
+    return this.clinet.get(this.baseUrl + "menus/generate/shopping/" + id, {responseType: "blob", observe: "response"});
   }
 
   deleteMenuInfo(id: number) {

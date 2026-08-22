@@ -12,6 +12,7 @@ import {CommonMenuInfo} from "../models/Menu/CommonMenuInfo";
 import {AdditionalMenuData} from "../models/Menu/AdditionalMenuData";
 import {Expences, ExpencesRequest} from "../models/Expences/Expences";
 import {Position} from "../models/Positions/Position";
+import {HttpResponse} from "@angular/common/http";
 
 @Injectable({
   providedIn:"root"
@@ -253,8 +254,8 @@ export class OrdersService{
   download(id: number, menuDate?: string | null) {
     return this.http.download(id).pipe(
       map(res=>{
-        if(!isMessage(res)){
-          this.downloadBlob(res, this.buildMenuPdfFilename(menuDate, id));
+        if(res.body){
+          this.downloadBlob(res.body, this.resolvePdfFilename(res, this.buildMenuPdfFilename(menuDate, id)));
         }
       }),
       catchError((err:HttpErrorResponse)=>{
@@ -267,8 +268,8 @@ export class OrdersService{
   downloadShoppingListPdf(id: number) {
     return this.http.downloadShoppingListPdf(id).pipe(
       map(res => {
-        if (!isMessage(res)) {
-          this.downloadBlob(res, `shopping-list-${id}.pdf`);
+        if (res.body) {
+          this.downloadBlob(res.body, this.resolvePdfFilename(res, `shopping-list-${id}.pdf`));
         }
       }),
       catchError((err: HttpErrorResponse) => {
@@ -484,5 +485,24 @@ export class OrdersService{
     const year = parsedDate.getFullYear();
 
     return `${day}-${month}-${year}`;
+  }
+
+  private resolvePdfFilename(response: HttpResponse<Blob>, fallback: string): string {
+    const disposition = response.headers.get('content-disposition');
+    if (!disposition) {
+      return fallback;
+    }
+
+    const utfMatch = disposition.match(/filename\*=UTF-8''([^;]+)/i);
+    if (utfMatch?.[1]) {
+      return decodeURIComponent(utfMatch[1]).replace(/["']/g, '');
+    }
+
+    const plainMatch = disposition.match(/filename="?([^";]+)"?/i);
+    if (plainMatch?.[1]) {
+      return plainMatch[1].trim();
+    }
+
+    return fallback;
   }
 }

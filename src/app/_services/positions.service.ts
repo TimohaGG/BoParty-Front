@@ -1,6 +1,6 @@
 import {inject, Injectable} from "@angular/core";
 import {entityStorage} from "../_helpers/storage/entityStorage";
-import {HttpErrorResponse} from "@angular/common/http";
+import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import {HttpService} from "./httpService";
 import {catchError, map, Observable, of, throwError} from "rxjs";
 import {Position} from "../models/Positions/Position";
@@ -105,8 +105,10 @@ export class PositionsService {
 
   downloadFullMenuPdf(): Observable<void> {
     return this.http.downloadFullMenuPdf().pipe(
-      map(blob => {
-        this.downloadBlob(blob, this.buildFullMenuFilename());
+      map(response => {
+        if (response.body) {
+          this.downloadBlob(response.body, this.resolvePdfFilename(response, this.buildFullMenuFilename()));
+        }
       }),
       catchError((error: HttpErrorResponse) => {
         return throwError(() => new Error(error.error?.message ?? "Не вдалося завантажити повне меню"));
@@ -142,6 +144,25 @@ export class PositionsService {
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const year = now.getFullYear();
     return `full-menu-${day}-${month}-${year}.pdf`;
+  }
+
+  private resolvePdfFilename(response: HttpResponse<Blob>, fallback: string): string {
+    const disposition = response.headers.get('content-disposition');
+    if (!disposition) {
+      return fallback;
+    }
+
+    const utfMatch = disposition.match(/filename\*=UTF-8''([^;]+)/i);
+    if (utfMatch?.[1]) {
+      return decodeURIComponent(utfMatch[1]).replace(/["']/g, '');
+    }
+
+    const plainMatch = disposition.match(/filename="?([^";]+)"?/i);
+    if (plainMatch?.[1]) {
+      return plainMatch[1].trim();
+    }
+
+    return fallback;
   }
 
 
