@@ -84,6 +84,7 @@ export class AddMenuComponent implements OnInit {
   public editOrderid: number = -1;
   editable: boolean = false;
   loading: boolean = false;
+  pdfLoading: boolean = false;
 
 
   public selectedPositions: Position[] = []
@@ -305,12 +306,79 @@ export class AddMenuComponent implements OnInit {
     }
   }
 
+  generatePdf(): void {
+    if (this.ordersForm.invalid) {
+      this.ordersForm.markAllAsTouched();
+      return;
+    }
+
+    const items = this.parsePositions();
+    const additionalInfo = this.normalizeAdditionalInfo(this.additionalInfo());
+    this.additionalInfo.set(additionalInfo);
+
+    this.loading = true;
+    this.pdfLoading = true;
+
+    const handleSavedOrder = (menu: Menu) => {
+      this.editOrderid = menu.id;
+      this.additionalInfo.set(this.normalizeAdditionalInfo(menu.additionalInfo));
+      this.loading = false;
+
+      this.ordersService.download(menu.id, menu.date).subscribe({
+        next: () => {
+          this.pdfLoading = false;
+        },
+        error: (error: Error) => {
+          this.toast.show(error.message ?? "Не вдалося сформувати PDF", {
+            autoClose: true,
+            position: "bottom-center",
+            duration: 2500
+          });
+          this.pdfLoading = false;
+        }
+      });
+    };
+
+    if (this.editOrderid <= 0) {
+      this.ordersService.saveOrder(this.buildOrderPayload(), items, additionalInfo).subscribe({
+        next: (data) => {
+          if (!isMessage(data)) {
+            const savedMenu = data as Menu;
+            this.toast.show("Збережено!", {autoClose: true, position: "bottom-center", duration: 2000});
+            handleSavedOrder(savedMenu);
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          this.toast.error(`${error}`, {autoClose: true, position: "bottom-center", duration: 2000});
+          this.loading = false;
+          this.pdfLoading = false;
+        }
+      });
+      return;
+    }
+
+    this.ordersService.editOrder(this.editOrderid, this.buildOrderPayload(), items, additionalInfo).subscribe({
+      next: (data) => {
+        const savedMenu = data as Menu;
+        this.toast.show("Збережено!", {autoClose: true, position: "bottom-center", duration: 2000});
+        handleSavedOrder(savedMenu);
+      },
+      error: (data) => {
+        this.toast.show(`Помилка редагування!\n${data}`, {autoClose: true, position: "bottom-center", duration: 2000});
+        this.loading = false;
+        this.pdfLoading = false;
+      }
+    });
+  }
+
   private saveOrder(items: MinPosAmount[], additionalInfo: AdditionalMenuData[]) {
     this.ordersService.saveOrder(this.buildOrderPayload(), items, additionalInfo).subscribe(
       {
         next: (data) => {
           if (!isMessage(data)) {
-            this.additionalInfo.set(this.normalizeAdditionalInfo((data as Menu).additionalInfo));
+            const savedMenu = data as Menu;
+            this.editOrderid = savedMenu.id;
+            this.additionalInfo.set(this.normalizeAdditionalInfo(savedMenu.additionalInfo));
           }
           this.toast.show("Збережено!", {autoClose: true, position: "bottom-center", duration: 2000})
           this.loading = false;

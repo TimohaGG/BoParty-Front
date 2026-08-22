@@ -22,6 +22,7 @@
 .drag-hint{position:absolute;top:10px;left:6px;color:var(--text-muted)}
 .editor-actions{display:flex;flex-direction:column;gap:12px}
 .sort-button{background-color:var(--surface-strong)}
+.pdf-button{background-color:#8e2430}
 .save-button{background-color:#2e7d32}
 .menu{display:inline-flex;flex-direction:column;min-width:180px;background:#fff;padding:6px 0}
 .menu button{display:flex;align-items:center;min-width:64px;line-height:36px;padding:0 16px;border:0;background:transparent;cursor:pointer}

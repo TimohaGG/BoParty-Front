@@ -13,6 +13,49 @@
   gap: 12px;
 }
 
+.orders-status-switcher {
+  margin-bottom: 18px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.orders-status-toggle-group {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  width: auto;
+  max-width: fit-content;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+:host ::ng-deep .orders-status-toggle-group .mat-button-toggle-label-content {
+  padding: 0 24px;
+  line-height: 52px;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+:host ::ng-deep .orders-status-toggle-group .mat-button-toggle {
+  border-right: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  background: transparent;
+}
+
+:host ::ng-deep .orders-status-toggle-group .mat-button-toggle:last-child {
+  border-right: 0;
+}
+
+:host ::ng-deep .orders-status-toggle-group .mat-button-toggle-checked {
+  color: var(--text-main);
+  background: linear-gradient(135deg, rgba(246, 196, 83, 0.24), rgba(219, 169, 54, 0.12));
+}
+
+:host ::ng-deep .orders-status-toggle-group .mat-button-toggle-focus-overlay {
+  display: none;
+}
+
 .filters-sidebar {
   position: fixed;
   top: 88px;
@@ -84,39 +127,6 @@
 
 .filters-close mat-icon {
   color: var(--accent-color);
-}
-
-.status-filter-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.status-filter-chip {
-  min-height: 40px;
-  padding: 0 16px;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 999px;
-  color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.04);
-  cursor: pointer;
-  transition:
-    border-color 180ms ease,
-    background-color 180ms ease,
-    color 180ms ease,
-    transform 180ms ease;
-}
-
-.status-filter-chip:hover {
-  transform: translateY(-1px);
-  border-color: rgba(246, 196, 83, 0.28);
-  color: var(--text-main);
-}
-
-.status-filter-chip.is-active {
-  border-color: rgba(246, 196, 83, 0.42);
-  color: #241a02;
-  background: linear-gradient(135deg, #f3d27a, #dba936);
 }
 
 .search-eyebrow {
@@ -354,6 +364,15 @@
     grid-template-columns: 1fr;
   }
 
+  .orders-status-switcher {
+    margin-bottom: 14px;
+    justify-content: center;
+  }
+
+  .orders-status-toggle-group {
+    border-radius: 18px;
+  }
+
   .filters-sidebar {
     top: 72px;
     right: 12px;
@@ -362,9 +381,10 @@
     padding: 16px;
   }
 
-  .status-filter-row {
-    display: grid;
-    grid-template-columns: 1fr;
+  :host ::ng-deep .orders-status-toggle-group .mat-button-toggle-label-content {
+    padding: 0 14px;
+    line-height: 44px;
+    font-size: 0.92rem;
   }
 
   .search-actions .mat-mdc-button-base {

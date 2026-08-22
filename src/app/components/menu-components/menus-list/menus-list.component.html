@@ -13,31 +13,30 @@
     </div>
   </header>
 
+  <div class="orders-status-switcher">
+    <mat-button-toggle-group
+      class="orders-status-toggle-group"
+      [value]="statusFilter"
+      aria-label="Статус замовлень">
+      <mat-button-toggle value="payed" (click)="setStatusFilter('payed')">Оплачені</mat-button-toggle>
+      <mat-button-toggle value="unpayed" (click)="setStatusFilter('unpayed')">Не оплачені</mat-button-toggle>
+      <mat-button-toggle value="all" (click)="setStatusFilter('all')">Усі</mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+
   @if(showSearch){
-    <button class="filters-backdrop" type="button" (click)="toggleSearch()" aria-label="Закрити фільтри"></button>
+    <button class="filters-backdrop" type="button" (click)="toggleSearch()" aria-label="Закрити пошук"></button>
   }
 
-  <aside class="filters-sidebar content-panel" [class.is-open]="showSearch" aria-label="Фільтри замовлень">
+  <aside class="filters-sidebar content-panel" [class.is-open]="showSearch" aria-label="Пошук замовлень">
     <div class="filters-sidebar-header">
       <div class="search-copy">
-        <span class="search-eyebrow">Фільтри замовлень</span>
-        <p class="filters-summary">Оплачені замовлення відкриті за замовчуванням. Можна швидко змінити статус або шукати за клієнтом і датою.</p>
+        <span class="search-eyebrow">Пошук замовлень</span>
+        <p class="filters-summary">Шукайте замовлення за клієнтом і датою події.</p>
       </div>
 
-      <button type="button" class="filters-close" (click)="toggleSearch()" aria-label="Закрити фільтри">
+      <button type="button" class="filters-close" (click)="toggleSearch()" aria-label="Закрити пошук">
         <mat-icon>close</mat-icon>
-      </button>
-    </div>
-
-    <div class="status-filter-row">
-      <button type="button" class="status-filter-chip" [class.is-active]="statusFilter === 'payed'" (click)="setStatusFilter('payed')">
-        Оплачені
-      </button>
-      <button type="button" class="status-filter-chip" [class.is-active]="statusFilter === 'unpayed'" (click)="setStatusFilter('unpayed')">
-        Не оплачені
-      </button>
-      <button type="button" class="status-filter-chip" [class.is-active]="statusFilter === 'all'" (click)="setStatusFilter('all')">
-        Усі
       </button>
     </div>
 
@@ -116,8 +115,8 @@
   }
 </section>
 
-<button mat-fab class="filters-fab" [class.is-active]="showSearch" (click)="toggleSearch()" aria-label="Відкрити фільтри">
-  <mat-icon>{{ showSearch ? 'close' : 'tune' }}</mat-icon>
+<button mat-fab class="filters-fab" [class.is-active]="showSearch" (click)="toggleSearch()" aria-label="Відкрити пошук">
+  <mat-icon>{{ showSearch ? 'close' : 'search' }}</mat-icon>
 </button>
 
 <button [matMenuTriggerFor]="menu" mat-fab class="menu-button orders-actions-button" aria-label="Дії із замовленнями">

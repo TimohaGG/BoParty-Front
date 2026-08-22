@@ -269,8 +269,12 @@
     }
 
     @if(!loading){
-      <button mat-fab (click)="save()" class="sort-button" aria-label="Зберегти порядок">
-        <mat-icon>sort</mat-icon>
+      <button mat-fab (click)="generatePdf()" class="pdf-button" [disabled]="pdfLoading || editOrderid <= 0" aria-label="Згенерувати PDF">
+        @if(pdfLoading){
+          <mat-spinner diameter="24"></mat-spinner>
+        }@else{
+          <mat-icon>picture_as_pdf</mat-icon>
+        }
       </button>
       <button mat-fab (click)="save()" class="save-button" aria-label="Зберегти замовлення">
         <mat-icon>save</mat-icon>
