@@ -475,6 +475,12 @@ export class OrdersService{
       return `${day}-${month}-${year}`;
     }
 
+    const localDateMatch = trimmedDate.match(/^(\d{2})[.\/-](\d{2})[.\/-](\d{4})/);
+    if (localDateMatch) {
+      const [, day, month, year] = localDateMatch;
+      return `${day}-${month}-${year}`;
+    }
+
     const parsedDate = new Date(trimmedDate);
     if (Number.isNaN(parsedDate.getTime())) {
       return null;
