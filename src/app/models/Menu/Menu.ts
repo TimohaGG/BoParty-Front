@@ -17,6 +17,7 @@ export interface Menu {
   deliveryAddress: string;
   orderType: string;
   needsWaiter: boolean;
+  prepayment: number;
   positions:PositionAmountFull[];
   additionalInfo:AdditionalMenuData[];
   payed:boolean;

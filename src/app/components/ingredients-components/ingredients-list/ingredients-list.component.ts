@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, computed, inject, NgZone, OnInit, Signal} from '@angular/core';
+import {ChangeDetectorRef, Component, computed, inject, NgZone, OnInit, Signal, ViewChild} from '@angular/core';
 import {entityStorage} from "../../../_helpers/storage/entityStorage";
 import {Ingredient} from "../../../models/Positions/Ingredient";
 import {Category} from "../../../models/Positions/Category";
@@ -21,6 +21,8 @@ import {
   DeleteIngCategoryDialogueComponent
 } from "../delete-ing-category-dialogue/delete-ing-category-dialogue.component";
 import {NgTemplateOutlet} from "@angular/common";
+import {MatFormField, MatLabel} from "@angular/material/form-field";
+import {MatSelect, MatOption} from "@angular/material/select";
 
 
 @Component({
@@ -41,12 +43,17 @@ import {NgTemplateOutlet} from "@angular/common";
     MatFabButton,
     MatMenuTrigger,
     NgTemplateOutlet,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatOption,
   ],
   templateUrl: './ingredients-list.component.html',
   styleUrl: './ingredients-list.component.css',
 
 })
 export class IngredientsListComponent implements OnInit {
+  @ViewChild('tree') tree?: MatTree<TreeNode>;
   private store = inject(entityStorage);
   public ingredients: Signal<Ingredient[]> = computed(this.store.ingredientsEntities);
   public categories: Signal<Category[]> = computed(this.store.ingCategoriesEntities);
@@ -55,6 +62,8 @@ export class IngredientsListComponent implements OnInit {
   hasChild = (_: number, node: TreeNode) => !!node.children?.length;
   treeData: TreeNode[] = [];
   prevName: string = "";
+  movingIngredientId: number | null = null;
+  selectedCategoryId: number | null = null;
 
 
 
@@ -103,7 +112,8 @@ export class IngredientsListComponent implements OnInit {
         .map(ing => ({
           name: ing.name,
           id: ing.id,
-          isParent: false
+          isParent: false,
+          categoryId: ing.category.id
         }));
 
       return {
@@ -207,6 +217,41 @@ export class IngredientsListComponent implements OnInit {
     //     this.toast.show(error.message, {duration: 3000, position: "bottom-center", autoClose: true});
     //   }
     // })
+  }
+
+  startCategoryChange(node: TreeNode, event: Event) {
+    this.stopPropagination(event);
+    this.movingIngredientId = node.id;
+    this.selectedCategoryId = node.categoryId ?? null;
+  }
+
+  cancelCategoryChange(event: Event) {
+    this.stopPropagination(event);
+    this.movingIngredientId = null;
+    this.selectedCategoryId = null;
+  }
+
+  confirmCategoryChange(node: TreeNode, event: Event) {
+    this.stopPropagination(event);
+
+    if (!this.selectedCategoryId || this.selectedCategoryId === node.categoryId) {
+      this.cancelCategoryChange(event);
+      return;
+    }
+
+      this.ingService.changeIngredientCategory(node.id, this.selectedCategoryId).subscribe({
+        next: ingredient => {
+          const expandedCategoryIds = this.getExpandedCategoryIds();
+          expandedCategoryIds.add(ingredient.category.id);
+          this.rebuildTree(expandedCategoryIds);
+          this.movingIngredientId = null;
+          this.selectedCategoryId = null;
+          this.toast.show(`Інгредієнт "${ingredient.name}" переміщено`, {duration: 3000, position: "bottom-center", autoClose: true});
+      },
+      error: error => {
+        this.toast.show(error.message, {duration: 3000, position: "bottom-center", autoClose: true});
+      }
+    });
   }
 
   private removeIngredientFromTree(id: number) {
@@ -330,6 +375,38 @@ export class IngredientsListComponent implements OnInit {
     this.treeData = [...data];
   }
 
+  private getExpandedCategoryIds(): Set<number> {
+    const expanded = new Set<number>();
+
+    if (!this.tree) {
+      return expanded;
+    }
+
+    this.treeData.forEach(node => {
+      if (node.isParent && this.tree?.isExpanded(node)) {
+        expanded.add(node.id);
+      }
+    });
+
+    return expanded;
+  }
+
+  private rebuildTree(expandedCategoryIds: Set<number> = new Set()): void {
+    this.treeData = this.categoriesTree();
+
+    queueMicrotask(() => {
+      if (!this.tree) {
+        return;
+      }
+
+      this.treeData.forEach(node => {
+        if (node.isParent && expandedCategoryIds.has(node.id)) {
+          this.tree?.expand(node);
+        }
+      });
+    });
+  }
+
 
 }
 
@@ -337,5 +414,6 @@ interface TreeNode {
   name: string;
   id:number;
   isParent:boolean;
+  categoryId?: number;
   children?:TreeNode[];
 }

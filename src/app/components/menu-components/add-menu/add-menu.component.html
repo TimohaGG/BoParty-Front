@@ -51,6 +51,10 @@
         <mat-option value="оформлення">Оформлення</mat-option>
       </mat-select>
     </mat-form-field>
+    <mat-form-field>
+      <mat-label>Передплата</mat-label>
+      <input type="number" min="0" matInput formControlName="prepayment"/>
+    </mat-form-field>
     <mat-checkbox formControlName="needsWaiter">Потрібен офіціант</mat-checkbox>
     <div class="tax-controls">
       <mat-checkbox formControlName="serving">Обслуговування</mat-checkbox>
@@ -75,10 +79,20 @@
         <p>Перетягуйте рядки, щоб змінити порядок у меню.</p>
       </div>
 
-      <button mat-flat-button color="accent" [disabled]="!editable" (click)="openPositionsDialog()">
-        <mat-icon>add</mat-icon>
-        Додати позиції
-      </button>
+      <div class="positions-header-actions">
+        <button mat-stroked-button [disabled]="posAmounts().length === 0" (click)="copyPositionsToClipboard()">
+          <mat-icon>content_copy</mat-icon>
+          Копіювати
+        </button>
+        <button mat-stroked-button [disabled]="!editable" (click)="pastePositionsFromClipboard()">
+          <mat-icon>content_paste</mat-icon>
+          Вставити
+        </button>
+        <button mat-flat-button color="accent" [disabled]="!editable" (click)="openPositionsDialog()">
+          <mat-icon>add</mat-icon>
+          Додати позиції
+        </button>
+      </div>
     </div>
 
     <div class="bulk-amount-bar content-panel">

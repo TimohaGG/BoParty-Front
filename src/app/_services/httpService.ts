@@ -149,6 +149,13 @@ export class HttpService{
     return this.clinet.post<RenameResp | ExceptionMessage>(this.baseUrl + "ingredients/rename",{id:id,name:newName});
   }
 
+  changeIngredientCategory(id: number, categoryId: number) {
+    return this.clinet.post<Ingredient | ExceptionMessage>(this.baseUrl + "ingredients/category/change", {
+      id,
+      categoryId
+    });
+  }
+
   addPositionCategory(userId:number, name:string) {
 
     return this.clinet.post<CategoryCreateResp | ExceptionMessage>(this.baseUrl + "positions/categories/add", {name:name, userId: userId});

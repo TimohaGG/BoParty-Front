@@ -35,10 +35,26 @@ import {AdditionalMenuData} from "../../../models/Menu/AdditionalMenuData";
 import {AddMenuInfoComponent} from "../add-menu-info/add-menu-info.component";
 import {MatCheckbox} from "@angular/material/checkbox";
 import {MatOption, MatSelect} from "@angular/material/select";
+import {
+  PasteMenuPositionsConfirmDialogComponent
+} from "./paste-menu-positions-confirm-dialog.component";
 
 export interface PosAmount {
   amount: number;
   position: Position;
+}
+
+interface ClipboardMenuRow {
+  type: 'position' | 'title';
+  amount?: number;
+  title?: string;
+  cookId?: number | null;
+  position?: Position;
+}
+
+interface ClipboardMenuPayload {
+  version: 1;
+  rows: ClipboardMenuRow[];
 }
 
 @Component({
@@ -76,6 +92,7 @@ export interface PosAmount {
   styleUrl: './add-menu.component.css'
 })
 export class AddMenuComponent implements OnInit {
+  private static readonly CLIPBOARD_PREFIX = 'BOPARTY_MENU_POSITIONS_V1';
   @ViewChild('table', {static: true}) table!: MatTable<PositionAmount>;
   @ViewChild('datatable', {static: true}) datatable!: MatTable<PositionAmount>;
   private dialog = inject(MatDialog);
@@ -106,6 +123,7 @@ export class AddMenuComponent implements OnInit {
     deliveryAddress: new FormControl(''),
     orderType: new FormControl('бокси', [Validators.required]),
     needsWaiter: new FormControl(false),
+    prepayment: new FormControl(0, [Validators.min(0)]),
     serving: new FormControl(false),
     taxAmount: new FormControl(''),
     govTax: new FormControl(false),
@@ -230,6 +248,7 @@ export class AddMenuComponent implements OnInit {
             deliveryAddress: (res as Menu).deliveryAddress,
             orderType: (res as Menu).orderType,
             needsWaiter: (res as Menu).needsWaiter,
+            prepayment: (res as Menu).prepayment ?? 0,
             serving: (res as Menu).serving,
             taxAmount: (res as Menu).taxAmount,
             govTax: (res as Menu).govTax,
@@ -371,6 +390,101 @@ export class AddMenuComponent implements OnInit {
     });
   }
 
+  async copyPositionsToClipboard(): Promise<void> {
+    if (this.posAmounts().length === 0) {
+      this.toast.show("Немає позицій для копіювання", {autoClose: true, position: "bottom-center", duration: 2000});
+      return;
+    }
+
+    if (!navigator.clipboard?.writeText) {
+      this.toast.show("Буфер обміну недоступний", {autoClose: true, position: "bottom-center", duration: 2000});
+      return;
+    }
+
+    const payload: ClipboardMenuPayload = {
+      version: 1,
+      rows: this.posAmounts().map(row => row.unitedRow
+        ? {
+          type: 'title',
+          title: row.title,
+        }
+        : {
+          type: 'position',
+          amount: row.amount,
+          cookId: row.cookId ?? null,
+          position: row.position ? this.clonePosition(row.position) : undefined,
+        })
+    };
+
+    try {
+      await navigator.clipboard.writeText(
+        `${AddMenuComponent.CLIPBOARD_PREFIX}\n${JSON.stringify(payload)}`
+      );
+      this.toast.show("Позиції скопійовано", {autoClose: true, position: "bottom-center", duration: 2000});
+    } catch {
+      this.toast.show("Не вдалося скопіювати позиції", {autoClose: true, position: "bottom-center", duration: 2000});
+    }
+  }
+
+  async pastePositionsFromClipboard(): Promise<void> {
+    if (!this.editable) {
+      this.toast.show("Увімкніть редагування, щоб вставити позиції", {autoClose: true, position: "bottom-center", duration: 2200});
+      return;
+    }
+
+    if (!navigator.clipboard?.readText) {
+      this.toast.show("Буфер обміну недоступний", {autoClose: true, position: "bottom-center", duration: 2000});
+      return;
+    }
+
+    try {
+      const clipboardText = await navigator.clipboard.readText();
+      const rows = this.parseClipboardRows(clipboardText);
+      if (rows.length === 0) {
+        this.toast.show("У буфері немає позицій меню", {autoClose: true, position: "bottom-center", duration: 2200});
+        return;
+      }
+      const positionsCount = rows.filter(row => row.type === 'position').length;
+
+      this.dialog.open(PasteMenuPositionsConfirmDialogComponent, {
+        data: {
+          positionsCount,
+        }
+      }).afterClosed().subscribe(confirmed => {
+        if (!confirmed) {
+          return;
+        }
+
+        const importedRows = rows.map(row => {
+          if (row.type === 'title') {
+            return new TableRow(null, 0, row.title?.trim() ?? '', true, generateUUID());
+          }
+
+          const position = row.position ? this.clonePosition(row.position) : null;
+          return new TableRow(
+            position,
+            Math.max(1, Number(row.amount) || 1),
+            '',
+            false,
+            generateUUID(),
+            row.cookId ?? null
+          );
+        });
+
+        const importedPositions = importedRows
+          .filter(row => !row.unitedRow && row.position)
+          .map(row => row.position as Position);
+
+        this.selectedPositions = this.mergeSelectedPositions(this.selectedPositions, importedPositions);
+        this.posAmounts.update(items => [...items, ...importedRows]);
+        this.table.renderRows();
+        this.toast.show("Позиції вставлено", {autoClose: true, position: "bottom-center", duration: 2000});
+      });
+    } catch {
+      this.toast.show("Не вдалося вставити позиції", {autoClose: true, position: "bottom-center", duration: 2200});
+    }
+  }
+
   private saveOrder(items: MinPosAmount[], additionalInfo: AdditionalMenuData[]) {
     this.ordersService.saveOrder(this.buildOrderPayload(), items, additionalInfo).subscribe(
       {
@@ -414,6 +528,55 @@ export class AddMenuComponent implements OnInit {
       ...rawValue,
       date: this.toIsoDateTime(rawValue.dateTime)
     };
+  }
+
+  private parseClipboardRows(raw: string): ClipboardMenuRow[] {
+    if (!raw?.trim()) {
+      return [];
+    }
+
+    const normalized = raw.startsWith(AddMenuComponent.CLIPBOARD_PREFIX)
+      ? raw.slice(AddMenuComponent.CLIPBOARD_PREFIX.length).trim()
+      : raw.trim();
+
+    const parsed = JSON.parse(normalized) as ClipboardMenuPayload | ClipboardMenuRow[];
+    const rows = Array.isArray(parsed) ? parsed : parsed.rows;
+
+    if (!Array.isArray(rows)) {
+      throw new Error('Invalid clipboard payload');
+    }
+
+    return rows.filter(row => {
+      if (row.type === 'title') {
+        return !!row.title?.trim();
+      }
+
+      return row.type === 'position' && !!row.position?.id;
+    });
+  }
+
+  private mergeSelectedPositions(current: Position[], incoming: Position[]): Position[] {
+    const map = new Map<number, Position>();
+
+    current.forEach(position => map.set(position.id, position));
+    incoming.forEach(position => map.set(position.id, position));
+
+    return [...map.values()];
+  }
+
+  private clonePosition(position: Position): Position {
+    return new Position(
+      position.id,
+      position.name,
+      position.description,
+      position.weight,
+      position.price,
+      position.minimumAmount,
+      position.category,
+      position.imgUrl,
+      position.accessible,
+      position.ingredients
+    );
   }
 
   private toDateTimeLocalValue(dateTime: string) {

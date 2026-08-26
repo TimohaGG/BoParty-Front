@@ -39,16 +39,44 @@
 
 <ng-template #nodeContent let-node>
   <div class="node-content" [class.category-node]="node.isParent">
-    <input
-      class="node-name disabled"
-      [class.has-children]="!node.isParent"
-      [value]="node.name"
-      id="{{node.isParent ? 'category-' + node.id : 'ingredient-' + node.id}}"
-      (change)="node.isParent ? renameCategory(node.id, $event) : renameIngredient(node.id, $event)"
-      (focus)="savePrev($event)"
-      (click)="stopPropagination($event)"
-      readonly />
+    @if(!node.isParent && movingIngredientId === node.id){
+      <div class="ingredient-category-editor" (click)="stopPropagination($event)">
+        <mat-form-field appearance="outline" class="ingredient-category-field">
+          <mat-label>Категорія</mat-label>
+          <mat-select [value]="selectedCategoryId" (selectionChange)="selectedCategoryId = $event.value">
+            @for(category of categories(); track category.id){
+              <mat-option [value]="category.id">{{category.name}}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <div class="editor-inline-actions">
+          <button mat-icon-button aria-label="Підтвердити зміну категорії" (click)="confirmCategoryChange(node, $event)">
+            <mat-icon>check</mat-icon>
+          </button>
+          <button mat-icon-button aria-label="Скасувати зміну категорії" (click)="cancelCategoryChange($event)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
+    }
+    @else{
+      <input
+        class="node-name disabled"
+        [class.has-children]="!node.isParent"
+        [value]="node.name"
+        id="{{node.isParent ? 'category-' + node.id : 'ingredient-' + node.id}}"
+        (change)="node.isParent ? renameCategory(node.id, $event) : renameIngredient(node.id, $event)"
+        (focus)="savePrev($event)"
+        (click)="stopPropagination($event)"
+        readonly />
+    }
     <div class="node-actions">
+      @if(!node.isParent){
+        <button mat-icon-button aria-label="Змінити категорію" title="Змінити категорію" (click)="startCategoryChange(node, $event)">
+          <mat-icon>drive_file_move</mat-icon>
+        </button>
+      }
       <button mat-icon-button aria-label="Редагувати" title="Редагувати" (click)="toggleEdit($event, node.isParent ? 'category-' + node.id : 'ingredient-' + node.id)">
         <mat-icon>edit</mat-icon>
       </button>

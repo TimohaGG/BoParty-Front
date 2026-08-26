@@ -52,6 +52,25 @@ mat-tree {
   color: var(--text-muted);
 }
 
+.ingredient-category-editor {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+.ingredient-category-field {
+  width: 100%;
+}
+
+.editor-inline-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
 .node-name:focus-visible {
   outline: 2px solid var(--accent-color);
   outline-offset: 2px;
@@ -75,5 +94,14 @@ mat-tree {
 
   .node-content {
     padding-right: 6px;
+  }
+
+  .ingredient-category-editor {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .editor-inline-actions {
+    justify-content: flex-end;
   }
 }

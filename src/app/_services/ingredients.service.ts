@@ -77,6 +77,23 @@ export class IngredientsService {
     );
   }
 
+  changeIngredientCategory(id: number, categoryId: number) {
+    return this.http.changeIngredientCategory(id, categoryId).pipe(
+      map((response: Ingredient | ExceptionMessage) => {
+        if (!isMessage(response)) {
+          const ingredient = response as Ingredient;
+          this.store.addIngredient(ingredient);
+          return ingredient;
+        }
+
+        throw new Error("Не вдалося змінити категорію");
+      }),
+      catchError(err => {
+        throw new Error(err.error?.message ?? err.message ?? "Не вдалося змінити категорію");
+      })
+    );
+  }
+
   addCategory(name: string) {
     return this.http.addIngCategory(name).pipe(
       map((resp:Category | ExceptionMessage)=>{
