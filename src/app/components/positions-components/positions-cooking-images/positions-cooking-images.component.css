@@ -1,0 +1,144 @@
+.categories-list {
+  width: 100%;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.categories-list::-webkit-scrollbar {
+  display: none;
+}
+
+.categories-list mat-button-toggle-group {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  min-width: max-content;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.categories-list mat-button-toggle {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.cooking-table {
+  overflow: hidden;
+}
+
+.table-head,
+.position-row {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.8fr) 120px 120px minmax(126px, auto);
+  gap: 16px;
+  align-items: center;
+}
+
+.table-head {
+  min-height: 42px;
+  padding: 0 16px;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.position-row {
+  min-height: 112px;
+  padding: 14px 16px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.position-info {
+  display: grid;
+  min-width: 0;
+  gap: 6px;
+}
+
+.position-info strong {
+  overflow: hidden;
+  color: var(--text-main);
+  font-size: 1rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.position-info span {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.image-cell,
+.image-placeholder {
+  width: 96px;
+  aspect-ratio: 1;
+  border-radius: 8px;
+}
+
+.image-cell {
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+
+.image-cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-placeholder {
+  display: grid;
+  place-items: center;
+  color: var(--text-muted);
+}
+
+.row-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.row-actions button {
+  min-width: 116px;
+}
+
+.row-actions mat-icon,
+.row-actions mat-spinner {
+  margin-right: 8px;
+}
+
+@media (max-width: 760px) {
+  .table-head {
+    display: none;
+  }
+
+  .position-row {
+    grid-template-columns: minmax(0, 1fr) 88px 88px;
+    grid-template-areas:
+      "info menu cooking"
+      "actions actions actions";
+    gap: 12px;
+  }
+
+  .position-info {
+    grid-area: info;
+  }
+
+  .image-cell {
+    width: 76px;
+  }
+
+  .row-actions {
+    grid-area: actions;
+    justify-content: stretch;
+  }
+
+  .row-actions button {
+    width: 100%;
+  }
+}
