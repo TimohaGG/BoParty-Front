@@ -49,7 +49,6 @@ export class PositionsCategoryService {
 
 
   addCategory(result: string):Observable<Category | ExceptionMessage> {
-    console.log("Adding category");
     return this.http.addPositionCategory(this.userStorage.getUserId(), result).pipe(
       map((response:Category | ExceptionMessage) => {
         if(!isMessage(response)) {
@@ -58,7 +57,6 @@ export class PositionsCategoryService {
         return response as Category;
       }),
       catchError((error:HttpErrorResponse)=>{
-        console.log(error);
         let msg = new ExceptionMessage(error.error.message, error.error.status);
         return of(msg);
       })

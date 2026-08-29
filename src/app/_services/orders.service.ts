@@ -42,7 +42,6 @@ export class OrdersService{
   public getOfPageMin(pageSize:number, currentPage:number, archive:boolean) {
     return this.http.getMinOrders(pageSize,currentPage,archive).pipe(
       map(res=>{
-        console.log(res);
         if(!isMessage(res)){
           this.store.setAllMinOrders(res as MinMenu[]);
 
@@ -131,7 +130,6 @@ export class OrdersService{
 
 
   saveOrder(data:any, positions:MinPosAmount[], additionalData:AdditionalMenuData[]):Observable<Menu | ExceptionMessage> {
-    console.log(data);
     return this.http.addOrder(data, positions,additionalData).pipe(
       map(res=>{
 
@@ -150,15 +148,12 @@ export class OrdersService{
       return of(this.store.menusEntities().at(order)!);
     }
     else{
-      console.log("sending request ")
       return this.http.getOrderById(editOrderid).pipe(
         map(res=>{
           this.store.addOrder(res as Menu);
-          console.log("Got data",res);
           return res as Menu;
         }),
         catchError((error:HttpErrorResponse)=>{
-          console.log(error);
           let msg = new ExceptionMessage(error.error.message, error.error.status);
           return of(msg);
         })
@@ -168,7 +163,6 @@ export class OrdersService{
   }
 
   editOrder(id:number, value:any, items: MinPosAmount[], additionalInfo:AdditionalMenuData[]) {
-    console.log(value);
     return this.http.editOrder(id, value,items,additionalInfo).pipe(
       map(res=>{
         let order = res as Menu;
@@ -226,7 +220,6 @@ export class OrdersService{
     this.getById(id).subscribe(res=>{
       if(!isMessage(res)){
         let data:Menu = (res as Menu);
-        console.log("from ", data.payed, "to ", isPayed);
         data.payed = isPayed;
         this.store.addOrder(data);
         this.http.toggleStatus(data.id, data.payed).subscribe(res=>{
@@ -244,7 +237,6 @@ export class OrdersService{
         }
       }),
       catchError((err:HttpErrorResponse)=>{
-        console.log("ERROR!!")
         throw new Error(err.error.message);
       })
     );
@@ -281,9 +273,7 @@ export class OrdersService{
   deleteOrderInfo(id: number) {
     return this.http.deleteMenuInfo(id).pipe(
       map(res=>{
-        console.log(res);
         if(!isMessage(res)){
-          console.log("Removeing");
           this.store.removeOrderData(res as number);
         }
       }),
@@ -301,14 +291,9 @@ export class OrdersService{
   getShoppingList(orderId: number) {
     return this.http.getShoppingList(orderId).pipe(
       map(res=>{
-        console.log(res);
-        if(!isMessage(res)){
-          console.log("Done");
-        }
         return res;
       }),
       catchError((err:HttpErrorResponse)=>{
-        console.log(err);
         throw new Error(err.error.message);
       })
     );
@@ -321,7 +306,6 @@ export class OrdersService{
         return res as boolean;
       }),
       catchError((err:HttpErrorResponse)=>{
-        console.log(err);
         throw new Error(err.error.message);
       })
     );
@@ -333,7 +317,6 @@ export class OrdersService{
         return res;
       }),
       catchError((err:HttpErrorResponse)=>{
-        console.log(err);
         throw new Error(err.error.message);
       })
     );
@@ -345,7 +328,6 @@ export class OrdersService{
         return res;
       }),
       catchError((err:HttpErrorResponse)=>{
-        console.log(err);
         throw new Error(err.error.message);
       })
     );
@@ -357,7 +339,6 @@ export class OrdersService{
         return res;
       }),
       catchError((err:HttpErrorResponse)=>{
-        console.log(err);
         throw new Error(err.error.message);
       })
     );
@@ -369,7 +350,6 @@ export class OrdersService{
         return res;
       }),
       catchError((err:HttpErrorResponse)=>{
-        console.log(err);
         throw new Error(err.error.message);
       })
     );

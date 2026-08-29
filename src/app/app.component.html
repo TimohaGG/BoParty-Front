@@ -30,14 +30,10 @@
           <mat-icon class="side-nav-icon" matListItemIcon>archive</mat-icon>
           <span class="side-nav-label">Архів</span>
         </a>
-        <a mat-list-item class="side-nav-item" routerLink="/service/positions" routerLinkActive="active-link" (click)="sidenav!.close()">
+        <button mat-list-item class="side-nav-item" type="button" [matMenuTriggerFor]="positionsNavMenu">
           <mat-icon class="side-nav-icon" matListItemIcon>restaurant_menu</mat-icon>
           <span class="side-nav-label">Позиції</span>
-        </a>
-        <a mat-list-item class="side-nav-item" routerLink="/service/positions/availability" routerLinkActive="active-link" (click)="sidenav!.close()">
-          <mat-icon class="side-nav-icon" matListItemIcon>inventory</mat-icon>
-          <span class="side-nav-label">Доступ</span>
-        </a>
+        </button>
         <a mat-list-item class="side-nav-item" routerLink="/service/ingredients" routerLinkActive="active-link" (click)="sidenav!.close()">
           <mat-icon class="side-nav-icon" matListItemIcon>inventory_2</mat-icon>
           <span class="side-nav-label">Інгредієнти</span>
@@ -47,14 +43,10 @@
           <span class="side-nav-label">Персонал</span>
         </a>
 
-        <a mat-list-item class="side-nav-item" routerLink="/service/reports/orders" routerLinkActive="active-link" (click)="sidenav!.close()">
+        <button mat-list-item class="side-nav-item" type="button" [matMenuTriggerFor]="reportsNavMenu">
           <mat-icon class="side-nav-icon" matListItemIcon>bar_chart</mat-icon>
           <span class="side-nav-label">Статистика</span>
-        </a>
-        <a mat-list-item class="side-nav-item side-nav-subitem" routerLink="/service/reports/payments" routerLinkActive="active-link" (click)="sidenav!.close()">
-          <mat-icon class="side-nav-icon" matListItemIcon>payments</mat-icon>
-          <span class="side-nav-label">Статуси оплат</span>
-        </a>
+        </button>
 
       }
       @if(isLoggedIn){
@@ -86,13 +78,17 @@
         @if (isLoggedIn && showAdminBoard) {
           <a mat-button routerLink="/service/orders" routerLinkActive="active-top-link" [routerLinkActiveOptions]="{exact:true}">Замовлення</a>
           <a mat-button routerLink="/service/orders" routerLinkActive="active-top-link" [queryParams]="{showArchive:true}">Архів</a>
-          <a mat-button routerLink="/service/positions" routerLinkActive="active-top-link">Позиції</a>
-          <a mat-button routerLink="/service/positions/availability" routerLinkActive="active-top-link">Доступ</a>
+          <button mat-button class="position-menu-trigger" type="button" [matMenuTriggerFor]="positionsNavMenu">
+            Позиції
+            <mat-icon>expand_more</mat-icon>
+          </button>
 <!--          <a mat-button routerLink="/service/boxes" routerLinkActive="active-top-link">Бокси</a>-->
           <a mat-button routerLink="/service/ingredients" routerLinkActive="active-top-link">Інгредієнти</a>
           <a mat-button routerLink="/service/staff" routerLinkActive="active-top-link">Персонал</a>
-          <a mat-button routerLink="/service/reports/orders" routerLinkActive="active-top-link">Статистика</a>
-          <a mat-button class="top-sub-link" routerLink="/service/reports/payments" routerLinkActive="active-top-link">Статуси оплат</a>
+          <button mat-button class="position-menu-trigger" type="button" [matMenuTriggerFor]="reportsNavMenu">
+            Статистика
+            <mat-icon>expand_more</mat-icon>
+          </button>
         }
 
 
@@ -189,3 +185,29 @@
     }
   </mat-sidenav-content>
 </mat-sidenav-container>
+
+<mat-menu #positionsNavMenu="matMenu">
+  <a mat-menu-item routerLink="/service/positions" routerLinkActive="active-menu-link" [routerLinkActiveOptions]="{exact:true}" (click)="sidenav?.close()">
+    <mat-icon>restaurant_menu</mat-icon>
+    <span>Позиції</span>
+  </a>
+  <a mat-menu-item routerLink="/service/positions/availability" routerLinkActive="active-menu-link" (click)="sidenav?.close()">
+    <mat-icon>inventory</mat-icon>
+    <span>Доступ</span>
+  </a>
+  <a mat-menu-item routerLink="/service/positions/cooking-images" routerLinkActive="active-menu-link" (click)="sidenav?.close()">
+    <mat-icon>photo_camera</mat-icon>
+    <span>Фото готування</span>
+  </a>
+</mat-menu>
+
+<mat-menu #reportsNavMenu="matMenu">
+  <a mat-menu-item routerLink="/service/reports/orders" routerLinkActive="active-menu-link" (click)="sidenav?.close()">
+    <mat-icon>bar_chart</mat-icon>
+    <span>Статистика</span>
+  </a>
+  <a mat-menu-item routerLink="/service/reports/payments" routerLinkActive="active-menu-link" (click)="sidenav?.close()">
+    <mat-icon>payments</mat-icon>
+    <span>Статуси оплат</span>
+  </a>
+</mat-menu>

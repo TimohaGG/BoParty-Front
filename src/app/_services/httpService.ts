@@ -188,6 +188,10 @@ export class HttpService{
     });
   }
 
+  updatePositionCookingImage(id: number, formData: FormData) {
+    return this.clinet.post<Position | ExceptionMessage>(this.baseUrl + `positions/${id}/cooking-image`, formData);
+  }
+
   removePosition(id: number) {
     return this.clinet.delete<number | ExceptionMessage>(this.baseUrl + "positions/remove?id="+id);
   }

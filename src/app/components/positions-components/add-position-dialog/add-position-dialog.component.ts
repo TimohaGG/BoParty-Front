@@ -279,8 +279,6 @@ export class AddPositionDialogComponent implements OnInit,AfterViewInit {
         this.toast.show("Помилка!",{duration:2000,position:"bottom-center",autoClose:true});
       }
     })
-    // console.log(this.positionForm.value);
-    // console.log(event.targer.files[0]);
   }
 }
 

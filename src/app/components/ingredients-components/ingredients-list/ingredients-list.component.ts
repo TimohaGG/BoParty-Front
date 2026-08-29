@@ -76,7 +76,6 @@ export class IngredientsListComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.ingredients().length == 0) {
-      console.log("No ingredients found.");
       this.ingService.getAll().subscribe({
         next: data => {
           this.treeData = this.categoriesTree();
@@ -90,7 +89,6 @@ export class IngredientsListComponent implements OnInit {
     }
 
     if (this.categories().length == 0) {
-      console.log("No categories found.");
       this.ingService.getAllCategories().subscribe({
         next: data => {
           this.treeData = this.categoriesTree();
@@ -325,8 +323,6 @@ export class IngredientsListComponent implements OnInit {
           this.toast.show("Категорію " + data.name + " додано!",
             {duration: 3000, position: "bottom-center", autoClose: true});
           this.addCategoryToTree(data);
-        } else {
-          console.log(data)
         }
       },
       error: error => {
@@ -336,8 +332,6 @@ export class IngredientsListComponent implements OnInit {
   }
 
   private addCategoryToTree(data: Category) {
-    console.log(this.treeData);
-
     this.treeData.push({
       name: data.name,
       id: data.id,
@@ -345,7 +339,6 @@ export class IngredientsListComponent implements OnInit {
     });
 
     this.treeData = [...this.treeData];
-    console.log(this.treeData);
   }
 
   private addIngredientToTree(ing: Ingredient) {

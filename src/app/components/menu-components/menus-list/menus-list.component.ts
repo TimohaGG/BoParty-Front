@@ -163,9 +163,6 @@ export class MenusListComponent implements OnInit{
     this.loadingFailure = false;
     this.store.clearMinOrders();
     this.orderService.getOfPageMin(this.perPage(), this.currentPage(), archive).subscribe({
-        next:res=>{
-          console.log(res);
-        },
         error: error=>{
           this.loadingFailure = true;
           this.toast.show(error.message,{duration:3000,position:"bottom-center",autoClose:true});
@@ -283,7 +280,6 @@ export class MenusListComponent implements OnInit{
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
 
     })
   }

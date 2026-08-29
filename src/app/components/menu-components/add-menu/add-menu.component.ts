@@ -225,7 +225,6 @@ export class AddMenuComponent implements OnInit {
 
   initOrderEditData() {
     if (this.editOrderid <= 0) {
-      console.log("No order id");
       return;
     }
     this.loading = true;
@@ -269,7 +268,6 @@ export class AddMenuComponent implements OnInit {
         }
 
         this.loading = false;
-       console.log("Loading " + this.loading);
       }
     );
   }
@@ -575,7 +573,8 @@ export class AddMenuComponent implements OnInit {
       position.category,
       position.imgUrl,
       position.accessible,
-      position.ingredients
+      position.ingredients,
+      position.cookingImgUrl
     );
   }
 
@@ -681,7 +680,9 @@ export class AddMenuComponent implements OnInit {
     const lastIndex = arr.length - 1;
 
     const oldIndex = arr.indexOf(item.data);
-    if (oldIndex === -1) console.log("Error");
+    if (oldIndex === -1) {
+      return false;
+    }
     const copy = [...arr];
     copy.splice(oldIndex, 1);
     copy.splice(index, 0, item.data);
@@ -717,15 +718,10 @@ export class AddMenuComponent implements OnInit {
 
   }
 
-  prints(e: any) {
-    console.log(e);
-  }
-
   openHeaderDialog(rowId: string) {
     const dialogRef = this.dialog.open(AddHeaderDialogComponent);
     dialogRef.afterClosed().subscribe({
       next: (data) => {
-        console.log(data);
         if (data) {
           let index = this.posAmounts().findIndex(x => x.rowId === rowId);
           if (index == -1) {
@@ -744,7 +740,6 @@ export class AddMenuComponent implements OnInit {
   }
 
   removeMenuInfo(id: number) {
-    console.log(id);
     this.ordersService.deleteOrderInfo(id).subscribe();
   }
 
@@ -756,9 +751,7 @@ export class AddMenuComponent implements OnInit {
 
   removeHeaderFromList(id: string) {
 
-    console.log(id);
     this.posAmounts.update(items => items.filter(x => x.id != id));
-    console.log(this.posAmounts());
   }
 
 

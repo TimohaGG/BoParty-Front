@@ -14,6 +14,7 @@ import {
 import {MatListItem, MatNavList} from "@angular/material/list";
 import {entityStorage} from "./_helpers/storage/entityStorage";
 import {SelectedOrderPosition} from "./models/Orders/SelectedOrderPosition";
+import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
 
 @Component({
     selector: 'app-root',
@@ -31,7 +32,10 @@ import {SelectedOrderPosition} from "./models/Orders/SelectedOrderPosition";
     MatListItem,
     RouterLink,
     RouterLinkActive,
-    MatIconButton
+    MatIconButton,
+    MatMenu,
+    MatMenuItem,
+    MatMenuTrigger
   ],
   standalone:true
 })

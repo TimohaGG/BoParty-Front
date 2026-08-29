@@ -52,8 +52,6 @@ export class LoginComponent implements OnInit {
       this.isLoggedIn = true;
       this.roles = this.storageService.getUser().roles;
     }
-
-    console.log("UPDATE 2");
   }
 
   onSubmit(): void {
@@ -64,7 +62,6 @@ export class LoginComponent implements OnInit {
 
     this.authService.login(this.form.get("username")?.value, this.form.get("password")?.value).subscribe({
       next: data => {
-        console.log("User is being saved")
         this.storageService.saveUser(data);
         this.isLoginFailed = false;
         this.isLoggedIn = true;
@@ -72,7 +69,6 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['/service/orders']);
       },
       error: err => {
-        console.log(err);
         this.errorMessage = err.error.message;
         this.isLoginFailed = true;
       }

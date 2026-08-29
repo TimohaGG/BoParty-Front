@@ -28,7 +28,6 @@ export class IngredientsService {
         return response as Ingredient[];
       }),
       catchError(error=>{
-        console.log("ERROR!");
         throw new Error(error.error.message);
       })
     );
@@ -107,7 +106,6 @@ export class IngredientsService {
   addIngredient(name: String, categoryId: number) {
     let user = this.userService.getUser();
 
-    console.log(categoryId);
     if(user && user.id){
       return this.http.addIngredient(name,categoryId, user.id).pipe(
         map((resp:Ingredient | ExceptionMessage)=>{
@@ -120,7 +118,6 @@ export class IngredientsService {
       )
     }
     else{
-      console.log(user);
       throw new Error("User not found");
     }
 

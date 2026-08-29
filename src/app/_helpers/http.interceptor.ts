@@ -11,14 +11,11 @@
 //
 //
 //   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-//     console.log(this.storage.getUser());
 //     alert("Hello!");
 //     req = req.clone({
 //       withCredentials: true,
 //       headers: req.headers.set('Authorization', 'Bearer ' + this.storage.getUser()?.accessToken)
 //     });
-//
-//     console.log(req);
 //
 //     return next.handle(req);
 //   }
@@ -44,12 +41,10 @@ export const HttpRequestInterceptor: HttpInterceptorFn = (req, next) => {
   }
 
   if (token) {
-    console.log(token);
     req = req.clone({
       withCredentials: true,
       headers: req.headers.set('Authorization', `Bearer ${token}`)
     });
-    console.log("asd1");
   }
 
 

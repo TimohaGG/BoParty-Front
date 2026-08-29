@@ -24,6 +24,9 @@ import {
   PositionsAccessibilityComponent
 } from "./components/positions-components/positions-accessibility/positions-accessibility.component";
 import {
+  PositionsCookingImagesComponent
+} from "./components/positions-components/positions-cooking-images/positions-cooking-images.component";
+import {
   CookingProcessComponent
 } from "./components/menu-components/cooking-process/cooking-process.component";
 
@@ -36,6 +39,7 @@ export const routes: Routes = [
   { path: 'service/profile', component: ProfileComponent,canActivate:[authGuard] },
   {path: 'service/positions', component: PositionsListComponent,canActivate:[authGuard,adminGuard]},
   {path: 'service/positions/availability', component: PositionsAccessibilityComponent,canActivate:[authGuard,adminGuard]},
+  {path: 'service/positions/cooking-images', component: PositionsCookingImagesComponent,canActivate:[authGuard,adminGuard]},
   // {path: 'service/boxes', component: BoxesListComponent,canActivate:[authGuard,adminGuard]},
   {path: 'service/ingredients', component: IngredientsListComponent,canActivate:[authGuard,adminGuard]},
   {path: 'service/staff', component: WaitersListComponent,canActivate:[authGuard,adminGuard]},
@@ -53,6 +57,7 @@ export const routes: Routes = [
   { path: 'profile', redirectTo: 'service/profile', pathMatch: 'full' },
   { path: 'positions', redirectTo: 'service/positions', pathMatch: 'full' },
   { path: 'positions/availability', redirectTo: 'service/positions/availability', pathMatch: 'full' },
+  { path: 'positions/cooking-images', redirectTo: 'service/positions/cooking-images', pathMatch: 'full' },
   { path: 'boxes', redirectTo: 'service/boxes', pathMatch: 'full' },
   { path: 'ingredients', redirectTo: 'service/ingredients', pathMatch: 'full' },
   { path: 'waiters', redirectTo: 'service/staff', pathMatch: 'full' },

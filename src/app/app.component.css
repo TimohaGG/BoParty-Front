@@ -127,11 +127,13 @@
 }
 
 .desktop-nav a,
+.desktop-nav .position-menu-trigger,
 .logout-button {
   color: rgba(255, 255, 255, 0.82);
 }
 
-.desktop-nav a {
+.desktop-nav a,
+.desktop-nav .position-menu-trigger {
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -152,7 +154,9 @@
 }
 
 .desktop-nav a::before,
-.desktop-nav a::after {
+.desktop-nav a::after,
+.desktop-nav .position-menu-trigger::before,
+.desktop-nav .position-menu-trigger::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -161,7 +165,8 @@
   pointer-events: none;
 }
 
-.desktop-nav a::before {
+.desktop-nav a::before,
+.desktop-nav .position-menu-trigger::before {
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.04)),
     rgba(246, 196, 83, 0.11);
@@ -172,7 +177,8 @@
     transform 620ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.desktop-nav a::after {
+.desktop-nav a::after,
+.desktop-nav .position-menu-trigger::after {
   background: linear-gradient(105deg, transparent 0%, rgba(255, 255, 255, 0.18) 42%, transparent 68%);
   opacity: 0;
   transform: translateX(-120%);
@@ -181,7 +187,8 @@
     transform 900ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.desktop-nav a:hover {
+.desktop-nav a:hover,
+.desktop-nav .position-menu-trigger:hover {
   color: #ffffff;
   text-decoration: none;
   transform: translateY(-1px);
@@ -195,12 +202,14 @@
 }
 
 .desktop-nav a:hover::before,
+.desktop-nav .position-menu-trigger:hover::before,
 .desktop-nav .active-top-link::before {
   opacity: 1;
   transform: scale(1) translateX(0);
 }
 
 .desktop-nav a:hover::after,
+.desktop-nav .position-menu-trigger:hover::after,
 .desktop-nav .active-top-link::after {
   opacity: 1;
   transform: translateX(120%);
@@ -218,8 +227,21 @@
   font-size: 0.92rem;
 }
 
-.desktop-nav a:active {
+.desktop-nav a:active,
+.desktop-nav .position-menu-trigger:active {
   transform: scale(0.97);
+}
+
+.position-menu-trigger .mat-icon {
+  width: 18px;
+  height: 18px;
+  margin-left: 4px;
+  font-size: 18px;
+  line-height: 18px;
+}
+
+.active-menu-link {
+  color: var(--accent-color) !important;
 }
 
 .logout-button {

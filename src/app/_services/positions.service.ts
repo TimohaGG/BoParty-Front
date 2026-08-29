@@ -90,6 +90,24 @@ export class PositionsService {
     )
   }
 
+  public updateCookingImage(id:number, image:File):Observable<Position | ExceptionMessage>{
+    const formData = new FormData();
+    formData.set("image", image, image.name);
+
+    return this.http.updatePositionCookingImage(id, formData).pipe(
+      map((response:Position | ExceptionMessage)=>{
+        if(!isMessage(response)){
+          this.store.addPosition(response as Position);
+        }
+        return response as Position;
+      }),
+      catchError((error:HttpErrorResponse)=>{
+        let msg = new ExceptionMessage(error.error.message, error.error.status);
+        return of(msg);
+      })
+    )
+  }
+
   removePosition(id: number) {
     return this.http.removePosition(id).pipe(
       map((response:number | ExceptionMessage) => {

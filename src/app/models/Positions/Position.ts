@@ -11,9 +11,10 @@ export class Position {
   public minimumAmount:number;
   public category:Category;
   public imgUrl:string;
+  public cookingImgUrl:string;
   public accessible:boolean;
   public ingredients:IngredientAmount[];
-  constructor(id:number,name:string,description:string | null,weight:number,price:number, minimumAmount:number, category:Category, imgUrl:string, accessible:boolean, ingredients:IngredientAmount[]) {
+  constructor(id:number,name:string,description:string | null,weight:number,price:number, minimumAmount:number, category:Category, imgUrl:string, accessible:boolean, ingredients:IngredientAmount[], cookingImgUrl:string = '') {
     this.id=id;
     this.name=name;
     this.description=description;
@@ -22,6 +23,7 @@ export class Position {
     this.minimumAmount=minimumAmount;
     this.category=category;
     this.imgUrl=imgUrl;
+    this.cookingImgUrl=cookingImgUrl;
     this.accessible=accessible;
     this.ingredients=ingredients;
   }
