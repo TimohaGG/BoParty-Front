@@ -128,6 +128,7 @@ function serializeSelectedOrderPositions(items: SelectedOrderPosition[]): string
       imgUrl: item.position.imgUrl,
       cookingImgUrl: item.position.cookingImgUrl,
       accessible: item.position.accessible,
+      archived: item.position.archived,
       ingredients: []
     }
   })));

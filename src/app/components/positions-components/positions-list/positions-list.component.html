@@ -37,11 +37,11 @@
         @for (elem of filteredPositions(); track $index){
           <app-positions-list-item
             (updateEdited)="filterCategories()"
-            (removeDeleted)="filterCategories()"
             (onSelect)="selectPosition($event)"
             (onDeselect)="sendDeselection($event)"
             [selectable]="selectable"
             [position]="elem"
+            (archived)="filterCategories()"
             [isSelected]="isSelected(elem.id)"></app-positions-list-item>
         }
       </div>

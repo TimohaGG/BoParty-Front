@@ -110,6 +110,10 @@ export class HttpService{
     return this.clinet.get<Position[] | ExceptionMessage>(this.baseUrl + "positions/get");
   }
 
+  getArchivedPositions() {
+    return this.clinet.get<Position[] | ExceptionMessage>(this.baseUrl + "positions/archive");
+  }
+
   getPositionById(id: number) {
     return this.clinet.get<Position | ExceptionMessage>(this.baseUrl + "positions/get/" + id);
   }
@@ -190,6 +194,14 @@ export class HttpService{
 
   updatePositionCookingImage(id: number, formData: FormData) {
     return this.clinet.post<Position | ExceptionMessage>(this.baseUrl + `positions/${id}/cooking-image`, formData);
+  }
+
+  archivePosition(id: number) {
+    return this.clinet.post<Position | ExceptionMessage>(this.baseUrl + `positions/${id}/archive`, {});
+  }
+
+  restorePosition(id: number) {
+    return this.clinet.post<Position | ExceptionMessage>(this.baseUrl + `positions/${id}/restore`, {});
   }
 
   removePosition(id: number) {

@@ -1,13 +1,18 @@
+.archive-list {
+  display: grid;
+  overflow: hidden;
+}
+
+.archive-list > *:not(:last-child) {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
 .position-row {
   display: grid;
   grid-template-columns: 96px minmax(0, 1fr) auto;
   gap: 18px;
   align-items: center;
   padding: 16px 18px;
-}
-
-.position-row.is-selected {
-  background: rgba(246, 196, 83, 0.08);
 }
 
 .position-img {
@@ -51,12 +56,12 @@
   gap: 8px;
 }
 
-.edit-button {
-  color: var(--button-edit);
+.restore-button {
+  color: var(--accent-color);
 }
 
-.archive-button {
-  color: var(--accent-color);
+.delete-button {
+  color: var(--button-remove);
 }
 
 @media (max-width: 620px) {

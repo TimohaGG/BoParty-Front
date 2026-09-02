@@ -1,0 +1,21 @@
+<div class="bo-dialog">
+  <header class="bo-dialog-header">
+    <h2>Архівувати позицію?</h2>
+    <p>Позиція зникне з активного списку та вибору для меню, але її можна буде відновити.</p>
+  </header>
+
+  <mat-dialog-content class="bo-dialog-content">
+    <div class="bo-warning-box">
+      Ви дійсно хочете перемістити "{{data.position.name}}" в архів?
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="bo-dialog-actions">
+    <button mat-button type="button" (click)="onClose()">Ні</button>
+    @if (loading) {
+      <mat-spinner [diameter]="28"></mat-spinner>
+    } @else {
+      <button mat-flat-button color="accent" type="button" (click)="onSubmit()">Так, в архів</button>
+    }
+  </mat-dialog-actions>
+</div>

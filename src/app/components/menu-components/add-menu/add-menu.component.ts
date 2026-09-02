@@ -574,7 +574,8 @@ export class AddMenuComponent implements OnInit {
       position.imgUrl,
       position.accessible,
       position.ingredients,
-      position.cookingImgUrl
+      position.cookingImgUrl,
+      position.archived
     );
   }
 

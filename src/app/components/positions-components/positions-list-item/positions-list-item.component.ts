@@ -4,10 +4,10 @@ import {MatIcon} from "@angular/material/icon";
 import {Position} from "../../../models/Positions/Position";
 import {MatDialog} from "@angular/material/dialog";
 import {AddPositionDialogComponent} from "../add-position-dialog/add-position-dialog.component";
-import {DeletePositionsDialogComponent} from "../delete-positions-dialog/delete-positions-dialog.component";
 import {PositionsService} from "../../../_services/positions.service";
 import {HotToastService} from "@ngxpert/hot-toast";
 import {isMessage} from "../../../models/Exceptions/ExceptionMessage";
+import {ArchivePositionDialogComponent} from "../archive-position-dialog/archive-position-dialog.component";
 
 @Component({
   selector: 'app-positions-list-item',
@@ -24,7 +24,7 @@ export class PositionsListItemComponent {
   @Input() selectable:boolean = false;
   @Input() isSelected:boolean = false;
   @Output() updateEdited = new EventEmitter<Position>();
-  @Output() removeDeleted = new EventEmitter<number>();
+  @Output() archived = new EventEmitter<number>();
   @Output() onSelect = new EventEmitter<Position>();
   @Output() onDeselect = new EventEmitter<number>();
 
@@ -74,14 +74,20 @@ export class PositionsListItemComponent {
     });
   }
 
-  openDeleteModal(){
-    const ref = this.dialog.open(DeletePositionsDialogComponent, {
+  openArchiveModal(){
+    if(!this.position){
+      return;
+    }
+
+    const ref = this.dialog.open(ArchivePositionDialogComponent, {
       data: {
         position: this.position
       }
     });
     ref.afterClosed().subscribe(result => {
-      this.removeDeleted.emit(result);
+      if(result){
+        this.archived.emit(result);
+      }
     })
   }
 

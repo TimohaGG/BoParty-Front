@@ -199,6 +199,10 @@
     <mat-icon>photo_camera</mat-icon>
     <span>Фото готування</span>
   </a>
+  <a mat-menu-item routerLink="/service/positions/archive" routerLinkActive="active-menu-link" (click)="sidenav?.close()">
+    <mat-icon>archive</mat-icon>
+    <span>Архів позицій</span>
+  </a>
 </mat-menu>
 
 <mat-menu #reportsNavMenu="matMenu">

@@ -1,0 +1,31 @@
+.bo-dialog {
+  max-width: 420px;
+}
+
+.bo-dialog-header {
+  padding: 22px 24px 0;
+}
+
+.bo-dialog-header h2 {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+}
+
+.bo-dialog-header p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.bo-warning-box {
+  padding: 14px;
+  border: 1px solid rgba(246, 196, 83, 0.28);
+  border-radius: 8px;
+  background: rgba(246, 196, 83, 0.1);
+}
+
+.bo-dialog-actions {
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 0 24px 20px;
+}

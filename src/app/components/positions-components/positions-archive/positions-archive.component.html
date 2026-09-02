@@ -1,0 +1,54 @@
+<section class="page-shell">
+  @if(!isLoading){
+    @if(positions().length){
+      <div class="archive-list content-panel">
+        @for (position of positions(); track trackByPosition($index, position)) {
+          <article class="position-row">
+            <div class="position-image">
+              <div class="position-img" [style.background-image]="'url(' + (position.imgUrl || '/assets/img/logo.png') + ')'"></div>
+            </div>
+
+            <div class="position-info">
+              <h2>{{position.name}}</h2>
+              @if(position.description){
+                <p class="position-description">{{position.description}}</p>
+              }
+              <div class="position-meta">
+                <span>{{position.category.name}}</span>
+                <span>{{position.price}} грн</span>
+                <span>{{position.weight}} г</span>
+              </div>
+            </div>
+
+            <div class="position-actions">
+              <button mat-icon-button class="restore-button" type="button" aria-label="Відновити" title="Відновити" [disabled]="isRestoring(position.id)" (click)="restorePosition(position)">
+                @if(isRestoring(position.id)){
+                  <mat-spinner diameter="20"></mat-spinner>
+                }
+                @else{
+                  <mat-icon>unarchive</mat-icon>
+                }
+              </button>
+              <button mat-icon-button class="delete-button" type="button" aria-label="Видалити" title="Видалити" (click)="openDeleteModal(position)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </article>
+        }
+      </div>
+    }
+    @else{
+      <div class="empty-state content-panel">
+        <div>
+          <mat-icon>archive</mat-icon>
+          <p>В архіві поки немає позицій</p>
+        </div>
+      </div>
+    }
+  }
+  @else{
+    <div class="loading-state content-panel">
+      <mat-spinner color="accent"></mat-spinner>
+    </div>
+  }
+</section>
