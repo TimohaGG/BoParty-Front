@@ -5,7 +5,7 @@ import { RegisterComponent } from './components/user-components/register/registe
 import { LoginComponent } from './components/user-components/login/login.component';
 import { ProfileComponent } from './profile/profile.component';
 import {MenusListComponent} from "./components/menu-components/menus-list/menus-list.component";
-import {adminGuard, authGuard} from "./secutiry/auth.guard";
+import {adminGuard, authGuard, superAdminGuard} from "./secutiry/auth.guard";
 import {PositionsListComponent} from "./components/positions-components/positions-list/positions-list.component";
 import {
   IngredientsListComponent
@@ -32,6 +32,9 @@ import {
 import {
   CookingProcessComponent
 } from "./components/menu-components/cooking-process/cooking-process.component";
+import {
+  CompaniesListComponent
+} from "./components/company-components/companies-list/companies-list.component";
 
 export const routes: Routes = [
   {path:'home',component:WelcomePageComponent},
@@ -52,6 +55,7 @@ export const routes: Routes = [
   {path: 'service/orders/:orderId/cooking', component: CookingProcessComponent,canActivate:[authGuard,adminGuard]},
   {path: 'service/reports/orders', component: OrderListComponent,canActivate:[authGuard,adminGuard]},
   {path: 'service/reports/payments', component: PaymentsStatusComponent,canActivate:[authGuard,adminGuard]},
+  {path: 'service/companies', component: CompaniesListComponent,canActivate:[authGuard,superAdminGuard]},
   {path: 'service/orders/:orderId/shopping', component: ShoppingComponent,canActivate:[authGuard,adminGuard]},
   { path: 'order/create', redirectTo: 'service/orders/new', pathMatch: 'full' },
   { path: 'order/data', redirectTo: 'service/reports/orders', pathMatch: 'full' },
@@ -69,6 +73,7 @@ export const routes: Routes = [
   { path: 'staff', redirectTo: 'service/staff', pathMatch: 'full' },
   { path: 'reports/orders', redirectTo: 'service/reports/orders', pathMatch: 'full' },
   { path: 'reports/payments', redirectTo: 'service/reports/payments', pathMatch: 'full' },
+  { path: 'companies', redirectTo: 'service/companies', pathMatch: 'full' },
 
   { path: '', component: WelcomePageComponent, pathMatch: 'full' },
 ];

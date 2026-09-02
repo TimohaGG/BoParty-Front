@@ -18,6 +18,8 @@ import {ShoppingListItem} from "../models/Menu/ShoppingListItem";
 import {Expences, ExpencesRequest} from "../models/Expences/Expences";
 import {Staff, StaffRequest} from "../models/Waiters/Waiter";
 import {Box, BoxRequest} from "../models/Boxes/Box";
+import {Company} from "../models/Company/Company";
+import {UserCompany} from "../models/Company/UserCompany";
 
 @Injectable({providedIn:"root"})
 export class HttpService{
@@ -94,6 +96,26 @@ export class HttpService{
     return this.clinet.get<Box[] | ExceptionMessage>(this.baseUrl + "boxes/get");
   }
 
+  getCompanies(): Observable<Company[] | ExceptionMessage> {
+    return this.clinet.get<Company[] | ExceptionMessage>(this.baseUrl + "companies");
+  }
+
+  getCompanyUsers(): Observable<UserCompany[] | ExceptionMessage> {
+    return this.clinet.get<UserCompany[] | ExceptionMessage>(this.baseUrl + "companies/users");
+  }
+
+  createCompany(name: string): Observable<Company | ExceptionMessage> {
+    return this.clinet.post<Company | ExceptionMessage>(this.baseUrl + "companies", {name});
+  }
+
+  setPublicCompany(companyId: number): Observable<Company | ExceptionMessage> {
+    return this.clinet.post<Company | ExceptionMessage>(this.baseUrl + `companies/${companyId}/public`, {});
+  }
+
+  linkUserCompany(userId: number, companyId: number | null): Observable<number | ExceptionMessage> {
+    return this.clinet.post<number | ExceptionMessage>(this.baseUrl + "companies/link-user", {userId, companyId});
+  }
+
   createBox(data: BoxRequest): Observable<Box | ExceptionMessage> {
     return this.clinet.post<Box | ExceptionMessage>(this.baseUrl + "boxes/create", data);
   }
@@ -133,8 +155,12 @@ export class HttpService{
     return this.clinet.get<Position[] | ExceptionMessage>(this.baseUrl + "orders/positions/" + categoryId);
   }
 
-  getAllCategories(userId:number) {
-    return this.clinet.get<Category[] | ExceptionMessage>(this.baseUrl + `positions/categories/get/${userId}`);
+  getCurrentCompanyCategories() {
+    return this.clinet.get<Category[] | ExceptionMessage>(this.baseUrl + "positions/categories/get");
+  }
+
+  getPublicCompanyCategories() {
+    return this.clinet.get<Category[] | ExceptionMessage>(this.baseUrl + "positions/categories/public");
   }
 
   getAllIngredients() {
@@ -160,9 +186,9 @@ export class HttpService{
     });
   }
 
-  addPositionCategory(userId:number, name:string) {
+  addPositionCategory(name:string) {
 
-    return this.clinet.post<CategoryCreateResp | ExceptionMessage>(this.baseUrl + "positions/categories/add", {name:name, userId: userId});
+    return this.clinet.post<CategoryCreateResp | ExceptionMessage>(this.baseUrl + "positions/categories/add", {name:name});
   }
 
   addIngCategory(name: string) {

@@ -1,12 +1,14 @@
 export class Category {
   id:number;
   name:string;
-  userId:number;
+  companyId:number | null;
+  companyName:string | null;
   sortingOrder?:number | null;
-  constructor(id:number, name:string, userId:number, sortingOrder:number | null = null) {
+  constructor(id:number, name:string, sortingOrder:number | null = null, companyId:number | null = null, companyName:string | null = null) {
     this.name = name;
     this.id=id;
-    this.userId=userId;
+    this.companyId=companyId;
+    this.companyName=companyName;
     this.sortingOrder = sortingOrder;
   }
 

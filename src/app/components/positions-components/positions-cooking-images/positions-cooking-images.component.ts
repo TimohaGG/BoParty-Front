@@ -42,9 +42,7 @@ export class PositionsCookingImagesComponent implements OnInit {
   public uploadingIds = signal<number[]>([]);
 
   get userCategories(): Category[] {
-    const userId = this.userStorage.getUser()?.id;
     return this.categories()
-      .filter(category => category.userId == userId)
       .slice()
       .sort((a, b) => (a.sortingOrder ?? Number.MAX_SAFE_INTEGER) - (b.sortingOrder ?? Number.MAX_SAFE_INTEGER));
   }

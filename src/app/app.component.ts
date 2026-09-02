@@ -46,6 +46,7 @@ export class AppComponent implements OnInit {
   private roles: string[] = [];
   isLoggedIn = false;
   showAdminBoard = false;
+  showSuperAdminBoard = false;
   showModeratorBoard = false;
   username?: string;
   brandLogoSrc = '/assets/img/logo.png';
@@ -75,7 +76,8 @@ export class AppComponent implements OnInit {
   private applyUser(user: any): void {
     this.isLoggedIn = !!user;
     this.roles = user?.roles ?? [];
-    this.showAdminBoard = this.roles.includes('ROLE_ADMIN');
+    this.showAdminBoard = this.roles.includes('ROLE_ADMIN') || this.roles.includes('ROLE_SUPERADMIN');
+    this.showSuperAdminBoard = this.roles.includes('ROLE_SUPERADMIN');
     this.showModeratorBoard = this.roles.includes('ROLE_MODERATOR');
     this.username = user?.username;
     this.brandLogoSrc = this.getLogoSrc(user?.logo);

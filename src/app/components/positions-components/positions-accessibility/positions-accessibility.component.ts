@@ -48,9 +48,7 @@ export class PositionsAccessibilityComponent implements OnInit {
   private loadedCategoryIds = new Set<number>();
 
   get userCategories(): Category[] {
-    const userId = this.userStorage.getUser()?.id;
     return this.categories()
-      .filter(category => category.userId == userId)
       .slice()
       .sort((a, b) => (a.sortingOrder ?? Number.MAX_SAFE_INTEGER) - (b.sortingOrder ?? Number.MAX_SAFE_INTEGER));
   }

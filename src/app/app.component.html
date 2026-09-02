@@ -33,6 +33,7 @@
         <button mat-list-item class="side-nav-item" type="button" [matMenuTriggerFor]="positionsNavMenu">
           <mat-icon class="side-nav-icon" matListItemIcon>restaurant_menu</mat-icon>
           <span class="side-nav-label">Позиції</span>
+          <mat-icon class="side-nav-chevron" matListItemMeta>expand_more</mat-icon>
         </button>
         <a mat-list-item class="side-nav-item" routerLink="/service/ingredients" routerLinkActive="active-link" (click)="sidenav!.close()">
           <mat-icon class="side-nav-icon" matListItemIcon>inventory_2</mat-icon>
@@ -46,7 +47,14 @@
         <button mat-list-item class="side-nav-item" type="button" [matMenuTriggerFor]="reportsNavMenu">
           <mat-icon class="side-nav-icon" matListItemIcon>bar_chart</mat-icon>
           <span class="side-nav-label">Статистика</span>
+          <mat-icon class="side-nav-chevron" matListItemMeta>expand_more</mat-icon>
         </button>
+        @if(showSuperAdminBoard){
+          <a mat-list-item class="side-nav-item" routerLink="/service/companies" routerLinkActive="active-link" (click)="sidenav!.close()">
+            <mat-icon class="side-nav-icon" matListItemIcon>business</mat-icon>
+            <span class="side-nav-label">Компанії</span>
+          </a>
+        }
 
       }
       @if(isLoggedIn){
@@ -89,6 +97,9 @@
             Статистика
             <mat-icon>expand_more</mat-icon>
           </button>
+          @if(showSuperAdminBoard){
+            <a mat-button routerLink="/service/companies" routerLinkActive="active-top-link">Компанії</a>
+          }
         }
 
 

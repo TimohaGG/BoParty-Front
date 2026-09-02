@@ -1,0 +1,111 @@
+<section class="page-shell companies-page">
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">Компанії</h1>
+      <p class="page-subtitle">Керування каталогами для публічного меню.</p>
+    </div>
+  </header>
+
+  <div class="company-form content-panel">
+    <mat-form-field appearance="outline">
+      <mat-label>Назва компанії</mat-label>
+      <input matInput [formControl]="nameControl" autocomplete="off" (keydown.enter)="createCompany()">
+    </mat-form-field>
+
+    <button mat-flat-button color="accent" type="button" [disabled]="saving" (click)="createCompany()">
+      @if (saving) {
+        <mat-spinner [diameter]="22"></mat-spinner>
+      } @else {
+        <ng-container>
+          <mat-icon>add_business</mat-icon>
+          <span>Додати</span>
+        </ng-container>
+      }
+    </button>
+  </div>
+
+  <section class="companies-panel content-panel">
+    @if (loading) {
+      <div class="loading-state">
+        <mat-spinner [diameter]="42"></mat-spinner>
+      </div>
+    } @else if (companies().length === 0) {
+      <div class="empty-state">
+        <mat-icon>business</mat-icon>
+        <p>Компаній поки немає.</p>
+      </div>
+    } @else {
+      <div class="companies-table">
+        <div class="companies-head">
+          <span>Компанія</span>
+          <span>Показувати в меню</span>
+          <span></span>
+        </div>
+
+        @for (company of companies(); track trackByCompany($index, company)) {
+          <article class="company-row" [class.is-public]="company.defaultForPublic">
+            <strong>{{company.name}}</strong>
+            <span class="status">
+              @if (company.defaultForPublic) {
+                <mat-icon>visibility</mat-icon>
+                Активна
+              } @else {
+                <mat-icon>visibility_off</mat-icon>
+                Не активна
+              }
+            </span>
+            <button mat-icon-button type="button" aria-label="Показувати цю компанію" title="Показувати цю компанію" [disabled]="company.defaultForPublic || updatingId !== null" (click)="setPublicCompany(company)">
+              @if (updatingId === company.id) {
+                <mat-spinner [diameter]="22"></mat-spinner>
+              } @else {
+                <mat-icon>radio_button_checked</mat-icon>
+              }
+            </button>
+          </article>
+        }
+      </div>
+    }
+  </section>
+
+  <section class="companies-panel content-panel">
+    <header class="panel-title">
+      <h2>Користувачі</h2>
+      <p>Привʼяжіть адміна до компанії або залиште без компанії для супер-адміну.</p>
+    </header>
+
+    @if (usersLoading) {
+      <div class="loading-state">
+        <mat-spinner [diameter]="42"></mat-spinner>
+      </div>
+    } @else if (users().length === 0) {
+      <div class="empty-state">
+        <mat-icon>person</mat-icon>
+        <p>Користувачів поки немає.</p>
+      </div>
+    } @else {
+      <div class="users-table">
+        <div class="users-head">
+          <span>Користувач</span>
+          <span>Email</span>
+          <span>Компанія</span>
+        </div>
+
+        @for (user of users(); track trackByUser($index, user)) {
+          <article class="user-row">
+            <strong>{{user.username}}</strong>
+            <span>{{user.email}}</span>
+            <mat-form-field appearance="outline">
+              <mat-label>Компанія</mat-label>
+              <mat-select [value]="user.companyId" [disabled]="linkingUserId !== null" (selectionChange)="linkUser(user, $event.value)">
+                <mat-option [value]="null">Без компанії</mat-option>
+                @for (company of companies(); track company.id) {
+                  <mat-option [value]="company.id">{{company.name}}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </article>
+        }
+      </div>
+    }
+  </section>
+</section>

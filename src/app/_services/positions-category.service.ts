@@ -17,7 +17,7 @@ export class PositionsCategoryService {
   }
 
   public getAll():Observable<Category[] | ExceptionMessage> {
-    return this.http.getAllCategories(this.userStorage.getUserId()).pipe(
+    return this.http.getCurrentCompanyCategories().pipe(
       map((response:Category[] | ExceptionMessage) => {
         if (!isMessage(response)) {
           this.store.setAllPositionCategories(response as Category[]);
@@ -33,7 +33,7 @@ export class PositionsCategoryService {
   }
 
   public getAllForUsers():Observable<Category[] | ExceptionMessage> {
-    return this.http.getAllCategories(14).pipe(
+    return this.http.getPublicCompanyCategories().pipe(
       map((response:Category[] | ExceptionMessage) => {
         if (!isMessage(response)) {
           this.store.setAllPositionCategories(response as Category[]);
@@ -49,7 +49,7 @@ export class PositionsCategoryService {
 
 
   addCategory(result: string):Observable<Category | ExceptionMessage> {
-    return this.http.addPositionCategory(this.userStorage.getUserId(), result).pipe(
+    return this.http.addPositionCategory(result).pipe(
       map((response:Category | ExceptionMessage) => {
         if(!isMessage(response)) {
           this.store.addPositionCategory(response as Category);

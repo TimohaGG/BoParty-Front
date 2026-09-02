@@ -15,7 +15,6 @@ import {MatIcon} from "@angular/material/icon";
 import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
 import {MatDialog} from "@angular/material/dialog";
 import {AddPositionDialogComponent} from "../add-position-dialog/add-position-dialog.component";
-import {StorageService} from "../../../_services/storage.service";
 import {
   AddPositionCategoryDialogComponent
 } from "../add-position-category-dialog/add-position-category-dialog.component";
@@ -55,7 +54,6 @@ export class PositionsListComponent implements OnInit {
   public categories:Signal<Category[]> = computed(this.store.positionCategoriesEntities);
   get userCategories():Category[]{
     return this.categories()
-      .filter(x=>x.userId==this.userStorate.getUser().id)
       .slice()
       .sort((a, b) => (a.sortingOrder ?? Number.MAX_SAFE_INTEGER) - (b.sortingOrder ?? Number.MAX_SAFE_INTEGER));
   }
@@ -68,8 +66,7 @@ export class PositionsListComponent implements OnInit {
   public selectedCategory:FormControl = new FormControl(0);
   constructor(private positionsService:PositionsService,
               private toast:HotToastService,
-              private categoriesService:PositionsCategoryService,
-              private userStorate:StorageService) {
+              private categoriesService:PositionsCategoryService) {
 
   }
 

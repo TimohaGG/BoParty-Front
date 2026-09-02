@@ -1,0 +1,141 @@
+.companies-page {
+  display: grid;
+  gap: 18px;
+}
+
+.company-form {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) auto;
+  align-items: start;
+  gap: 12px;
+}
+
+.company-form button {
+  height: 56px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.companies-panel {
+  min-height: 220px;
+}
+
+.panel-title {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.panel-title h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.panel-title p {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.loading-state,
+.empty-state {
+  min-height: 180px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.empty-state .mat-icon {
+  width: 40px;
+  height: 40px;
+  font-size: 40px;
+}
+
+.companies-table {
+  display: grid;
+  gap: 8px;
+}
+
+.users-table {
+  display: grid;
+  gap: 8px;
+}
+
+.companies-head,
+.company-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(150px, 220px) 48px;
+  align-items: center;
+  gap: 12px;
+}
+
+.users-head,
+.user-row {
+  display: grid;
+  grid-template-columns: minmax(160px, 1fr) minmax(220px, 1fr) minmax(220px, 280px);
+  align-items: center;
+  gap: 12px;
+}
+
+.companies-head,
+.users-head {
+  color: var(--text-muted);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.company-row,
+.user-row {
+  min-height: 58px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.user-row mat-form-field {
+  width: 100%;
+}
+
+.company-row.is-public {
+  border-color: rgba(246, 196, 83, 0.42);
+  background: rgba(246, 196, 83, 0.08);
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.status .mat-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+}
+
+@media (max-width: 640px) {
+  .company-form,
+  .companies-head,
+  .company-row,
+  .users-head,
+  .user-row {
+    grid-template-columns: 1fr;
+  }
+
+  .companies-head,
+  .users-head {
+    display: none;
+  }
+
+  .company-row,
+  .user-row {
+    justify-items: start;
+  }
+}

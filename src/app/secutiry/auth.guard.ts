@@ -22,7 +22,7 @@ export const adminGuard: CanActivateFn = (route, state) => {
 
   const user = storage.getUser(true);
 
-  if (user.roles.includes('ROLE_ADMIN')) {
+  if (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_SUPERADMIN')) {
     return true;
   }
   else if(!user && !user.accessToken) {
@@ -33,4 +33,21 @@ export const adminGuard: CanActivateFn = (route, state) => {
 
     return router.createUrlTree(['/menu']);
   }
+};
+
+export const superAdminGuard: CanActivateFn = (route, state) => {
+  const storage = inject(StorageService);
+  const router = inject(Router);
+
+  const user = storage.getUser(true);
+
+  if (user?.roles?.includes('ROLE_SUPERADMIN')) {
+    return true;
+  }
+
+  if (!user?.accessToken) {
+    return router.createUrlTree(['/service/login']);
+  }
+
+  return router.createUrlTree(['/menu']);
 };

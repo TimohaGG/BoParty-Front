@@ -24,16 +24,26 @@
 }
 
 .categories-list {
+  display: block;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   margin-bottom: 16px;
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x;
+  scrollbar-width: thin;
 }
 
 .categories-list::-webkit-scrollbar {
-  display: none;
+  height: 6px;
+}
+
+.categories-list::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(246, 196, 83, 0.45);
 }
 
 .positions-list{
@@ -47,7 +57,9 @@
 .categories-list mat-button-toggle-group {
   display: inline-flex;
   flex-wrap: nowrap;
+  width: max-content;
   min-width: max-content;
+  max-width: none;
   border: 1px solid var(--border-subtle);
   border-radius: 8px;
   background: var(--surface);
@@ -79,6 +91,8 @@
   .categories-list {
     margin-inline: -12px;
     padding-inline: 12px;
-    padding-bottom: 4px;
+    width: calc(100% + 24px);
+    max-width: calc(100% + 24px);
+    padding-bottom: 8px;
   }
 }
