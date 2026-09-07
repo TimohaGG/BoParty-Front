@@ -5,15 +5,22 @@
       <p class="page-subtitle">Список працівників, яких можна додавати до витрат і статистики.</p>
     </div>
 
-    <button mat-flat-button color="accent" type="button" [disabled]="saving" (click)="openCreateDialog()">
-      @if(saving){
-        <mat-spinner diameter="20"></mat-spinner>
-      }
-      @else{
-        <mat-icon>add</mat-icon>
-      }
-      Додати
-    </button>
+    <div class="waiters-actions">
+      <button mat-stroked-button type="button" [disabled]="saving" (click)="openCreateCategoryDialog()">
+        <mat-icon>create_new_folder</mat-icon>
+        Категорія
+      </button>
+
+      <button mat-flat-button color="accent" type="button" [disabled]="saving" (click)="openCreateDialog()">
+        @if(saving){
+          <mat-spinner diameter="20"></mat-spinner>
+        }
+        @else{
+          <mat-icon>add</mat-icon>
+        }
+        Додати
+      </button>
+    </div>
   </header>
 
   @if(loading){
@@ -21,40 +28,59 @@
       <mat-spinner diameter="42"></mat-spinner>
     </div>
   }
-  @else if(staff.length === 0){
+  @else if(staff.length === 0 && categories.length === 0){
     <div class="content-panel waiters-state">
       <mat-icon>group</mat-icon>
       <span>Працівників ще немає.</span>
     </div>
   }
   @else{
-    <div class="content-panel waiters-list">
-      @for(staffItem of staff; track staffItem.id){
-        <article class="waiter-row">
-          <div class="waiter-avatar">
-            <mat-icon>person</mat-icon>
-          </div>
+    <div class="staff-groups">
+      @for(group of getStaffGroups(); track group.category.code){
+        <section class="content-panel waiters-list">
+          <header class="staff-group-header">
+            <h2>{{group.category.name}}</h2>
+            <span>{{group.staff.length}}</span>
+          </header>
 
-          <div class="waiter-main">
-            <h2>{{staffItem.name}}</h2>
-            <span>{{getStaffTypeLabel(staffItem.type)}} · ID {{staffItem.id}}</span>
-          </div>
+          @if(group.staff.length === 0){
+            <div class="empty-group">Працівників у цій категорії ще немає.</div>
+          }
+          @else{
+            @for(staffItem of group.staff; track staffItem.id){
+              <article class="waiter-row">
+                <div class="waiter-avatar">
+                  <mat-icon>{{staffItem.type === 'COOK' ? 'restaurant' : 'person'}}</mat-icon>
+                </div>
 
-          <div class="waiter-actions">
-            <button mat-icon-button type="button" [disabled]="saving || isDeleting(staffItem)" (click)="openEditDialog(staffItem)" aria-label="Редагувати працівника">
-              <mat-icon>edit</mat-icon>
-            </button>
+                <div class="waiter-main">
+                  <h2>{{staffItem.name}}</h2>
+                  <span>
+                    {{getStaffTypeLabel(staffItem.type)}} · ID {{staffItem.id}}
+                    @if(staffItem.type === 'COOK'){
+                      · {{staffItem.cookPercent || 0}}%
+                    }
+                  </span>
+                </div>
 
-            <button mat-icon-button type="button" class="danger-button" [disabled]="saving || isDeleting(staffItem)" (click)="deleteWaiter(staffItem)" aria-label="Видалити працівника">
-              @if(isDeleting(staffItem)){
-                <mat-spinner diameter="20"></mat-spinner>
-              }
-              @else{
-                <mat-icon>delete_outline</mat-icon>
-              }
-            </button>
-          </div>
-        </article>
+                <div class="waiter-row-actions">
+                  <button mat-icon-button type="button" [disabled]="saving || isDeleting(staffItem)" (click)="openEditDialog(staffItem)" aria-label="Редагувати працівника">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+
+                  <button mat-icon-button type="button" class="danger-button" [disabled]="saving || isDeleting(staffItem)" (click)="deleteWaiter(staffItem)" aria-label="Видалити працівника">
+                    @if(isDeleting(staffItem)){
+                      <mat-spinner diameter="20"></mat-spinner>
+                    }
+                    @else{
+                      <mat-icon>delete_outline</mat-icon>
+                    }
+                  </button>
+                </div>
+              </article>
+            }
+          }
+        </section>
       }
     </div>
   }

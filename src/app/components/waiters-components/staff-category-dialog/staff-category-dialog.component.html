@@ -1,0 +1,18 @@
+<div class="bo-dialog staff-category-dialog">
+  <header class="bo-dialog-header">
+    <h2>Нова категорія персоналу</h2>
+    <p>Додайте групу для працівників у списку персоналу.</p>
+  </header>
+
+  <mat-dialog-content class="bo-dialog-content">
+    <mat-form-field>
+      <mat-label>Назва категорії</mat-label>
+      <input matInput [formControl]="name" type="text" />
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="bo-dialog-actions">
+    <button mat-button mat-dialog-close>Скасувати</button>
+    <button mat-flat-button color="accent" type="button" (click)="save()">Додати</button>
+  </mat-dialog-actions>
+</div>

@@ -1,13 +1,12 @@
-import {HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {MinMenu} from "../models/Menu/MinMenu";
-import {catchError, Observable, throwError} from "rxjs";
+import {Observable} from "rxjs";
 import {Injectable} from "@angular/core";
 import {ExceptionMessage} from "../models/Exceptions/ExceptionMessage";
 import {Position} from "../models/Positions/Position";
 import {Category} from "../models/Positions/Category";
 import {Ingredient} from "../models/Positions/Ingredient";
 import {RenameResp} from "../models/Positions/DTOs/RenameResp";
-import {IngredientAmount} from "../models/Positions/IngredientAmount";
 import {Menu} from "../models/Menu/Menu";
 import {MinPosAmount} from "../models/Positions/MinPosAmount";
 import {CommonMenuInfo} from "../models/Menu/CommonMenuInfo";
@@ -16,7 +15,7 @@ import {CategoryCreateResp} from "../models/Positions/DTOs/CategoryCreateResp";
 import {ShoppingList} from "../models/Menu/ShoppingList";
 import {ShoppingListItem} from "../models/Menu/ShoppingListItem";
 import {Expences, ExpencesRequest} from "../models/Expences/Expences";
-import {Staff, StaffRequest} from "../models/Waiters/Waiter";
+import {Staff, StaffCategory, StaffRequest} from "../models/Waiters/Waiter";
 import {Box, BoxRequest} from "../models/Boxes/Box";
 import {Company} from "../models/Company/Company";
 import {UserCompany} from "../models/Company/UserCompany";
@@ -90,6 +89,14 @@ export class HttpService{
 
   deleteStaff(id: number): Observable<number | ExceptionMessage> {
     return this.clinet.delete<number | ExceptionMessage>(this.baseUrl + "staff/delete/" + id);
+  }
+
+  getStaffCategories(): Observable<StaffCategory[] | ExceptionMessage> {
+    return this.clinet.get<StaffCategory[] | ExceptionMessage>(this.baseUrl + "staff/categories");
+  }
+
+  createStaffCategory(name: string): Observable<StaffCategory | ExceptionMessage> {
+    return this.clinet.post<StaffCategory | ExceptionMessage>(this.baseUrl + "staff/categories/create", {name});
   }
 
   getBoxes(): Observable<Box[] | ExceptionMessage> {

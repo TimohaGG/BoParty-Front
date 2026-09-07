@@ -3,7 +3,7 @@ import {HttpService} from "./httpService";
 import {catchError, map} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
 import {isMessage} from "../models/Exceptions/ExceptionMessage";
-import {Staff, StaffRequest} from "../models/Waiters/Waiter";
+import {Staff, StaffCategory, StaffRequest} from "../models/Waiters/Waiter";
 
 @Injectable({
   providedIn: "root"
@@ -44,6 +44,24 @@ export class StaffService {
       map(res => res as number),
       catchError((error: HttpErrorResponse) => {
         throw new Error(error.error?.message ?? "Can't delete staff");
+      })
+    );
+  }
+
+  getCategories() {
+    return this.http.getStaffCategories().pipe(
+      map(res => isMessage(res) ? [] : res as StaffCategory[]),
+      catchError((error: HttpErrorResponse) => {
+        throw new Error(error.error?.message ?? "Can't load staff categories");
+      })
+    );
+  }
+
+  createCategory(name: string) {
+    return this.http.createStaffCategory(name).pipe(
+      map(res => res as StaffCategory),
+      catchError((error: HttpErrorResponse) => {
+        throw new Error(error.error?.message ?? "Can't create staff category");
       })
     );
   }

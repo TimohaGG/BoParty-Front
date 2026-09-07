@@ -59,72 +59,78 @@
         </div>
       </section>
 
-      <section class="content-panel positions-table">
-        <div class="positions-table-title">Позиції</div>
-        <div class="positions-table-head">
-          <span>Найменування</span>
-          <span>Фото</span>
-          <span>К-сть</span>
-          <span>Ціна</span>
-          <span>Разом</span>
-          <span>Кухар</span>
-        </div>
+      <mat-expansion-panel class="content-panel positions-expansion">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Позиції та кухарі</mat-panel-title>
+          <mat-panel-description>{{currentMenu.positions.length}} позицій</mat-panel-description>
+        </mat-expansion-panel-header>
 
-        <div class="positions-table-body">
-          @for(item of currentMenu.positions; track item.position.id + '-' + item.inMenuOrder){
-            <article class="cooking-row">
-              <div class="position-copy">
-                @if(item.title && item.title.trim()){
-                  <span class="position-title">{{item.title}}</span>
-                }
-                <h2>{{item.position.name}}</h2>
-                @if(item.position.description){
-                  <p>{{item.position.description}}</p>
-                }
-              </div>
+        <div class="positions-table">
+          <div class="positions-table-head">
+            <span>Найменування</span>
+            <span>Фото</span>
+            <span>К-сть</span>
+            <span>Ціна</span>
+            <span>Разом</span>
+            <span>Кухар</span>
+          </div>
 
-              <div class="position-thumb-cell">
-                @if(item.position.imgUrl){
-                  <div class="position-thumb">
-                    <img
-                      [ngSrc]="item.position.imgUrl"
-                      [alt]="item.position.name"
-                      width="72"
-                      height="72">
-                  </div>
-                }
-              </div>
-
-              <div class="position-value-cell">
-                <small>К-сть</small>
-                <strong>{{item.amount}}</strong>
-              </div>
-
-              <div class="position-value-cell">
-                <small>Ціна</small>
-                <strong>{{item.position.price}} грн</strong>
-              </div>
-
-              <div class="position-value-cell total-cell">
-                <small>Разом</small>
-                <strong>{{getPositionTotal(item)}} грн</strong>
-              </div>
-
-              <mat-form-field class="cook-select">
-                <mat-label>Кухар</mat-label>
-                <mat-select
-                  [ngModel]="item.cookId"
-                  (ngModelChange)="updateCook(item.inMenuOrder, $event)">
-                  <mat-option [value]="null">Не вибрано</mat-option>
-                  @for(cook of cooks(); track cook.id){
-                    <mat-option [value]="cook.id">{{cook.name}}</mat-option>
+          <div class="positions-table-body">
+            @for(item of currentMenu.positions; track item.position.id + '-' + item.inMenuOrder){
+              <article class="cooking-row">
+                <div class="position-copy">
+                  @if(item.title && item.title.trim()){
+                    <span class="position-title">{{item.title}}</span>
                   }
-                </mat-select>
-              </mat-form-field>
-            </article>
-          }
+                  <h2>{{item.position.name}}</h2>
+                  @if(item.position.description){
+                    <p>{{item.position.description}}</p>
+                  }
+                </div>
+
+                <div class="position-thumb-cell">
+                  @if(item.position.imgUrl){
+                    <div class="position-thumb">
+                      <img
+                        [ngSrc]="item.position.imgUrl"
+                        [alt]="item.position.name"
+                        width="72"
+                        height="72">
+                    </div>
+                  }
+                </div>
+
+                <div class="position-value-cell">
+                  <small>К-сть</small>
+                  <strong>{{item.amount}}</strong>
+                </div>
+
+                <div class="position-value-cell">
+                  <small>Ціна</small>
+                  <strong>{{item.position.price}} грн</strong>
+                </div>
+
+                <div class="position-value-cell total-cell">
+                  <small>Разом</small>
+                  <strong>{{getPositionTotal(item)}} грн</strong>
+                </div>
+
+                <mat-form-field class="cook-select">
+                  <mat-label>Кухар</mat-label>
+                  <mat-select
+                    [ngModel]="item.cookId"
+                    (ngModelChange)="updateCook(item.inMenuOrder, $event)">
+                    <mat-option [value]="null">Не вибрано</mat-option>
+                    @for(cook of cooks(); track cook.id){
+                      <mat-option [value]="cook.id">{{cook.name}}</mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              </article>
+            }
+          </div>
         </div>
-      </section>
+      </mat-expansion-panel>
 
       <section class="summary-grid">
         <article class="content-panel summary-card">
@@ -135,6 +141,11 @@
         <article class="content-panel summary-card">
           <span>Напої</span>
           <strong>{{drinksTotal()}} грн</strong>
+        </article>
+
+        <article class="content-panel summary-card">
+          <span>База для кухарів</span>
+          <strong>{{payoutBaseTotal()}} грн</strong>
         </article>
       </section>
 
@@ -168,24 +179,14 @@
         <div class="summary-section-head">
           <div>
             <h3>Розрахунок по відсотку</h3>
-            <p>Відсоток рахується від суми позицій кожного кухаря.</p>
+            <p>% A рахується від суми позицій без напоїв. % A задається в персоналі для кухарів.</p>
           </div>
           <div class="payout-actions">
-            <mat-form-field class="percent-field">
-              <mat-label>Відсоток</mat-label>
-              <input
-                matInput
-                type="number"
-                min="0"
-                [ngModel]="payoutPercent()"
-                (ngModelChange)="updatePayoutPercent($event)">
-            </mat-form-field>
-
             <button
               mat-flat-button
               color="accent"
               type="button"
-              [disabled]="syncingStatistics || cookPayouts().length === 0"
+              [disabled]="syncingStatistics || !hasCookPayouts()"
               (click)="openStatisticsDialog()">
               @if(syncingStatistics){
                 <mat-spinner diameter="20"></mat-spinner>
@@ -212,7 +213,28 @@
           <div class="cook-total-list">
             @for(item of cookPayouts(); track item.cookId){
               <div class="cook-total-row payout-row">
-                <span>{{item.cookName}}</span>
+                <mat-checkbox
+                  [ngModel]="item.worked"
+                  (ngModelChange)="updateCookWorked(item.cookId, $event)">
+                  Працював
+                </mat-checkbox>
+
+                <div class="payout-copy">
+                  <span>{{item.cookName}}</span>
+                  <small>{{item.baseTotal}} грн × ({{item.percent}}% + {{item.additionPercent}}%) = {{item.payout}} грн</small>
+                </div>
+
+                <mat-form-field class="addition-field">
+                  <mat-label>Додатковий % B</mat-label>
+                  <input
+                    matInput
+                    type="number"
+                    min="0"
+                    step="0.1"
+                    [ngModel]="item.additionPercent"
+                    (ngModelChange)="updateCookAdditionPercent(item.cookId, $event)">
+                </mat-form-field>
+
                 <strong>{{item.payout}} грн</strong>
               </div>
             }

@@ -18,6 +18,13 @@
         }
       </mat-select>
     </mat-form-field>
+
+    @if(type.value === 'COOK'){
+      <mat-form-field>
+        <mat-label>% A кухаря</mat-label>
+        <input matInput [formControl]="cookPercent" type="number" min="0" step="0.1" />
+      </mat-form-field>
+    }
   </mat-dialog-content>
 
   <mat-dialog-actions class="bo-dialog-actions">

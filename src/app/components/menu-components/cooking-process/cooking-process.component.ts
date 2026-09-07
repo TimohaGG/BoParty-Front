@@ -1,7 +1,7 @@
 import {Component, computed, inject, OnInit, signal} from '@angular/core';
 import {ActivatedRoute, RouterLink} from "@angular/router";
 import {FormsModule} from "@angular/forms";
-import {MatButton} from "@angular/material/button";
+import {MatAnchor, MatButton} from "@angular/material/button";
 import {MatFormField, MatLabel} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {MatSelect, MatOption} from "@angular/material/select";
@@ -18,6 +18,8 @@ import {Staff} from "../../../models/Waiters/Waiter";
 import {ExceptionMessage, isMessage} from "../../../models/Exceptions/ExceptionMessage";
 import {MinPosAmount} from "../../../models/Positions/MinPosAmount";
 import {MatDialog} from "@angular/material/dialog";
+import {MatExpansionModule} from "@angular/material/expansion";
+import {MatCheckboxModule} from "@angular/material/checkbox";
 import {
   Expences,
   ExpencesRequest,
@@ -34,6 +36,18 @@ type CookTotalRow = {
   total: number;
 };
 
+type CookPayoutRow = {
+  cookId: number;
+  cookName: string;
+  percent: number;
+  baseTotal: number;
+  percentAmount: number;
+  additionPercent: number;
+  additionAmount: number;
+  worked: boolean;
+  payout: number;
+};
+
 @Component({
   selector: 'app-cooking-process',
   standalone: true,
@@ -48,7 +62,10 @@ type CookTotalRow = {
     MatOption,
     MatProgressSpinner,
     MatIcon,
-    NgOptimizedImage
+    NgOptimizedImage,
+    MatExpansionModule,
+    MatCheckboxModule,
+    MatAnchor
   ],
   templateUrl: './cooking-process.component.html',
   styleUrl: './cooking-process.component.css'
@@ -67,7 +84,8 @@ export class CookingProcessComponent implements OnInit {
   saving = false;
   syncingStatistics = false;
   error = '';
-  readonly payoutPercent = signal(10);
+  readonly cookAdditionPercents = signal<Record<number, number>>({});
+  readonly workedCookIds = signal<Record<number, boolean>>({});
   readonly hasStatisticsEntry = signal(false);
 
   readonly totalWithoutServing = computed(() =>
@@ -78,6 +96,10 @@ export class CookingProcessComponent implements OnInit {
     this.getMenuPositions()
       .filter(item => this.isDrinksPosition(item))
       .reduce((sum, item) => sum + this.getPositionTotal(item), 0)
+  );
+
+  readonly payoutBaseTotal = computed(() =>
+    Math.max(this.totalWithoutServing() - this.drinksTotal(), 0)
   );
 
   readonly cookTotals = computed<CookTotalRow[]>(() => {
@@ -102,13 +124,34 @@ export class CookingProcessComponent implements OnInit {
     return Array.from(totals.values()).sort((a, b) => a.cookName.localeCompare(b.cookName, 'uk-UA'));
   });
 
-  readonly cookPayouts = computed(() => {
-    const percent = this.getPayoutPercent();
-    return this.cookTotals().map(item => ({
-      ...item,
-      payout: Math.round(item.total * percent) / 100
-    }));
+  readonly cookPayouts = computed<CookPayoutRow[]>(() => {
+    const baseTotal = this.payoutBaseTotal();
+    const additionPercents = this.cookAdditionPercents();
+    const workedCookIds = this.workedCookIds();
+
+    return this.cooks().map(cook => {
+      const percent = this.getCookPercent(cook);
+      const percentAmount = Math.round(baseTotal * percent) / 100;
+      const additionPercent = this.getPositiveNumber(additionPercents[cook.id]);
+      const additionAmount = Math.round(baseTotal * additionPercent) / 100;
+
+      return {
+        cookId: cook.id,
+        cookName: cook.name,
+        percent,
+        baseTotal,
+        percentAmount,
+        additionPercent,
+        additionAmount,
+        worked: workedCookIds[cook.id] ?? false,
+        payout: percentAmount + additionAmount,
+      };
+    });
   });
+
+  readonly hasCookPayouts = computed(() =>
+    this.cookPayouts().some(item => item.worked && item.payout > 0)
+  );
 
   ngOnInit(): void {
     this.loadData();
@@ -142,6 +185,7 @@ export class CookingProcessComponent implements OnInit {
           positions: [...loadedMenu.positions].sort((a, b) => a.inMenuOrder - b.inMenuOrder)
         });
         this.cooks.set(staff.filter(item => item.type === 'COOK').sort((a, b) => a.name.localeCompare(b.name, 'uk-UA')));
+        this.initializeWorkedCooks(loadedMenu);
         this.loadStatisticsStatus(loadedMenu);
       },
       error: err => {
@@ -214,13 +258,23 @@ export class CookingProcessComponent implements OnInit {
     });
   }
 
-  updatePayoutPercent(value: string | number | null): void {
-    this.payoutPercent.set(Number(value));
+  updateCookAdditionPercent(cookId: number, value: string | number | null): void {
+    this.cookAdditionPercents.update(current => ({
+      ...current,
+      [cookId]: this.getPositiveNumber(value),
+    }));
+  }
+
+  updateCookWorked(cookId: number, worked: boolean): void {
+    this.workedCookIds.update(current => ({
+      ...current,
+      [cookId]: worked,
+    }));
   }
 
   openStatisticsDialog(): void {
     const rows = this.cookPayouts()
-      .filter(item => item.payout > 0)
+      .filter(item => item.worked && item.payout > 0)
       .map<CookingProcessStatsDialogRow>(item => ({
         staffId: item.cookId,
         name: item.cookName,
@@ -285,9 +339,16 @@ export class CookingProcessComponent implements OnInit {
     });
   }
 
-  private getPayoutPercent(): number {
-    const parsed = Number(this.payoutPercent());
-    return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
+  private initializeWorkedCooks(currentMenu: Menu): void {
+    const assignedCookIds = new Set(
+      currentMenu.positions
+        .map(item => item.cookId)
+        .filter((cookId): cookId is number => cookId != null)
+    );
+
+    this.workedCookIds.set(Object.fromEntries(
+      this.cooks().map(cook => [cook.id, assignedCookIds.has(cook.id)])
+    ));
   }
 
   private syncCookSumsToStatistics(rows: CookingProcessStatsDialogRow[]): void {
@@ -377,5 +438,14 @@ export class CookingProcessComponent implements OnInit {
 
   private roundToHundreds(value: number): number {
     return Math.round((Number(value) || 0) / 100) * 100;
+  }
+
+  private getCookPercent(cook: Staff): number {
+    return this.getPositiveNumber(cook.cookPercent);
+  }
+
+  private getPositiveNumber(value: string | number | null | undefined): number {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
   }
 }

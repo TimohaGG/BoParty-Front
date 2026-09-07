@@ -6,7 +6,15 @@
   align-items: flex-end;
 }
 
-.waiters-header button {
+.waiters-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.waiters-actions button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -25,6 +33,43 @@
 
 .waiters-list {
   overflow: hidden;
+}
+
+.staff-groups {
+  display: grid;
+  gap: 14px;
+}
+
+.staff-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: rgba(255, 184, 77, 0.12);
+}
+
+.staff-group-header h2 {
+  margin: 0;
+  color: var(--text-main);
+  font-size: 1rem;
+}
+
+.staff-group-header span {
+  display: inline-grid;
+  place-items: center;
+  min-width: 28px;
+  min-height: 28px;
+  border-radius: 999px;
+  color: var(--accent-color);
+  background: rgba(246, 196, 83, 0.12);
+  font-weight: 700;
+}
+
+.empty-group {
+  padding: 18px;
+  color: var(--text-muted);
 }
 
 .waiter-row {
@@ -68,25 +113,25 @@
   font-size: 0.82rem;
 }
 
-.waiter-actions {
+.waiter-row-actions {
   display: inline-flex;
   align-items: center;
   gap: 4px;
 }
 
-.waiter-actions button {
+.waiter-row-actions button {
   color: var(--text-muted);
 }
 
-.waiter-actions button:hover {
+.waiter-row-actions button:hover {
   color: var(--accent-color);
 }
 
-.waiter-actions .danger-button {
+.waiter-row-actions .danger-button {
   color: #f2b1b1;
 }
 
-.waiter-actions .danger-button:hover {
+.waiter-row-actions .danger-button:hover {
   color: #ff8e8e;
 }
 
@@ -95,7 +140,8 @@
     align-items: stretch;
   }
 
-  .waiters-header button {
+  .waiters-actions,
+  .waiters-actions button {
     width: 100%;
   }
 
