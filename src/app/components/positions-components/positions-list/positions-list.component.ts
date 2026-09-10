@@ -107,7 +107,7 @@ export class PositionsListComponent implements OnInit {
         else{
           this.loadedCategoryIds.add(categoryId);
           if(this.selectedCategory.value == categoryId){
-            this.filteredPositions.set(this.positions().filter((pos)=>pos.category.id==categoryId));
+            this.filteredPositions.set(this.sortPositionsByName(this.positions().filter((pos)=>pos.category.id==categoryId)));
             this.isLoading = false;
           }
         }
@@ -123,7 +123,7 @@ export class PositionsListComponent implements OnInit {
   filterCategories() {
     this.isLoading = true;
     let categoryId = this.selectedCategory.value;
-    const categoryPositions = this.positions().filter(x=>x.category.id==categoryId);
+    const categoryPositions = this.sortPositionsByName(this.positions().filter(x=>x.category.id==categoryId));
     if(categoryPositions.length > 0){
       this.loadedCategoryIds.add(categoryId);
     }
@@ -213,7 +213,7 @@ export class PositionsListComponent implements OnInit {
     }
 
     this.selectedCategory.setValue(firstCategory.id);
-    const existingPositions = this.positions().filter(x=>x.category.id==firstCategory.id);
+    const existingPositions = this.sortPositionsByName(this.positions().filter(x=>x.category.id==firstCategory.id));
     if(existingPositions.length === 0){
       this.loadPositions(firstCategory.id);
       return;
@@ -222,5 +222,9 @@ export class PositionsListComponent implements OnInit {
     this.loadedCategoryIds.add(firstCategory.id);
     this.filteredPositions.set(existingPositions);
     this.isLoading = false;
+  }
+
+  private sortPositionsByName(positions: Position[]): Position[] {
+    return positions.slice().sort((a, b) => a.name.localeCompare(b.name, 'uk-UA'));
   }
 }
