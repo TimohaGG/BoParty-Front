@@ -785,18 +785,16 @@ export class AddMenuComponent implements OnInit {
     );
   }
 
+
   getTotalPrice(){
 
-    let positionsPrice = this.getTotalMenuPrice();
-    let additionalInfoPrice = this.additionalInfo().reduce((sum,item)=>{return sum+item.price},0);
+    let total = this.getMenuWithTax();
 
-    if(this.ordersForm.get("taxAmount")?.value!=0){
-      positionsPrice = positionsPrice + positionsPrice/10;
-    }
+    let govTaxAmount = this.ordersForm.get("govTaxAmount")?.value;
+    let taxToCollect = (total / (1-(govTaxAmount*0.01))) - total ;
 
-    let total = positionsPrice + additionalInfoPrice;
-    if(this.ordersForm.get("govTaxAmount")?.value!=0){
-      return total + total / 10;
+    if(this.ordersForm.get("govTax")?.value){
+      return Math.round(total+taxToCollect);
     }
     else
       return total;
@@ -804,6 +802,25 @@ export class AddMenuComponent implements OnInit {
 
   getTotalMenuPrice(){
     return this.posAmounts().reduce((sum,item)=>{return sum+(item.price == "" ? 0:item.price) * item.amount},0);
+  }
+
+  getMenuInfoPrice(){
+    return this.additionalInfo().reduce((sum,item)=>{return sum+item.price},0);
+  }
+
+  getMenuWithTax(){
+    let positionsPrice = this.getTotalMenuPrice();
+    let taxAmount = this.ordersForm.get("taxAmount")?.value;
+    if(this.ordersForm.get("serving")?.value){
+      positionsPrice = positionsPrice + positionsPrice * taxAmount / 100;
+    }
+    return positionsPrice + this.getMenuInfoPrice();
+  }
+
+  getGovTaxAmount(){
+    let total = this.getMenuWithTax();
+    let govTaxAmount = this.ordersForm.get("govTaxAmount")?.value;
+    return Math.round((total / (1 - (govTaxAmount * 0.01))) - total);
   }
 
   moveUp(id: any) {

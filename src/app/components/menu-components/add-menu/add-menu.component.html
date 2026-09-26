@@ -257,6 +257,16 @@
 
 
     <div class="row mt-4 align-items-center text-center">
+
+      @if (this.ordersForm.get("govTax")?.value){
+        <div class="col-6">
+          <h6>ФОП:</h6>
+        </div>
+        <div class="col-6">
+          {{getGovTaxAmount()}} грн
+        </div>
+      }
+
       <div class="col-6">
         <h6>Загальна сума: </h6>
       </div>
