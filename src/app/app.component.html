@@ -12,6 +12,10 @@
           <mat-icon class="side-nav-icon" matListItemIcon>event_note</mat-icon>
           <span class="side-nav-label">Меню</span>
         </a>
+        <a mat-list-item class="side-nav-item" routerLink="/privacy-policy" routerLinkActive="active-link" (click)="sidenav!.close()">
+          <mat-icon class="side-nav-icon" matListItemIcon>privacy_tip</mat-icon>
+          <span class="side-nav-label">Конфіденційність</span>
+        </a>
       }
 
       @if(!isLoggedIn){
@@ -107,6 +111,7 @@
         @if(!showAdminBoard){
           <a mat-button routerLink="/home" routerLinkActive="active-top-link" [routerLinkActiveOptions]="{exact:true}">На головну</a>
           <a mat-button routerLink="/menu" routerLinkActive="active-top-link" [routerLinkActiveOptions]="{exact:true}">Меню</a>
+          <a mat-button routerLink="/privacy-policy" routerLinkActive="active-top-link" [routerLinkActiveOptions]="{exact:true}">Конфіденційність</a>
         }
 
         @if(!isLoggedIn){

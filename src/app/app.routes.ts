@@ -19,6 +19,7 @@ import {ShoppingComponent} from "./components/menu-components/shopping/shopping.
 import {WaitersListComponent} from "./components/waiters-components/waiters-list/waiters-list.component";
 import {OrderSelectionComponent} from "./components/menu-components/order-selection/order-selection.component";
 import {WelcomePageComponent} from "./components/public-components/welcome-page/welcome-page.component";
+import {PrivacyPolicyComponent} from "./components/public-components/privacy-policy/privacy-policy.component";
 import {BoxesListComponent} from "./components/boxes-components/boxes-list/boxes-list.component";
 import {
   PositionsAccessibilityComponent
@@ -38,6 +39,7 @@ import {
 
 export const routes: Routes = [
   {path:'home',component:WelcomePageComponent},
+  {path:'privacy-policy',component:PrivacyPolicyComponent},
   {path:'menu',component:OrderSelectionComponent},
   { path: 'service/orders', component: MenusListComponent,canActivate:[authGuard, adminGuard] },
   { path: 'service/login', component: LoginComponent,  },
@@ -62,6 +64,7 @@ export const routes: Routes = [
   { path: 'orders', redirectTo: 'service/orders', pathMatch: 'full' },
   { path: 'login', redirectTo: 'service/login', pathMatch: 'full' },
   { path: 'register', redirectTo: 'service/register', pathMatch: 'full' },
+  { path: 'privacy', redirectTo: 'privacy-policy', pathMatch: 'full' },
   { path: 'profile', redirectTo: 'service/profile', pathMatch: 'full' },
   { path: 'positions', redirectTo: 'service/positions', pathMatch: 'full' },
   { path: 'positions/availability', redirectTo: 'service/positions/availability', pathMatch: 'full' },
