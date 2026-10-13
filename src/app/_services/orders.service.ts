@@ -39,8 +39,8 @@ export class OrdersService{
   //   );
   // }
 
-  public getOfPageMin(pageSize:number, currentPage:number, archive:boolean) {
-    return this.http.getMinOrders(pageSize,currentPage,archive).pipe(
+  public getOfPageMin(pageSize:number, currentPage:number, archive:boolean, payed: boolean | null = null, joined: boolean | null = null) {
+    return this.http.getMinOrders(pageSize,currentPage,archive, payed, joined).pipe(
       map(res=>{
         if(!isMessage(res)){
           this.store.setAllMinOrders(res as MinMenu[]);
@@ -229,8 +229,8 @@ export class OrdersService{
 
   }
 
-  getOrdersAmount(archive:boolean) {
-    return this.http.getOrdersAmount(archive).pipe(
+  getOrdersAmount(archive:boolean, payed: boolean | null = null, joined: boolean | null = null) {
+    return this.http.getOrdersAmount(archive, payed, joined).pipe(
       map(res=>{
         if(!isMessage(res)){
           this.store.setTotalPages(res as number);
@@ -408,7 +408,7 @@ export class OrdersService{
           return copiedOrder;
         }
 
-        return res;
+        throw new Error((res as ExceptionMessage).message);
       }),
       catchError((err:HttpErrorResponse)=>{
         throw new Error(err.error.message);

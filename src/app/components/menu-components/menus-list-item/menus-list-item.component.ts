@@ -3,7 +3,7 @@ import {MatButton, MatIconButton} from "@angular/material/button";
 import {MatIcon} from "@angular/material/icon";
 import {MinMenu} from "../../../models/Menu/MinMenu";
 import {NgClass} from "@angular/common";
-import {RouterLink, RouterLinkActive} from "@angular/router";
+import {Router, RouterLink, RouterLinkActive} from "@angular/router";
 import {DeleteMenuDialogComponent} from "../delete-menu-dialog/delete-menu-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
@@ -37,7 +37,8 @@ export class MenusListItemComponent {
   private dialog = inject(MatDialog);
 
   constructor(private orderService:OrdersService,
-              private toast:HotToastService) {
+              private toast:HotToastService,
+              private router: Router) {
 
   }
 
@@ -94,8 +95,9 @@ export class MenusListItemComponent {
 
   copyMenu(id: number) {
     this.orderService.copyOrder(id).subscribe({
-      next: () => {
+      next: copiedOrder => {
         this.toast.show("Замовлення скопійовано", {duration: 2000, position: "bottom-center", autoClose: true});
+        this.router.navigate(['/service/orders/new'], {queryParams: {orderId: copiedOrder.id}});
       },
       error: error => {
         this.toast.show(error.message, {duration: 3000, position: "bottom-center", autoClose: true});

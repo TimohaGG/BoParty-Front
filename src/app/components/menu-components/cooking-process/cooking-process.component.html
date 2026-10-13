@@ -186,7 +186,7 @@
               mat-flat-button
               color="accent"
               type="button"
-              [disabled]="syncingStatistics || !hasCookPayouts()"
+              [disabled]="syncingStatistics || !hasCookPayouts() || !currentMenu.payed"
               (click)="openStatisticsDialog()">
               @if(syncingStatistics){
                 <mat-spinner diameter="20"></mat-spinner>
@@ -202,6 +202,13 @@
             }
           </div>
         </div>
+
+        @if(!currentMenu.payed){
+          <div class="cooking-message compact-message">
+            <mat-icon>payments</mat-icon>
+            <span>Додати в статистику можна лише оплачене замовлення.</span>
+          </div>
+        }
 
         @if(cookPayouts().length === 0){
           <div class="cooking-message compact-message">

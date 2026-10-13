@@ -273,6 +273,12 @@ export class CookingProcessComponent implements OnInit {
   }
 
   openStatisticsDialog(): void {
+    const currentMenu = this.menu();
+    if (!currentMenu?.payed) {
+      this.toast.error('Додати в статистику можна лише оплачене замовлення');
+      return;
+    }
+
     const rows = this.cookPayouts()
       .filter(item => item.worked && item.payout > 0)
       .map<CookingProcessStatsDialogRow>(item => ({

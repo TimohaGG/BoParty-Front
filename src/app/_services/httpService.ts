@@ -41,8 +41,22 @@ export class HttpService{
     return this.clinet.get<MinMenu[] | ExceptionMessage>(this.baseUrl + "menus/get/min/current");
   }
 
-  getMinOrders(pageSize:number, currentPage:number, archive:boolean):Observable<MinMenu[] | ExceptionMessage>{
-    return this.clinet.get<MinMenu[] | ExceptionMessage>(this.baseUrl + "menus/get/min", {params:{pageSize:pageSize, currentPage:currentPage, archive:archive}});
+  getMinOrders(pageSize:number, currentPage:number, archive:boolean, payed: boolean | null = null, joined: boolean | null = null):Observable<MinMenu[] | ExceptionMessage>{
+    const params: Record<string, string | number | boolean> = {
+      pageSize,
+      currentPage,
+      archive,
+    };
+
+    if (payed !== null) {
+      params['payed'] = payed;
+    }
+
+    if (joined !== null) {
+      params['joined'] = joined;
+    }
+
+    return this.clinet.get<MinMenu[] | ExceptionMessage>(this.baseUrl + "menus/get/min", {params});
   }
 
   searchOrders(name: string, date: string): Observable<MinMenu[] | ExceptionMessage> {
@@ -279,8 +293,18 @@ export class HttpService{
     return this.clinet.post<boolean>(this.baseUrl + "menus/edit/status", {status:status, id:id});
   }
 
-  getOrdersAmount(archive:boolean) {
-    return this.clinet.get<number>(this.baseUrl + "menus/amount",{params:{archive:archive}});
+  getOrdersAmount(archive:boolean, payed: boolean | null = null, joined: boolean | null = null) {
+    const params: Record<string, string | number | boolean> = {archive};
+
+    if (payed !== null) {
+      params['payed'] = payed;
+    }
+
+    if (joined !== null) {
+      params['joined'] = joined;
+    }
+
+    return this.clinet.get<number>(this.baseUrl + "menus/amount", {params});
   }
 
   // getArchiveOrdersAmount() {

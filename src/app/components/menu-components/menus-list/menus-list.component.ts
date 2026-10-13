@@ -88,9 +88,9 @@ export class MenusListComponent implements OnInit{
   public showSearch = false;
   public searchName = '';
   public searchDate = '';
-  public statusFilter: 'all' | 'payed' | 'unpayed' = 'payed';
+  public statusFilter: 'all' | 'payed' | 'unpayed' | 'joined' = 'payed';
   readonly dialog = inject(MatDialog);
-  public visibleMenus = computed(() => this.applyStatusFilter(this.menus()));
+  public visibleMenus = computed(() => this.hasTextOrDateSearch() ? this.applyStatusFilter(this.menus()) : this.menus());
   public visibleRangeLabel = computed(() => {
     if (this.hasTextOrDateSearch()) {
       const total = this.visibleMenus().length;
@@ -100,17 +100,6 @@ export class MenusListComponent implements OnInit{
       }
 
       return `Показано 1-${total} із ${total}`;
-    }
-
-    if (this.hasStatusFilter()) {
-      const filteredCount = this.visibleMenus().length;
-      const pageCount = this.menus().length;
-
-      if (pageCount === 0) {
-        return 'Немає замовлень';
-      }
-
-      return `Показано ${filteredCount} із ${pageCount} на сторінці`;
     }
 
     const total = this.totalPages();
@@ -149,7 +138,7 @@ export class MenusListComponent implements OnInit{
         this.store.clearMinOrders();
       }),
       switchMap(archive => this.getFutureAmount(archive).pipe(
-        switchMap(() => this.orderService.getOfPageMin(this.perPage(), this.currentPage(), archive)),
+        switchMap(() => this.orderService.getOfPageMin(this.perPage(), this.currentPage(), archive, this.getPayedFilterParam(), this.getJoinedFilterParam())),
         catchError(error => {
           this.loadingFailure = true;
           this.toast.show(error.message, {duration: 3000, position: "bottom-center", autoClose: true});
@@ -162,7 +151,7 @@ export class MenusListComponent implements OnInit{
   loadFutureOrders(archive:boolean) {
     this.loadingFailure = false;
     this.store.clearMinOrders();
-    this.orderService.getOfPageMin(this.perPage(), this.currentPage(), archive).subscribe({
+    this.orderService.getOfPageMin(this.perPage(), this.currentPage(), archive, this.getPayedFilterParam(), this.getJoinedFilterParam()).subscribe({
         error: error=>{
           this.loadingFailure = true;
           this.toast.show(error.message,{duration:3000,position:"bottom-center",autoClose:true});
@@ -243,7 +232,7 @@ export class MenusListComponent implements OnInit{
     return this.hasTextOrDateSearch() || this.hasStatusFilter();
   }
 
-  setStatusFilter(status: 'all' | 'payed' | 'unpayed') {
+  setStatusFilter(status: 'all' | 'payed' | 'unpayed' | 'joined') {
     this.statusFilter = status;
 
     if (!this.hasTextOrDateSearch()) {
@@ -260,7 +249,7 @@ export class MenusListComponent implements OnInit{
   }
 
   getFutureAmount(archive:boolean) {
-    return this.orderService.getOrdersAmount(archive);
+    return this.orderService.getOrdersAmount(archive, this.getPayedFilterParam(), this.getJoinedFilterParam());
   }
 
   onPageChange($event: PageEvent) {
@@ -289,7 +278,23 @@ export class MenusListComponent implements OnInit{
       return items;
     }
 
+    if (this.statusFilter === 'joined') {
+      return items.filter(item => item.temporary);
+    }
+
     const shouldBePayed = this.statusFilter === 'payed';
     return items.filter(item => item.payed === shouldBePayed);
+  }
+
+  private getPayedFilterParam(): boolean | null {
+    if (this.statusFilter === 'all' || this.statusFilter === 'joined') {
+      return null;
+    }
+
+    return this.statusFilter === 'payed';
+  }
+
+  private getJoinedFilterParam(): boolean | null {
+    return this.statusFilter === 'joined' ? true : null;
   }
 }

@@ -210,6 +210,10 @@ export class ExpencesDialogComponent implements OnInit {
     const usedMenuIds = new Set(this.data?.usedMenuIds ?? []);
 
     return menus.filter(menu => {
+      if(!menu.payed && menu.id !== currentMenuId){
+        return false;
+      }
+
       if(usedMenuIds.has(menu.id) && menu.id !== currentMenuId){
         return false;
       }
