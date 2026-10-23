@@ -1,0 +1,33 @@
+
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'europe-west1-docker.pkg.dev/$PROJECT_ID/boparty/frontend:$BUILD_ID'
+      - '.'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'europe-west1-docker.pkg.dev/$PROJECT_ID/boparty/frontend:$BUILD_ID'
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:stable'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'boparty-frontend'
+      - '--image=europe-west1-docker.pkg.dev/$PROJECT_ID/boparty/frontend:$BUILD_ID'
+      - '--region=europe-west1'
+      - '--port=8080'
+      - '--allow-unauthenticated'
+      - '--memory=256Mi'
+      - '--min-instances=0'
+      - '--max-instances=2'
+
+images:
+  - 'europe-west1-docker.pkg.dev/$PROJECT_ID/boparty/frontend:$BUILD_ID'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
