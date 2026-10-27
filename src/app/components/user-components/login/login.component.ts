@@ -10,6 +10,8 @@ import {NgClass, NgIf, NgOptimizedImage} from "@angular/common";
 import {MatButton, MatIconButton} from "@angular/material/button";
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
+import {finalize} from "rxjs";
 
 @Component({
     selector: 'app-login',
@@ -25,7 +27,8 @@ import {Router} from "@angular/router";
     FormsModule,
     ReactiveFormsModule,
     MatError,
-    MatButton
+    MatButton,
+    MatProgressSpinner
   ],
    standalone:true
 })
@@ -37,6 +40,7 @@ export class LoginComponent implements OnInit {
   })
 
   isLoggedIn = false;
+  isLoggingIn = false;
   isLoginFailed = false;
   errorMessage = '';
   roles: string[] = [];
@@ -56,11 +60,15 @@ export class LoginComponent implements OnInit {
 
   onSubmit(): void {
 
-    if(!this.form.valid){
+    if(!this.form.valid || this.isLoggingIn){
       return;
     }
 
-    this.authService.login(this.form.get("username")?.value, this.form.get("password")?.value).subscribe({
+    this.isLoggingIn = true;
+    this.isLoginFailed = false;
+    this.authService.login(this.form.get("username")?.value, this.form.get("password")?.value).pipe(
+      finalize(() => this.isLoggingIn = false)
+    ).subscribe({
       next: data => {
         this.storageService.saveUser(data);
         this.isLoginFailed = false;

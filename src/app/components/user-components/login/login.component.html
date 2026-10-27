@@ -36,7 +36,14 @@
           }
         </mat-form-field>
 
-        <button mat-flat-button color="accent">Увійти</button>
+        <button mat-flat-button color="accent" type="submit" [disabled]="isLoggingIn" [attr.aria-busy]="isLoggingIn">
+          <span class="login-button-content">
+            @if(isLoggingIn){
+              <mat-spinner diameter="20" aria-label="Вхід у систему"></mat-spinner>
+            }
+            <span>{{isLoggingIn ? 'Вхід...' : 'Увійти'}}</span>
+          </span>
+        </button>
         <mat-error>
           @if(isLoginFailed){
             {{errorMessage}}

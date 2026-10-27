@@ -41,6 +41,14 @@
   gap: 14px;
 }
 
+.login-button-content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 24px;
+}
+
 @media (max-width: 760px) {
   .auth-page {
     min-height: calc(100vh - 80px);
