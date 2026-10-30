@@ -48,7 +48,7 @@ export class OrderListComponent implements OnInit {
   public expences: Signal<Expences[]> = computed(this.store.expencesEntities);
 
   public totalIncome = computed(() =>
-    this.expences().reduce((sum, item) => sum + this.getIncome(item), 0)
+    this.roundMoney(this.expences().reduce((sum, item) => sum + this.getIncome(item), 0))
   );
 
   public totalShopping = computed(() =>
@@ -63,8 +63,12 @@ export class OrderListComponent implements OnInit {
     this.expences().reduce((sum, item) => sum + this.getOtherTotal(item), 0)
   );
 
+  public totalGovTax = computed(() =>
+    this.roundMoney(this.expences().reduce((sum, item) => sum + this.getGovTaxTotal(item), 0))
+  );
+
   public totalExpences = computed(() =>
-    this.totalShopping() + this.totalStaff() + this.totalOther()
+    this.roundMoney(this.totalShopping() + this.totalStaff() + this.totalOther() + this.totalGovTax())
   );
 
   constructor(private ordersService: OrdersService, private toast: HotToastService) {
@@ -234,10 +238,15 @@ export class OrderListComponent implements OnInit {
       return 0;
     }
 
-    return (this.menus().find(menu => menu.id === item.menuId)?.totalPrice ?? 0) - this.getExpenceTotal(item);
+    // Expenses already include government tax, so deduct them from the gross sum.
+    return this.roundMoney(this.getOrderTotal(item) - this.getExpenceTotal(item));
   }
 
   getSum(item: Expences): number {
+    return this.roundMoney(this.getOrderTotal(item) - this.getGovTaxTotal(item));
+  }
+
+  private getOrderTotal(item: Expences): number {
     if(!item.menuId){
       return 0;
     }
@@ -258,7 +267,24 @@ export class OrderListComponent implements OnInit {
   }
 
   getExpenceTotal(item: Expences): number {
-    return this.getShoppingTotal(item) + this.getStaffTotal(item) + this.getOtherTotal(item);
+    return this.roundMoney(this.getShoppingTotal(item) + this.getStaffTotal(item) + this.getOtherTotal(item) + this.getGovTaxTotal(item));
+  }
+
+  hasGovTax(item: Expences): boolean {
+    return this.menus().find(menu => menu.id === item.menuId)?.govTax === true;
+  }
+
+  getGovTaxTotal(item: Expences): number {
+    const menu = this.menus().find(menu => menu.id === item.menuId);
+    if (!menu?.govTax) {
+      return 0;
+    }
+
+    return this.roundMoney(menu.totalPrice * (menu.govTaxAmount ?? 0) / 100);
+  }
+
+  private roundMoney(value: number): number {
+    return Math.round((value + Number.EPSILON) * 100) / 100;
   }
 
   getStaffTypeLabel(type: string | null): string {

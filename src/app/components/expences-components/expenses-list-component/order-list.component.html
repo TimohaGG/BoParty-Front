@@ -74,6 +74,10 @@
       <strong>{{totalOther()}} грн</strong>
     </article>
     <article class="summary-card content-panel total-card">
+      <span>Податок ФОП до сплати</span>
+      <strong>{{totalGovTax()}} грн</strong>
+    </article>
+    <article class="summary-card content-panel total-card">
       <span>Разом витрат</span>
       <strong>{{totalExpences()}} грн</strong>
     </article>
@@ -115,6 +119,12 @@
                   <small>Дохід</small>
                   <strong>{{getIncome(item)}} грн</strong>
                 </span>
+                @if(hasGovTax(item)){
+                  <span>
+                    <small>Податок ФОП до сплати</small>
+                    <strong>{{getGovTaxTotal(item)}} грн</strong>
+                  </span>
+                }
               </div>
               <strong>{{getExpenceTotal(item)}} грн</strong>
               <div class="expence-actions">
@@ -168,6 +178,12 @@
               <span>Інше</span>
               <strong>{{getOtherTotal(item)}} грн</strong>
             </div>
+            @if(hasGovTax(item)){
+              <div class="breakdown-row">
+                <span>Податок ФОП до сплати</span>
+                <strong>{{getGovTaxTotal(item)}} грн</strong>
+              </div>
+            }
               <div class="breakdown-row income-row">
                   <span>Дохід</span>
                   <strong>{{getIncome(item)}} грн</strong>

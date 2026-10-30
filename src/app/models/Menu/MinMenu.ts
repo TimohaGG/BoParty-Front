@@ -7,4 +7,6 @@ export interface MinMenu{
   client:string;
   payed:boolean;
   temporary:boolean;
+  govTax?:boolean;
+  govTaxAmount?:number;
 }
